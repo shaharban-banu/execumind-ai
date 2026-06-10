@@ -1,0 +1,26 @@
+venv/
+# Python
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Database
+*.db
+
+# Environment Variables
+.env
+
+# Logs
+logs/
+
+# FAISS
+*.index
+
+# Models
+*.pkl
+
+# OS Files
+.DS_Store
+Thumbs.db
