@@ -13,3 +13,9 @@ Multi-Agent Executive Intelligence Platform
 - Streamlit
 - Docker
 - GCP
+
+## Dataset
+
+Download the Olist E-Commerce Dataset from Kaggle and place all CSV files inside:
+
+data/raw/
