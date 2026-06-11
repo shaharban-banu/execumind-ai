@@ -1,6 +1,7 @@
 venv/
 data/raw/
 data/processed/
+test.py
 # Python
 __pycache__/
 *.pyc
