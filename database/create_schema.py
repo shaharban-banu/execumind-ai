@@ -1,10 +1,10 @@
 import sqlite3
 from pathlib import Path
 
-DB_PATH="../data/sqlite/execumind.db"
+DB_PATH="data/sqlite/execumind.db"
 SCHEMA_PATH="database/schema.sql"
 
-Path("../data/sqlite").mkdir(parents=True,exist_ok=True)
+Path("data/sqlite").mkdir(parents=True,exist_ok=True)
 
 conn=sqlite3.connect(DB_PATH)
 
