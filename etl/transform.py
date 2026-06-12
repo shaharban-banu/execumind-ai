@@ -22,7 +22,7 @@ def transform_products(df):
     df=df.drop_duplicates()
     df["product_category_name"] = (df["product_category_name"].fillna("Unknown"))
 
-
+    print(df.isnull().sum())
     numeric_cols = [
         "product_name_lenght",
         "product_description_lenght",
@@ -55,6 +55,9 @@ def transform_order_items(df):
 
     df["shipping_limit_date"] = pd.to_datetime(df["shipping_limit_date"],errors="coerce")
     return df
+
+def transform_geolocation(df):
+    return df.drop_duplicates()
 
 if __name__ == "__main__":
 
