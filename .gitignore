@@ -20,6 +20,9 @@ logs/
 
 # FAISS
 *.index
+.faiss
+
+*.npy
 
 # Models
 *.pkl

@@ -14,7 +14,7 @@ create table if not exists orders(
     order_approved_at text,
     order_delivered_carrier_date text,
     order_delivered_customer_date text,
-    order_estimated_delivery_date text
+    order_estimated_delivery_date text,
 
     foreign key(customer_id)
     references customers(customer_id)
@@ -39,7 +39,7 @@ create table if not exists reviews(
     review_comment_title text,
     review_comment_message text,
     review_creation_date text,
-    review_answer_timestamp text
+    review_answer_timestamp text,
 
     foreign key(order_id)
     references orders(order_id)
@@ -57,7 +57,7 @@ create table if not exists payments(
     payment_sequential integer,
     payment_type text,
     payment_installments integer,
-    payment_value real
+    payment_value real,
 
     primary key(order_id,payment_sequential),
 
@@ -72,7 +72,7 @@ create table if not exists order_items(
     seller_id text,
     shipping_limit_date text,
     price real,
-    freight_value real
+    freight_value real,
 
     primary key(order_id,order_item_id),
 
