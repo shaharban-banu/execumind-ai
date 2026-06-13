@@ -1,6 +1,7 @@
 from etl.extract import *
 from etl.transform import *
 from etl.load import *
+from utils.logger import logger
 
 customers=transform_customers(extract_customers())
 load_customers(customers)
@@ -26,4 +27,4 @@ load_order_items(order_items)
 geolocation=transform_geolocation(extract_geolocation())
 load_geolocation(geolocation)
 
-print("\nETL pipeline completed successfully")
+logger.info("ETL pipeline completed successfully")
