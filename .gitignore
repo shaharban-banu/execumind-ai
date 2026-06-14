@@ -37,6 +37,8 @@ logs/
 *.faiss
 
 *.npy
+__init__.py
+pytest.ini
 
 rag/**/chunks/*.json
 
