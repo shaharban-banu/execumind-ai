@@ -5,6 +5,8 @@ tests/
 # Python
 __pycache__/
 *.pyc
+*.pyd
+*.pyo
 
 # Jupyter
 .ipynb_checkpoints/
@@ -17,6 +19,18 @@ __pycache__/
 
 # Logs
 logs/
+*.log
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Model Files
+*.bin
+*.pt
+*.pth
 
 # FAISS
 *.index
@@ -26,9 +40,18 @@ logs/
 
 rag/**/chunks/*.json
 
+rag/docs/raw_docs
+
 # Models
 *.pkl
 
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Testing
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
