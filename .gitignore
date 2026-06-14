@@ -20,9 +20,11 @@ logs/
 
 # FAISS
 *.index
-.faiss
+*.faiss
 
 *.npy
+
+rag/**/chunks/*.json
 
 # Models
 *.pkl
