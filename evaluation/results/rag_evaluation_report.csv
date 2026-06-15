@@ -1,0 +1,31 @@
+question,expected_source,retrieved_sources,top1,top3
+What is Olist's business model?,olist_company_overview,olist_business_strategy|olist_company_overview,FAIL,PASS
+How does Olist generate revenue?,olist_company_overview,olist_company_overview|olist_business_strategy,PASS,PASS
+What services does Olist provide?,olist_company_overview,olist_company_overview|olist_business_strategy,PASS,PASS
+What is Olist's mission?,olist_business_strategy,olist_business_strategy|olist_company_overview,PASS,PASS
+What is Olist's vision?,olist_business_strategy,olist_business_strategy|olist_company_overview,PASS,PASS
+How should executives respond to declining sales?,olist_executive_playbook,consumer_behavior|olist_executive_playbook,FAIL,PASS
+How can customer satisfaction be improved?,olist_executive_playbook,consumer_behavior,FAIL,FAIL
+What retention strategies are recommended?,olist_executive_playbook,olist_executive_playbook|olist_business_strategy|consumer_behavior,PASS,PASS
+What factors influence customer loyalty?,consumer_behavior,consumer_behavior,PASS,PASS
+What are Brazilian e-commerce trends?,consumer_behavior,ecommerce_analysis|consumer_behavior,FAIL,PASS
+late delivery,reviews,reviews|ecommerce_analysis,PASS,PASS
+delivery issues,reviews,reviews|ecommerce_analysis,PASS,PASS
+poor packaging,reviews,reviews|consumer_behavior|olist_business_strategy,PASS,PASS
+broken product,reviews,reviews|olist_executive_playbook|consumer_behavior|ecommerce_analysis,PASS,PASS
+seller issue,reviews,reviews|olist_company_overview|consumer_behavior,PASS,PASS
+customer support problem,reviews,reviews|consumer_behavior|olist_executive_playbook|ecommerce_analysis,PASS,PASS
+product defect,reviews,reviews|consumer_behavior|olist_executive_playbook,PASS,PASS
+late shipment,reviews,reviews|ecommerce_analysis,PASS,PASS
+delivery delay complaint,reviews,reviews|ecommerce_analysis,PASS,PASS
+seller communication problem,reviews,reviews|olist_company_overview|consumer_behavior,PASS,PASS
+How can Olist improve seller retention?,olist_business_strategy,consumer_behavior|olist_company_overview|olist_business_strategy,FAIL,PASS
+Which strategies reduce customer churn?,olist_executive_playbook,ecommerce_analysis|olist_company_overview,FAIL,FAIL
+What are Olist's competitive advantages?,olist_company_overview,consumer_behavior|ecommerce_analysis,FAIL,FAIL
+How can logistics performance be improved?,olist_executive_playbook,ecommerce_analysis,FAIL,FAIL
+How should executives react to declining ratings?,olist_executive_playbook	,ecommerce_analysis|olist_executive_playbook,FAIL,FAIL
+What drives repeat purchases?,consumer_behavior,consumer_behavior,PASS,PASS
+How does Olist support SMBs?,olist_company_overview,olist_business_strategy|olist_company_overview,FAIL,PASS
+What are marketplace growth opportunities?,olist_business_strategy,consumer_behavior|ecommerce_analysis,FAIL,FAIL
+How can delivery satisfaction be improved?,olist_executive_playbook,olist_executive_playbook|ecommerce_analysis|consumer_behavior,PASS,PASS
+What are the biggest operational risks?,olist_business_strategy,ecommerce_analysis|olist_business_strategy|olist_executive_playbook,FAIL,PASS
