@@ -13,8 +13,8 @@ EXTRACTED_PATH=Path("rag/docs/extracted")/"documents.json"
 CHUNK_DIR=Path("rag/docs/chunks")
 CHUNK_PATH=(CHUNK_DIR/"doc_chunks.json")
 
-CHUNK_SIZE=1000
-CHUNK_OVERLAP=200
+CHUNK_SIZE=700
+CHUNK_OVERLAP=150
 
 def load_documents():
     """
