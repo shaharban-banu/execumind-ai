@@ -11,8 +11,8 @@ from pathlib import Path
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-CHUNK_PATH=(Path("rag/reviews/chunks")/"review_chunks.json")
-EMBEDDDING_DIR=Path("rag/reviews/embeddings")
+CHUNK_PATH=(Path("data/processed")/"review_chunks.json")
+EMBEDDDING_DIR=Path("data/embeddings")
 EMBEDDING_PATH=(EMBEDDDING_DIR/"review_embeddings.npy")
 
 MODEL_NAME=("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
@@ -63,7 +63,7 @@ def main():
     Execute embedding pipeline.
     """
     chunks=load_chunks()
-    texts=[chunk["text"] for chunk in chunks]
+    texts=[chunk["embedding_text"] for chunk in chunks]
     embeddings=create_embeddings(texts)
     save_embeddings(embeddings)
 

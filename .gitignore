@@ -1,63 +1,159 @@
-venv/
-data/raw/
-data/processed/
-tests/
+# ==========================================
 # Python
+# ==========================================
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
 *.pyd
 *.pyo
+*.egg
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
 
-# Jupyter
-.ipynb_checkpoints/
+# ==========================================
+# Virtual Environments
+# ==========================================
+venv/
+.venv/
+env/
+ENV/
 
-# Database
-*.db
-
-# Environment Variables
-.env
-
-# Logs
-logs/
-*.log
-
-# VS Code
+# ==========================================
+# IDEs
+# ==========================================
 .vscode/
-
-# PyCharm
 .idea/
+*.swp
+*.swo
 
-# Model Files
-*.bin
-*.pt
-*.pth
-
-# FAISS
-*.index
-*.faiss
-
-*.npy
-__init__.py
-pytest.ini
-
-rag/**/chunks/*.json
-
-rag/docs/raw_docs
-
-# Models
-*.pkl
-
-# OS Files
-.DS_Store
-Thumbs.db
-
+# ==========================================
 # Testing
+# ==========================================
 .pytest_cache/
-
-# Coverage
 .coverage
 htmlcov/
+.tox/
+.nox/
 
-notebooks/
-frontend/
+# ==========================================
+# Type Checkers / Linters
+# ==========================================
+.mypy_cache/
+.pyre/
+.ruff_cache/
+.dmypy.json
+.pytype/
+
+# ==========================================
+# Jupyter
+# ==========================================
+.ipynb_checkpoints/
+
+# ==========================================
+# Environment Variables / Secrets
+# ==========================================
+.env
+.env.*
+!.env.example
+*.env
+
+# ==========================================
+# Logs
+# ==========================================
+*.log
+logs/
+*.out
+
+# ==========================================
+# OS Files
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# Runtime / Temporary Files
+# ==========================================
+tmp/
+temp/
+*.tmp
+.cache/
+
+# ==========================================
+# Data Files (usually large)
+# ==========================================
+data/raw/*
+data/processed/*
+data/embeddings/*
+data/indexes/*
+data/exports/*
+
+# Keep folder structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/embeddings/.gitkeep
+!data/exports/.gitkeep
+
+# ==========================================
+# RAG Generated Files
+# ==========================================
+rag/docs/chunks/*.json
+rag/docs/embeddings/*.npy
+rag/docs/index/*.faiss
+rag/docs/index/*.pkl
+rag/docs/raw_docs
+__init__.py
+pytest.ini
 structure.txt
+tests/
+frontend/
+notebooks/
+
+# ==========================================
+# Evaluation Outputs
+# ==========================================
+evaluation/results/*.csv
+evaluation/results/rag_evaluation_report.csv
+!evaluation/results/.gitkeep
+
+# ==========================================
+# Model Artifacts
+# ==========================================
+models/
+checkpoints/
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+
+# ==========================================
+# Database Files
+# ==========================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ==========================================
+# Cache Files
+# ==========================================
+.cache/
+.pyre/
+__pypackages__/
+
+# ==========================================
+# Misc
+# ==========================================
+*.bak
+*.backup
+*.orig
+
+
+rag/docs/chunks/doc_chunks.json
+rag/docs/embeddings/doc_embeddings.npy
+rag/docs/index/business_index.faiss

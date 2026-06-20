@@ -1,6 +1,7 @@
 """
 Repository for review-related
 database operations.
+Load required tables from SQLite.
 """
 
 import pandas as pd
@@ -9,21 +10,20 @@ from sqlalchemy import text
 from database.database import engine
 from utils.logger import logger
 
+logger.info("Loading data from database...")
+
+
 def get_reviews():
     """
-    Retrieve review data from the reviews table.
-
-    Returns:
-        pd.DataFrame:
-            DataFrame containing review_id,
-            order_id,
-            review_score,
-            and review_comment_message.
+    Retrieve  data from the sql table.
     """
 
-    query="""
-    select review_id,order_id,review_score,review_comment_message
-    from reviews"""
-    df=pd.read_sql(text(query),engine)
-    logger.info(f"{len(df)} reviews retrieved")
-    return df
+    tables={}
+
+    table_names=["reviews","orders","customers","order_items","products","sellers"]
+
+    for table in table_names:
+        tables[table]=pd.read_sql(f"select * from {table}",engine)
+
+        logger.info("%s loaded :%s rows",table,len(tables[table]))
+    return tables

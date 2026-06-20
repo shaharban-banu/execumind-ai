@@ -7,8 +7,8 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-CHUNK_PATH=Path("rag/reviews/chunks")/"review_chunks.json"
-INDEX_PATH=Path("rag/reviews/index")/"review_index.faiss"
+CHUNK_PATH=Path("data/processed")/"review_chunks.json"
+INDEX_PATH=Path("data/indexes")/"review_index.faiss"
 MODEL_NAME=("sentence-transformers/"
             "paraphrase-multilingual-MiniLM-L12-v2")
 

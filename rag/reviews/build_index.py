@@ -14,12 +14,12 @@ from utils.logger import logger
 # --------------------------------------------------
 
 EMBEDDING_PATH = (
-    Path("rag/reviews/embeddings")
+    Path("data/embeddings")
     / "review_embeddings.npy"
 )
 
 INDEX_DIR = Path(
-    "rag/reviews/index"
+    "data/indexes"
 )
 
 INDEX_PATH = (
