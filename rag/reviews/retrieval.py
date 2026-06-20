@@ -63,6 +63,20 @@ def load_model():
         logger.exception("Failed to load embedding model")
         raise
 
+_chunks=None
+_index=None
+_model=None
+
+def _get_resources():
+    global _chunks,_index,_model
+    if _index is None:
+        _index=load_index()
+    if _chunks is None:
+        _chunks=load_chunks()
+    if _model is None:
+        _model=load_model()
+    return _chunks,_index,_model
+
 # Retrieval
 #-----------------------------------------------------------
 def search_reviews(query,top_k:int=5):
@@ -81,9 +95,7 @@ def search_reviews(query,top_k:int=5):
             Retrieved reviews.
     """
     try:
-        chunks=load_chunks()
-        index=load_index()
-        model=load_model()
+        chunks,index,model=_get_resources()
 
         query_embedding=model.encode([query],convert_to_numpy=True)
         distance,indices=index.search(

@@ -89,27 +89,12 @@ class OrderItem(Base):
 
     __tablename__ = "order_items"
 
-    order_id = Column(
-        String,
-        ForeignKey("orders.order_id")
-    )
-
+    order_id = Column(String,ForeignKey("orders.order_id"))
     order_item_id = Column(Integer)
-
-    product_id = Column(
-        String,
-        ForeignKey("products.product_id")
-    )
-
-    seller_id = Column(
-        String,
-        ForeignKey("sellers.seller_id")
-    )
-
+    product_id = Column(String,ForeignKey("products.product_id"))
+    seller_id = Column(String,ForeignKey("sellers.seller_id"))
     shipping_limit_date = Column(String)
-
     price = Column(Float)
-
     freight_value = Column(Float)
 
     __table_args__ = (
@@ -136,3 +121,9 @@ class Geolocation(Base):
             "geolocation_lng"
         ),
     )
+
+class CategoryNameTranslation(Base):
+    __tablename__="category_translation"
+
+    product_name=Column(String,primary_key=True)
+    product_name_in_english=Column(String)

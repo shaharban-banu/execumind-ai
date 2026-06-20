@@ -9,9 +9,6 @@ load_customers(customers)
 orders=transform_orders(extract_orders())
 load_orders(orders)
 
-products=transform_products(extract_products())
-load_products(products)
-
 reviews=transform_reviews(extract_reviews())
 load_reviews(reviews)
 
@@ -26,5 +23,16 @@ load_order_items(order_items)
 
 geolocation=transform_geolocation(extract_geolocation())
 load_geolocation(geolocation)
+
+products=transform_products(extract_products())
+
+category=transform_category(extract_category_translation())
+
+products=enrich_product_with_category(products,category)
+load_products(products)
+load_category(category)
+
+
+
 
 logger.info("ETL pipeline completed successfully")

@@ -34,3 +34,6 @@ def extract_order_items():
 
 def extract_geolocation():
     return pd.read_csv(RAW_PATH / "olist_geolocation_dataset.csv")
+
+def extract_category_translation():
+    return pd.read_csv(RAW_PATH / "product_category_name_translation.csv")

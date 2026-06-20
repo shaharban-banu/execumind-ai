@@ -31,3 +31,7 @@ def load_order_items(df):
 def load_geolocation(df):
     df.to_sql("geolocation",engine,if_exists="replace",index=False)
     print("geolocation loaded.")
+
+def load_category(df):
+    df.to_sql("category_translation",engine,if_exists="replace",index=False)
+    print("product category translation added")

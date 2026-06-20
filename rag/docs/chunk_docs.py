@@ -70,7 +70,7 @@ def chunk_documents(documents):
                         'text':chunk_text
                     }
                 )
-            chunk_id+=1
+                chunk_id+=1
         logger.info("created %s chunks",len(chunks))
             
         return chunks

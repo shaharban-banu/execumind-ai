@@ -35,6 +35,8 @@ def transform_products(df):
 
     for col in numeric_cols:
         df[col] = df[col].fillna(df[col].median())
+
+    
     return df
 
 def transform_reviews(df):
@@ -58,6 +60,17 @@ def transform_order_items(df):
 
 def transform_geolocation(df):
     return df.drop_duplicates()
+
+def transform_category(df):
+    df=df.drop_duplicates()
+    df["product_category_name"] = (df["product_category_name"].str.strip().str.lower())
+
+    df["product_category_name_english"] = (df["product_category_name_english"].str.strip().str.lower())
+    return df
+
+def enrich_product_with_category(product_df,category_df):
+    return product_df.merge(category_df,on="product_category_name",how="left")
+
 
 if __name__ == "__main__":
 
