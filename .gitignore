@@ -112,6 +112,9 @@ structure.txt
 tests/
 frontend/
 notebooks/
+bm25_evaluation.py
+test_hybrid.py
+
 
 # ==========================================
 # Evaluation Outputs

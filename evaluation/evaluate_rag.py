@@ -8,12 +8,12 @@ from utils.logger import logger
 from pathlib import Path
 import pandas as pd
 from mcp.tools.search_docs import search_docs
+import sys
 
 DATASET_PATH=Path("evaluation/rag_evaluation_dataset.csv")
 OUTPUT_DIR=Path("evaluation/results")
-OUTPUT_PATH=(OUTPUT_DIR/"rag_evaluation_report.csv")
 
-def evaluate_rag():
+def evaluate_rag(retrieval_method:str='faiss'):
     """Evaluate retrieval performance"""
     try:
         df=pd.read_csv(DATASET_PATH)
@@ -27,7 +27,7 @@ def evaluate_rag():
         for _,row in df.iterrows():
             question=row['question']
             expected_source=row['expected_source']
-            retrieval_results=search_docs(query=question)
+            retrieval_results=search_docs(query=question,method=retrieval_method)
             retrieved_sources=[]
 
             #reviews
@@ -58,6 +58,7 @@ def evaluate_rag():
                 'top3':"PASS" if top3_hit else "FAIL"
             })
         OUTPUT_DIR.mkdir(parents=True,exist_ok=True)
+        OUTPUT_PATH=(OUTPUT_DIR)/f"rag_evaluation_{retrieval_method}.csv"
         report_df=pd.DataFrame(results)
         report_df.to_csv(OUTPUT_PATH,index=False)
 
@@ -68,17 +69,22 @@ def evaluate_rag():
         print("\nRAG EVALUATION")
         print("="*50)
 
+        print(f"Method : ",retrieval_method)
         print(f"Total Questions : {total_questions}")
         print(f"Top1 Accuracy : {top1_accuracy}")
         print(f"Top3 Accuracy : {top3_accuracy}")
 
         print(f"\nReport saved to {OUTPUT_PATH}")
+        return {"method":retrieval_method,"top1":top1_accuracy,"top3":top3_accuracy}
+    
     except Exception:
         logger.exception("Evaluation failed")
         raise
 
 if __name__=="__main__":
-    evaluate_rag()
+    # print(sys.argv)
+    # method=(sys.argv[1] if len(sys.argv)>1 else "faiss")
+    evaluate_rag("hybrid")
 
 
 
