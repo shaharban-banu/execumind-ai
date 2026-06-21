@@ -4,8 +4,8 @@ import faiss
 import numpy as np
 from utils.logger import logger
 
-EMBEDDING_PATH=Path("rag/docs/embeddings")/"doc_embeddings.npy"
-INDEX_DIR=Path("rag/docs/index")
+EMBEDDING_PATH=Path("data/embeddings")/"doc_embeddings.npy"
+INDEX_DIR=Path("data/indexes")
 INDEX_PATH=(INDEX_DIR)/"business_index.faiss"
 
 def load_embeddings():

@@ -7,9 +7,9 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-CHUNK_PATH=Path("rag/docs/chunks")/"doc_chunks.json"
-INDEX_PATH=Path("rag/docs/index")/"business_index.faiss"
-EMBEDDING_PATH=Path("rag/docs/embeddings")/"doc_embeddings.npy"
+CHUNK_PATH=Path("data/processed")/"doc_chunks.json"
+INDEX_PATH=Path("data/indexes")/"business_index.faiss"
+EMBEDDING_PATH=Path("data/embeddings")/"doc_embeddings.npy"
 MODEL_NAME=("sentence-transformers/"
             "paraphrase-multilingual-MiniLM-L12-v2")
 

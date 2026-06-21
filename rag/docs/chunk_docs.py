@@ -10,7 +10,7 @@ from pathlib import Path
 from langchain_text_splitters import (RecursiveCharacterTextSplitter)
 
 EXTRACTED_PATH=Path("rag/docs/extracted")/"documents.json"
-CHUNK_DIR=Path("rag/docs/chunks")
+CHUNK_DIR=Path("data/processed")
 CHUNK_PATH=(CHUNK_DIR/"doc_chunks.json")
 
 CHUNK_SIZE=700

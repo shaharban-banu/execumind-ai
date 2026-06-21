@@ -4,8 +4,8 @@ from pathlib import Path
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-CHUNK_PATH=Path("rag/docs/chunks")/"doc_chunks.json"
-EMBEDDING_DIR=Path("rag/docs/embeddings")
+CHUNK_PATH=Path("data/processed")/"doc_chunks.json"
+EMBEDDING_DIR=Path("data/embeddings")
 EMBEDDING_PATH=(EMBEDDING_DIR/"doc_embeddings.npy")
 
 MODEL_NAME=("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")

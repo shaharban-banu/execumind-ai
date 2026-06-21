@@ -83,8 +83,8 @@ def evaluate_rag(retrieval_method:str='faiss'):
 
 if __name__=="__main__":
     # print(sys.argv)
-    # method=(sys.argv[1] if len(sys.argv)>1 else "faiss")
-    evaluate_rag("hybrid")
+    method=(sys.argv[1] if len(sys.argv)>1 else "faiss")
+    evaluate_rag(method)
 
 
 
