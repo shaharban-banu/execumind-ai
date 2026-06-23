@@ -1,5 +1,5 @@
 import json
-import logging
+from utils.logger import logger
 import pickle
 from pathlib import Path
 
@@ -43,34 +43,38 @@ class HybridReviewRetriever:
         return [doc_id for doc_id,_ in ranked[:top_k]]
     
     def retrieve(self,query,top_k:int=20):
-        faiss_result=self.retrieve_faiss(query)
-        bm25_result=self.retrieve_bm25(query)
+        try:
+            faiss_result=self.retrieve_faiss(query)
+            bm25_result=self.retrieve_bm25(query)
 
-        print("\nFAISS IDS")
-        print(faiss_result[:10])
+            print("\nFAISS IDS")
+            print(faiss_result[:10])
 
-        print("\nBM25 IDS")
-        print(bm25_result[:10])
-
-
-        fused=reciprocal_rank_fusion([faiss_result,bm25_result])
+            print("\nBM25 IDS")
+            print(bm25_result[:10])
 
 
-        print("\nFUSED")
-        print(fused[:10])
-        
-        results=[]
-        for doc_id,score in fused[:top_k]:
-            chunk=self.chunks[doc_id]
-            results.append({
-                "score":score,
-                "source":"review",
-                "review_id":chunk["review_id"],
-                "text":chunk["text"],
-                "metadata":chunk
-            })
+            fused=reciprocal_rank_fusion([faiss_result,bm25_result])
 
-        return results
+
+            print("\nFUSED")
+            print(fused[:10])
+            
+            results=[]
+            for doc_id,score in fused[:top_k]:
+                chunk=self.chunks[doc_id]
+                results.append({
+                    "score":score,
+                    "source":"review",
+                    "review_id":chunk["review_id"],
+                    "text":chunk["text"],
+                    "metadata":chunk
+                })
+            logger.info("Retrieved %s reviews ",len(results))
+            return results
+        except Exception:
+                logger.exception("Hybrid retrieval failed")
+                raise
     
 retriever=None
 def search_reviews_hybrid(query,top_k:int=3):

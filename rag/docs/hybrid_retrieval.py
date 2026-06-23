@@ -1,5 +1,5 @@
 import json
-import logging
+from utils.logger import logger
 import pickle
 from pathlib import Path
 
@@ -16,7 +16,7 @@ BM25_PATH=Path("data/indexes")/"docs_bm25_index.pkl"
 EMBEDDING_MODEL=("sentence-transformers/"
                  "paraphrase-multilingual-MiniLM-L12-v2")
 
-class HybridReviewRetriever:
+class HybridBusinessRetriever:
     def __init__(self):
         self.model=SentenceTransformer(EMBEDDING_MODEL)
         self.index=None
@@ -25,11 +25,15 @@ class HybridReviewRetriever:
         self.load_resources()
 
     def load_resources(self):
-        with open(CHUNKS_PATH,encoding='utf-8')as f:
-            self.chunks=json.load(f)
-        self.index=faiss.read_index(str(INDEX_PATH))
-        with open(BM25_PATH,"rb")as f:
-            self.bm25=pickle.load(f)
+        try:
+            logger.info("Loading resources for hybrid retrieval...")
+            with open(CHUNKS_PATH,encoding='utf-8')as f:
+                self.chunks=json.load(f)
+            self.index=faiss.read_index(str(INDEX_PATH))
+            with open(BM25_PATH,"rb")as f:
+                self.bm25=pickle.load(f)
+        except Exception:
+            logger.info("resource loading failed")
 
     def retrieve_faiss(self,query,top_k:int=20):
         embedding=self.model.encode([query],convert_to_numpy=True)
@@ -43,34 +47,38 @@ class HybridReviewRetriever:
         return [doc_id for doc_id,_ in ranked[:top_k]]
     
     def retrieve(self,query,top_k:int=20):
-        faiss_result=self.retrieve_faiss(query)
-        bm25_result=self.retrieve_bm25(query)
+        try:
+            faiss_result=self.retrieve_faiss(query)
+            bm25_result=self.retrieve_bm25(query)
 
-        print("\nFAISS IDS")
-        print(faiss_result[:10])
+            print("\nFAISS IDS")
+            print(faiss_result[:10])
 
-        print("\nBM25 IDS")
-        print(bm25_result[:10])
-
-
-        fused=reciprocal_rank_fusion([faiss_result,bm25_result])
+            print("\nBM25 IDS")
+            print(bm25_result[:10])
 
 
-        print("\nFUSED")
-        print(fused[:10])
-        
-        results=[]
-        for doc_id,score in fused[:top_k]:
-            chunk=self.chunks[doc_id]
-            results.append({
-                "score":score,
-                "chunk_id":chunk["chunk_id"],
-                "source":chunk["source"],
-                "page":chunk["page"],
-                "text":chunk["text"]
-            })
+            fused=reciprocal_rank_fusion([faiss_result,bm25_result])
 
-        return results
+
+            print("\nFUSED")
+            print(fused[:10])
+            
+            results=[]
+            for doc_id,score in fused[:top_k]:
+                chunk=self.chunks[doc_id]
+                results.append({
+                    "score":score,
+                    "chunk_id":chunk["chunk_id"],
+                    "source":chunk["source"],
+                    "page":chunk["page"],
+                    "text":chunk["text"]
+                })
+            logger.info("Retrieved %s business documents",len(results))
+            return results
+        except Exception:
+            logger.exception("Hybrid retrieval failed")
+            raise
     
 retriever=None
 def search_business_docs_hybrid(query,top_k:int=3):
@@ -78,24 +86,22 @@ def search_business_docs_hybrid(query,top_k:int=3):
     Search reviews using Hybrid Retrieval.
     """
     global retriever
-    if retriever is None:
-        retriever=HybridReviewRetriever()
-    return retriever.retrieve(query=query,top_k=top_k)
-
-
+    try:
+        if retriever is None:
+            retriever=HybridBusinessRetriever()
+        return retriever.retrieve(query=query,top_k=top_k)
+    except Exception:
+        logger.exception("Business hybrid search failed...")
+        raise
 
 if __name__ == "__main__":
 
     query = (
         "How can companies improve "
-        "customer loyalty?"
-    )
+        "customer loyalty?")
 
     results = (
-        search_business_docs_hybrid(
-            query
-        )
-    )
+        search_business_docs_hybrid(query))
 
     print("\nRESULTS")
     print("=" * 80)
@@ -103,14 +109,10 @@ if __name__ == "__main__":
     for result in results:
         print(
             f"\nSource: "
-            f"{result['source']}"
-        )
+            f"{result['source']}")
 
         print(
             f"Page: "
-            f"{result['page']}"
-        )
+            f"{result['page']}")
 
-        print(
-            result["text"][:500]
-        )
+        print(result["text"][:500])

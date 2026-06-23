@@ -106,16 +106,6 @@ rag/docs/embeddings/*.npy
 rag/docs/index/*.faiss
 rag/docs/index/*.pkl
 rag/docs/raw_docs
-__init__.py
-pytest.ini
-structure.txt
-tests/
-frontend/
-notebooks/
-bm25_evaluation.py
-test_hybrid.py
-rag/docs/extracted
-*.json
 
 # ==========================================
 # Evaluation Outputs
@@ -158,6 +148,16 @@ __pypackages__/
 *.orig
 
 
-rag/docs/chunks/doc_chunks.json
-rag/docs/embeddings/doc_embeddings.npy
-rag/docs/index/business_index.faiss
+
+__init__.py
+pytest.ini
+structure.txt
+tests/
+frontend/
+notebooks/
+bm25_evaluation.py
+test_hybrid.py
+rag/docs/extracted
+*.json
+filter_noise_chunks.py
+golden_data_creation.py

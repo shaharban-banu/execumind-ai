@@ -9,7 +9,7 @@ from utils.logger import logger
 from pathlib import Path
 from langchain_text_splitters import (RecursiveCharacterTextSplitter)
 
-EXTRACTED_PATH=Path("rag/docs/extracted")/"documents.json"
+EXTRACTED_PATH=Path("rag/docs/extracted")/"cleaned_documents.json"
 CHUNK_DIR=Path("data/processed")
 CHUNK_PATH=(CHUNK_DIR/"doc_chunks.json")
 
