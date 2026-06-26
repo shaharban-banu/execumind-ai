@@ -51,19 +51,8 @@ class HybridBusinessRetriever:
             faiss_result=self.retrieve_faiss(query)
             bm25_result=self.retrieve_bm25(query)
 
-            print("\nFAISS IDS")
-            print(faiss_result[:10])
-
-            print("\nBM25 IDS")
-            print(bm25_result[:10])
-
-
             fused=reciprocal_rank_fusion([faiss_result,bm25_result])
 
-
-            print("\nFUSED")
-            print(fused[:10])
-            
             results=[]
             for doc_id,score in fused[:top_k]:
                 chunk=self.chunks[doc_id]

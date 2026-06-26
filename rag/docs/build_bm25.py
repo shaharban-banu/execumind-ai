@@ -10,10 +10,12 @@ import json
 import pickle
 from utils.logger import logger
 from rank_bm25 import BM25Okapi
+import re
 
 CHUNK_PATH=Path("data/processed")/"doc_chunks.json"
 INDEX_DIR=Path("data/indexes")
 INDEX_PATH=INDEX_DIR/"docs_bm25_index.pkl"
+STOPWORDS={'what','are','the','how','do','does','in','a','an','of','to','for','is','why','can','most','which'}
 
 def load_chunks():
     """
@@ -40,7 +42,8 @@ def tokenize(texts):
     """tokenize text for BM25"""
     logger.info("Tokenizing %s texts",len(texts))
 
-    return [text.lower().split() for text in texts]
+    tokens=re.findall(r'\b\w+\b',texts.lower())
+    return [text  for text in tokens if text not in STOPWORDS]
 
 def build_index(tokenised_texts):
     """build BM25 index"""
