@@ -60,6 +60,8 @@ htmlcov/
 .env.*
 !.env.example
 *.env
+__pycache__/
+*.pyc
 
 # ==========================================
 # Logs
@@ -161,6 +163,7 @@ rag/docs/extracted
 *.json
 filter_noise_chunks.py
 golden_data_creation.py
-data.py
+data_check.py
 evaluation/chunk_level_evaluation_dataset_fixed.csv
 evaluation/chunk_level_evaluation_dataset.csv
+test_gemini.py

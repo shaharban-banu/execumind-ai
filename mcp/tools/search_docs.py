@@ -35,7 +35,7 @@ def search_docs(query,review_top_k:int=3,business_top_k:int=3,method:str="faiss"
         }
 
         logger.info("Retrieved documents"
-                    "for query : %s  using method %s",query,method)
+                    " for query : %s  using method %s",query,method)
         return results
     except Exception:
         logger.exception("Unified search failed")
