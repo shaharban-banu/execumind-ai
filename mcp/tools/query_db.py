@@ -16,6 +16,7 @@ from utils.logger import logger
 import pandas as pd
 from sqlalchemy import text
 from database.database import engine
+import re
 
 # --------------------------------------------------
 # Table name mapping: historical → live mirror
@@ -75,7 +76,7 @@ def _apply_live_mode(sql: str) -> str:
         # replace " orders " but not " live_orders "
         # Simple approach: replace table name when followed
         # by space, newline, comma, or end of string
-        import re
+        
         pattern = rf"\b{historical}\b"
         sql_rewritten = re.sub(pattern, live, sql_rewritten)
  
