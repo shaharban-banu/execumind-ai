@@ -112,6 +112,21 @@ installment_analysis
 
 payment_value_distribution
     Payment value statistics.
+
+Forecast
+--------
+
+forecast_revenue
+    Forecast future revenue.
+
+forecast_orders
+    Forecast future order volume.
+
+forecast_customer_growth
+    Forecast future customer growth.
+
+forecast_average_order_value
+    Forecast future average order value.
 """
 
     TOOL_SELECTION_PROMPT = """
@@ -170,10 +185,9 @@ Rules:
         return response.tools
 
 #test--------
-# selector = ToolSelector()
-
-# tools = selector.select_tools(
-#     "Why has revenue decreased while customer growth increased?"
-# )
-
-# print(tools)
+if __name__ == "__main__":
+    selector = ToolSelector()
+    tools = selector.select_tools(
+        "Predict future customer growth and orders"
+    )
+    print(tools)

@@ -109,11 +109,7 @@ def format_sql_results(
     for row in rows:
 
         formatted.append(
-            "\n".join(
-                f"{k}: {v}"
-                for k, v in row.items()
-            )
-        )
+            "\n".join(f"{k}: {v}" for k, v in row.items()))
 
     return "\n\n".join(formatted)
 
@@ -135,8 +131,7 @@ def format_forecast(
 
     if not forecast:
         return "No forecast available."
-
-    return "\n".join(
-        f"{k}: {v}"
-        for k, v in forecast.items()
-    )
+    formatted=[]
+    for f in forecast:
+        formatted.append("\n".join(f"{k}: {v}"for k, v in f.items()))
+    return "\n\n".join(formatted)

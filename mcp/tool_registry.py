@@ -12,6 +12,11 @@ from mcp.tools.seller_analysis import (seller_summary,top_sellers)
 from mcp.tools.product_analysis import (product_summary,category_performance)
 from mcp.tools.payment_analysis import (payment_summary,payment_methods)
 
+from mcp.tools.forecast_revenue import (forecast_revenue)
+from mcp.tools.forecast_orders import (forecast_orders)
+from mcp.tools.forecast_customer_growth import (forecast_customer_growth)
+from mcp.tools.forecast_aov import (forecast_average_order_value)
+
 TOOL_REGISTRY={
      "sales_summary": sales_summary,
     "monthly_sales": monthly_sales,
@@ -35,5 +40,10 @@ TOOL_REGISTRY={
 
     "payment_summary": payment_summary,
     "payment_methods": payment_methods,
+
+    "forecast_revenue": forecast_revenue,
+    "forecast_orders": forecast_orders,
+    "forecast_customer_growth": forecast_customer_growth,
+    "forecast_average_order_value": forecast_average_order_value,
 
 }

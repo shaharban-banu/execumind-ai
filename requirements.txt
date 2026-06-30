@@ -107,3 +107,17 @@ websocket-client==1.9.0
 widgetsnbextension==4.0.15
 google-genai
 python-dotenv
+langgraph
+langchain
+langchain-core
+langchain-google-genai
+prophet
+sentence-transformers
+faiss-cpu
+rank-bm25
+#cross-encoder
+sqlalchemy
+pandas
+scikit-learn
+pydantic
+joblib
