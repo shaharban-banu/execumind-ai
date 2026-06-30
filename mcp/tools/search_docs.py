@@ -8,9 +8,9 @@ into a single interface.
 from utils.logger import logger
 from rag.reviews.retrieval import (search_reviews,)
 from rag.docs.retrieval import(search_business_docs,)
-from rag.reviews.hybrid_retrieval import (search_reviews_hybrid,)
-from rag.docs.hybrid_retrieval import (search_business_docs_hybrid,)
-from rag.reviews.rerank_retrieval import (search_reviews_rerank)
+# from rag.reviews.hybrid_retrieval import (search_reviews_hybrid,)
+# from rag.docs.hybrid_retrieval import (search_business_docs_hybrid,)
+# from rag.reviews.rerank_retrieval import (search_reviews_rerank)
 from rag.docs.rerank_retrieval import (search_business_docs_rerank)
 
 def search_docs(query,review_top_k:int=3,business_top_k:int=3,method:str="faiss"):
@@ -42,20 +42,20 @@ def search_docs(query,review_top_k:int=3,business_top_k:int=3,method:str="faiss"
         raise
 
 #Test Block
-# if __name__=="__main__":
-#     query="How should executives respond to declining sales?"
-#     results=search_docs(query=query,method="hybrid")
+if __name__=="__main__":
+    query="How should executives respond to declining sales?"
+    results=search_docs(query=query,method="hybrid")
 
-#     print("\nReviews")
-#     print("="*80)
+    print("\nReviews")
+    print("="*80)
 
-#     for review in results["reviews"]:
-#         print(review['text'][:200])
+    for review in results["reviews"]:
+        print(review['text'][:200])
 
-#     print("\nBusiness docs")
-#     print("="*80)
+    print("\nBusiness docs")
+    print("="*80)
 
-#     for doc in results["business_docs"]:
-#         print(f"{doc['source']}"
-#               f"(page {doc['page']})")
-#         print(doc['text'][:200])
+    for doc in results["business_docs"]:
+        print(f"{doc['source']}"
+              f"(page {doc['page']})")
+        print(doc['text'][:200])

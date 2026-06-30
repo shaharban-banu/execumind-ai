@@ -25,12 +25,12 @@ def customer_summary(mode: str = "historical") :
     """
     sql = """
     SELECT
-        COUNT(DISTINCT customer_id) AS total_customers,
-        COUNT(DISTINCT customer_unique_id) AS unique_customers,
+        COUNT(DISTINCT c.customer_id) AS total_customers,
+        COUNT(DISTINCT c.customer_unique_id) AS unique_customers,
         COUNT(o.order_id) AS total_orders,
         ROUND(
             CAST(COUNT(o.order_id) AS REAL) /
-            COUNT(DISTINCT customer_unique_id),
+            COUNT(DISTINCT c.customer_unique_id),
             2
         ) AS average_orders_per_customer
     FROM customers c

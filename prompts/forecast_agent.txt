@@ -113,3 +113,11 @@ future business outlook to executives.
 
 • If forecast data is insufficient, clearly
 state that.
+
+Return ONLY valid JSON.
+
+Do not include markdown.
+
+Do not include explanations.
+
+The JSON must match this schema exactly.

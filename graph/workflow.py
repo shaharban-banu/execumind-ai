@@ -5,14 +5,10 @@ Defines the multi-agent workflow for
 Customer, Data, and Forecast agents.
 """
 
-from langgraph.graph import (
-    StateGraph,
-    START,
-    END,
-)
+from langgraph.graph import (StateGraph,START,END,)
 
 from graph.state import ExecuMindState
-from graph.nodes import (customer_node,data_node,forecast_node,)
+from graph.nodes import (customer_node,data_node,forecast_node,aggregate_evidence_node)
 
 def build_graph():
     """
@@ -43,29 +39,48 @@ def build_graph():
         forecast_node,
     )
 
+    workflow.add_node(
+    "aggregate_evidence",
+    aggregate_evidence_node,
+    )
     # ---------------------------------------
     # Define workflow
     # ---------------------------------------
+    workflow.add_edge(
+    START,
+    "customer_agent",
+    )
 
     workflow.add_edge(
         START,
-        "customer_agent",
-    )
-
-    workflow.add_edge(
-        "customer_agent",
         "data_agent",
     )
 
     workflow.add_edge(
-        "data_agent",
+        START,
         "forecast_agent",
     )
 
     workflow.add_edge(
+        "customer_agent",
+        "aggregate_evidence",
+    )
+
+    workflow.add_edge(
+        "data_agent",
+        "aggregate_evidence",
+    )
+
+    workflow.add_edge(
         "forecast_agent",
+        "aggregate_evidence",
+    )
+
+    workflow.add_edge(
+        "aggregate_evidence",
         END,
     )
+   
 
     return workflow.compile()
 

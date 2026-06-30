@@ -7,7 +7,7 @@ the shared graph state.
 
 from graph.state import ExecuMindState
 
-from agents.customer_agent import CustomerAgent
+from agents.customer_agent import CustomerIntelligenceAgent
 from agents.data_agent import DataAgent
 from agents.forecast_agent import ForecastAgent
 
@@ -16,7 +16,7 @@ from utils.logger import logger
 # Agent instances
 # --------------------------------------------------
 
-customer_agent = CustomerAgent()
+customer_agent = CustomerIntelligenceAgent()
 
 data_agent = DataAgent()
 
@@ -36,9 +36,9 @@ def customer_node(state: ExecuMindState,) -> ExecuMindState:
 
     response = customer_agent.run(state["question"])
 
-    state["customer_analysis"] = response.result
-
-    return state
+    return {
+    "customer_analysis": response.result
+}
 
 
 # --------------------------------------------------
@@ -54,9 +54,9 @@ def data_node(state: ExecuMindState,) -> ExecuMindState:
 
     response = data_agent.run(state["question"])
 
-    state["data_analysis"] = response.result
-
-    return state
+    return {
+    "data_analysis": response.result
+}
 
 
 # --------------------------------------------------
@@ -72,6 +72,27 @@ def forecast_node(state: ExecuMindState,) -> ExecuMindState:
 
     response = forecast_agent.run(state["question"])
 
-    state["forecast_analysis"] = response.result
+    return {
+    "forecast_analysis": response.result
+}
+
+# --------------------------------------------------
+# Evidence Aggregation Node
+# --------------------------------------------------
+
+def aggregate_evidence_node(
+    state: ExecuMindState,
+) -> ExecuMindState:
+    """
+    Aggregate outputs from all specialist agents.
+    """
+
+    logger.info("Aggregating agent evidence")
+
+    state["evidence"] = {
+        "customer": state.get("customer_analysis"),
+        "data": state.get("data_analysis"),
+        "forecast": state.get("forecast_analysis"),
+    }
 
     return state

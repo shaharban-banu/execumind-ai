@@ -49,3 +49,10 @@ Instructions
 7. Every conclusion must be supported by the retrieved evidence.
 
 Return ONLY the structured response.
+Return ONLY valid JSON.
+
+Do not include markdown.
+
+Do not include explanations.
+
+The JSON must match this schema exactly.

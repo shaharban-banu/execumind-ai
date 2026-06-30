@@ -7,7 +7,7 @@ performs reasoning.
 """
 
 from typing import List
-
+import os
 from pydantic import BaseModel, Field
 
 from services.llm_service import LLMService
@@ -168,7 +168,35 @@ Rules:
         Returns:
             List of MCP tool names.
         """
+        # Offline testing
+        if os.getenv("USE_MOCK_LLM", "False").lower() == "true":
 
+            q = question.lower()
+
+            if any(word in q for word in ["forecast", "predict", "future"]):
+                return [
+                    "forecast_revenue",
+                    "forecast_orders",
+                ]
+
+            if any(word in q for word in ["delivery", "shipping", "late"]):
+                return [
+                    "delivery_summary",
+                    "late_delivery_rate",
+                ]
+
+            if any(word in q for word in ["customer", "review", "satisfaction"]):
+                return [
+                    "customer_summary",
+                    "repeat_customer_rate",
+                ]
+
+            return [
+                "sales_summary",
+                "monthly_sales",
+            ]
+
+        # Existing Gemini/Groq code
         logger.info("Selecting MCP tools...")
 
         prompt = self.TOOL_SELECTION_PROMPT.format(

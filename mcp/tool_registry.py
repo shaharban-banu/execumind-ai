@@ -18,7 +18,7 @@ from mcp.tools.forecast_customer_growth import (forecast_customer_growth)
 from mcp.tools.forecast_aov import (forecast_average_order_value)
 
 TOOL_REGISTRY={
-     "sales_summary": sales_summary,
+    "sales_summary": sales_summary,
     "monthly_sales": monthly_sales,
     "sales_by_state": sales_by_state,
     "sales_by_category": sales_by_category,

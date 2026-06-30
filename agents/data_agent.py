@@ -37,7 +37,7 @@ class DataAgent(BaseAgent):
                 context[tool_name]=tool(mode=mode)
             except Exception:
                 logger.exception("Tool %s failed",tool_name)
-                context[tool_name]={"error":"execution failed"}
+                context[tool_name]=[]
         return context
     
     def _prepare_prompt(self, question, context):
