@@ -22,7 +22,7 @@ def seller_summary(mode: str = "historical"):
     SELECT
         COUNT(DISTINCT seller_id) AS total_sellers,
         COUNT(*) AS total_items_sold,
-        ROUND(SUM(price), 2) AS total_revenue
+        ROUND(SUM(item_price), 2) AS total_revenue
     FROM order_items;
     """
 
@@ -41,7 +41,7 @@ def top_sellers(limit: int = 10,mode: str = "historical"):
     SELECT
         seller_id,
         COUNT(*) AS items_sold,
-        ROUND(SUM(price), 2) AS revenue
+        ROUND(SUM(item_price), 2) AS revenue
     FROM order_items
     GROUP BY seller_id
     ORDER BY revenue DESC
@@ -60,7 +60,7 @@ def seller_revenue(mode: str = "historical"):
     sql = """
     SELECT
         seller_id,
-        ROUND(SUM(price), 2) AS revenue
+        ROUND(SUM(item_price), 2) AS revenue
     FROM order_items
     GROUP BY seller_id
     ORDER BY revenue DESC;
@@ -83,16 +83,16 @@ def seller_delivery_performance(mode: str = "historical"):
 
         ROUND(
             AVG(
-                julianday(o.order_delivered_customer_date) -
-                julianday(o.order_purchase_timestamp)
+                julianday(o.delivered_date) -
+                julianday(o.order_date)
             ),
             2
         ) AS average_delivery_days,
 
         SUM(
             CASE
-                WHEN o.order_delivered_customer_date >
-                     o.order_estimated_delivery_date
+                WHEN o.delivered_date >
+                     o.estimated_delivery_date
                 THEN 1
                 ELSE 0
             END
@@ -103,7 +103,7 @@ def seller_delivery_performance(mode: str = "historical"):
     JOIN orders o
         ON oi.order_id = o.order_id
 
-    WHERE o.order_delivered_customer_date IS NOT NULL
+    WHERE o.delivered_date IS NOT NULL
 
     GROUP BY oi.seller_id
 
@@ -121,10 +121,10 @@ def sellers_by_state(mode: str = "historical"):
     """
     sql = """
     SELECT
-        seller_state,
+        state,
         COUNT(*) AS total_sellers
     FROM sellers
-    GROUP BY seller_state
+    GROUP BY state
     ORDER BY total_sellers DESC;
     """
 

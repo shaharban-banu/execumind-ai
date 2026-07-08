@@ -50,11 +50,11 @@ def evaluate_model(metric: str):
 
     df_perf = performance_metrics(df_cv)
 
-    latest = df_perf.iloc[-1]
+    
     print(df_perf.head())
     print(df_perf.tail())
     print(df_cv[["y", "yhat"]].head())
-    print(latest)
+    
     report = {
     "MAE": df_perf["mae"].mean(),
     "RMSE": df_perf["rmse"].mean(),

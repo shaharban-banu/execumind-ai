@@ -16,18 +16,9 @@ from utils.logger import logger
 import pandas as pd
 from sqlalchemy import text
 from database.database import engine
+from config.settings import (BLOCKED_SQL_COMMANDS,LIVE_TABLE_MAPPING)
 import re
 
-# --------------------------------------------------
-# Table name mapping: historical → live mirror
-# --------------------------------------------------
- 
-_TABLE_MAP = {
-    "orders":      "live_orders",
-    "order_items": "live_order_items",
-    "reviews":     "live_order_reviews",
-    "payments":    "live_order_payments",
-}
  
 # Tables that are always static — never replaced
 # even in live mode. Agents join to these directly.
@@ -38,17 +29,6 @@ _STATIC_TABLES = {
     "geolocation",
     "category_translations",
 }
- 
-# SQL commands that are never permitted
-_BLOCKED_COMMANDS = [
-    "drop ",
-    "delete ",
-    "truncate ",
-    "alter ",
-    "insert ",
-    "update ",
-]
- 
  
 # --------------------------------------------------
 # Internal helpers
@@ -71,7 +51,7 @@ def _apply_live_mode(sql: str) -> str:
     """
     sql_rewritten = sql
  
-    for historical, live in _TABLE_MAP.items():
+    for historical, live in LIVE_TABLE_MAPPING.items():
         # Use word-boundary-safe replacement:
         # replace " orders " but not " live_orders "
         # Simple approach: replace table name when followed
@@ -85,18 +65,11 @@ def _apply_live_mode(sql: str) -> str:
  
 def _validate_sql(sql: str) -> None:
     """
-    Reject any SQL that attempts to modify data.
- 
-    Args:
-        sql:
-            SQL string to validate.
- 
-    Raises:
-        ValueError: if a blocked command is detected.
+    Allow only SELECT queries.
     """
     sql_lower = sql.strip().lower()
  
-    for command in _BLOCKED_COMMANDS:
+    for command in BLOCKED_SQL_COMMANDS:
         if command in sql_lower:
             raise ValueError(
                 f"Blocked SQL command detected: "
@@ -128,21 +101,6 @@ def query_db(sql:str,mode:str="historical"):
 
         df=pd.read_sql(text(effective_sql),engine)
         results=df.to_dict(orient="records")
-        # sql_lower = sql.strip().lower()
-
-        # blocked_commands = [
-        #                     "drop",
-        #                     "delete",
-        #                     "truncate",
-        #                     "alter"
-        #                 ]
-
-        # for command in blocked_commands:
-        #     if command in sql_lower:
-        #         raise ValueError(f"{command.upper()} queries are not allowed.")
-            
-        # logger.info("Executing query : %s",sql)
-        
        
         logger.info("Returned %s rows [mode=%s]",len(results),mode)
         return results

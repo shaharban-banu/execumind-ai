@@ -26,8 +26,8 @@ def payment_summary(mode: str = "historical"):
     sql = """
     SELECT
         COUNT(*) AS total_payments,
-        ROUND(SUM(payment_value), 2) AS total_revenue,
-        ROUND(AVG(payment_value), 2) AS average_payment
+        ROUND(SUM(sales_amount), 2) AS total_revenue,
+        ROUND(AVG(sales_amount), 2) AS average_payment
     FROM payments;
     """
 
@@ -44,7 +44,7 @@ def payment_methods(mode: str = "historical"):
     SELECT
         payment_type,
         COUNT(*) AS total_transactions,
-        ROUND(SUM(payment_value), 2) AS revenue
+        ROUND(SUM(sales_amount), 2) AS revenue
     FROM payments
     GROUP BY payment_type
     ORDER BY revenue DESC;
@@ -61,13 +61,13 @@ def installment_analysis(mode: str = "historical"):
     """
     sql = """
     SELECT
-        payment_installments,
+        installments,
         COUNT(*) AS transactions,
-        ROUND(AVG(payment_value), 2) AS average_payment,
-        ROUND(SUM(payment_value), 2) AS total_value
+        ROUND(AVG(sales_amount), 2) AS average_payment,
+        ROUND(SUM(sales_amount), 2) AS total_value
     FROM payments
-    GROUP BY payment_installments
-    ORDER BY payment_installments;
+    GROUP BY installments
+    ORDER BY installments;
     """
 
     logger.info("Executing installment analysis")
@@ -81,9 +81,9 @@ def payment_value_distribution(mode: str = "historical") :
     """
     sql = """
     SELECT
-        ROUND(MIN(payment_value), 2) AS minimum_payment,
-        ROUND(MAX(payment_value), 2) AS maximum_payment,
-        ROUND(AVG(payment_value), 2) AS average_payment
+        ROUND(MIN(sales_amount), 2) AS minimum_payment,
+        ROUND(MAX(sales_amount), 2) AS maximum_payment,
+        ROUND(AVG(sales_amount), 2) AS average_payment
     FROM payments;
     """
 
@@ -102,9 +102,9 @@ def top_payment_transactions(limit: int = 10,mode: str = "historical"):
     SELECT
         order_id,
         payment_type,
-        payment_value
+        sales_amount
     FROM payments
-    ORDER BY payment_value DESC
+    ORDER BY sales_amount DESC
     LIMIT {limit};
     """
 

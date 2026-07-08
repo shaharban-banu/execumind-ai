@@ -21,8 +21,8 @@ def product_summary(mode: str = "historical"):
     sql = """
     SELECT
         COUNT(DISTINCT product_id) AS total_products,
-        COUNT(DISTINCT product_category_name) AS total_categories,
-        ROUND(AVG(product_weight_g), 2) AS average_weight
+        COUNT(DISTINCT category) AS total_categories,
+        ROUND(AVG(weight), 2) AS average_weight
     FROM products;
     """
 
@@ -37,9 +37,9 @@ def category_performance(mode: str = "historical"):
     """
     sql = """
     SELECT
-        ct.product_category_name_english AS category,
+        COALESCE(ct.category_english,p.category) AS category,
         COUNT(*) AS items_sold,
-        ROUND(SUM(oi.price), 2) AS revenue
+        ROUND(SUM(oi.item_price), 2) AS revenue
 
     FROM order_items oi
 
@@ -47,9 +47,9 @@ def category_performance(mode: str = "historical"):
         ON oi.product_id = p.product_id
 
     LEFT JOIN category_translation ct
-        ON p.product_category_name = ct.product_category_name
+        ON p.category = ct.category
 
-    GROUP BY category
+    GROUP BY COALESCE(ct.category_english,p.category)
 
     ORDER BY revenue DESC;
     """
@@ -69,7 +69,7 @@ def top_products(limit: int = 10,mode: str = "historical") :
     SELECT
         product_id,
         COUNT(*) AS units_sold,
-        ROUND(SUM(price), 2) AS revenue
+        ROUND(SUM(item_price), 2) AS revenue
 
     FROM order_items
 
@@ -91,9 +91,9 @@ def product_price_statistics(mode: str = "historical") :
     """
     sql = """
     SELECT
-        ROUND(MIN(price), 2) AS minimum_price,
-        ROUND(MAX(price), 2) AS maximum_price,
-        ROUND(AVG(price), 2) AS average_price
+        ROUND(MIN(item_price), 2) AS minimum_price,
+        ROUND(MAX(item_price), 2) AS maximum_price,
+        ROUND(AVG(item_price), 2) AS average_price
     FROM order_items;
     """
 
@@ -108,15 +108,15 @@ def category_distribution(mode: str = "historical"):
     """
     sql = """
     SELECT
-        ct.product_category_name_english AS category,
+        coalesce(ct.category_english,p.category) AS category,
         COUNT(*) AS total_products
 
     FROM products p
 
     LEFT JOIN category_translation ct
-        ON p.product_category_name = ct.product_category_name
+        ON p.category = ct.category
 
-    GROUP BY category
+    GROUP BY coalesce(ct.category_english,p.category)
 
     ORDER BY total_products DESC;
     """

@@ -9,8 +9,8 @@ from database.database import engine
 
 FORECAST_QUERIES={
     "revenue":"""select 
-                strftime('%Y-%m',o.order_purchase_timestamp) as ds,
-                sum(p.payment_value) as y
+                strftime('%Y-%m',o.order_date) as ds,
+                sum(p.sales_amount) as y
             from orders o join payments p
             on o.order_id=p.order_id
             group by ds
@@ -18,20 +18,20 @@ FORECAST_QUERIES={
         """,
     "orders":"""
         select
-            strftime('%Y-%m',order_purchase_timestamp) as ds,
+            strftime('%Y-%m',order_date) as ds,
             count(*) as y
             from orders group by ds order by ds;
         """,
     "customers":"""
         select
-            strftime('%Y-%m',order_purchase_timestamp) as ds,
+            strftime('%Y-%m',order_date) as ds,
             count(distinct customer_id) as y 
             from orders group by ds order by ds;
         """,
     "aov":"""
         select 
-            strftime('%Y-%m',o.order_purchase_timestamp) as ds,
-            avg(p.payment_value) as y
+            strftime('%Y-%m',o.order_date) as ds,
+            avg(p.sales_amount) as y
             from orders o join payments p
             on o.order_id=p.order_id
             group by ds order by ds""",

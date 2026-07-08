@@ -30,7 +30,7 @@ def customer_summary(mode: str = "historical") :
         COUNT(o.order_id) AS total_orders,
         ROUND(
             CAST(COUNT(o.order_id) AS REAL) /
-            COUNT(DISTINCT c.customer_unique_id),
+            NULLIF(COUNT(DISTINCT c.customer_unique_id),0),
             2
         ) AS average_orders_per_customer
     FROM customers c
@@ -50,7 +50,7 @@ def customer_growth(mode: str = "historical") :
 
     sql = """
     SELECT
-        strftime('%Y-%m', order_purchase_timestamp) AS month,
+        strftime('%Y-%m', order_date) AS month,
         COUNT(DISTINCT customer_id) AS new_customers
     FROM orders
     GROUP BY month
@@ -91,10 +91,10 @@ def customers_by_state(mode: str = "historical"):
 
     sql = """
     SELECT
-        customer_state,
+        state,
         COUNT(*) AS total_customers
     FROM customers
-    GROUP BY customer_state
+    GROUP BY state
     ORDER BY total_customers DESC;
     """
 

@@ -73,3 +73,22 @@ COLUMN_MAPPINGS = COLUMN_MAPPING
 #capabilities
 #-------------
 SYSTEM_CAPABILITIES = CAPABILITIES["capabilities"]
+
+# --------------------------------------------------
+# Table name mapping: historical → live mirror
+# --------------------------------------------------
+LIVE_TABLE_MAPPING = {
+    "orders": "live_orders",
+    "order_items": "live_order_items",
+    "reviews": "live_reviews",
+    "payments": "live_payments",
+}
+# SQL commands that are never permitted
+BLOCKED_SQL_COMMANDS = [
+    "drop",
+    "delete",
+    "truncate",
+    "alter",
+    "insert",
+    "update",
+]

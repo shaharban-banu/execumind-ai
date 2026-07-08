@@ -17,17 +17,17 @@ def delivery_summary(mode:str="historical"):
             case 
                 when order_status='delivered' then 1 else 0
             end) as delivered_orders,
-        round(avg(julianday(order_delivered_customer_date)-
-                julianday(order_purchase_timestamp)),2)
+        round(avg(julianday(delivered_date)-
+                julianday(order_date)),2)
                 as average_delivery_days,
         sum(
             case
-                when order_delivered_customer_date >
-                order_estimated_delivery_date 
+                when delivered_date >
+                estimated_delivery_date 
                 then 1 else 0
             end) as late_deliveries
         from orders
-        where order_delivered_customer_date is not null;"""
+        where delivered_date is not null;"""
     logger.info("Executing delivery summary")
     return query_db(sql,mode)
 
@@ -37,34 +37,34 @@ def late_delivery_rate(mode:str="historical"):
         100.0*
         sum(
             case
-                when order_delivered_customer_date>
-                order_estimated_delivery_date
+                when delivered_date>
+                estimated_delivery_date
                 then 1 else 0
             end
         ) / count(*)
     ,2) as late_delivery_rate
     from orders 
-    where order_delivered_customer_date is not null;"""
+    where delivered_date is not null;"""
 
     logger.info("Executing late delivery rate")
     return query_db(sql,mode)
 
 def delivery_by_state(mode:str="historical"):
-    sql="""select c.customer_state,
+    sql="""select c.state,
         count(*) as total_orders,
-        round(avg(julianday(order_delivered_customer_date)-
-                julianday(order_purchase_timestamp)),2)
+        round(avg(julianday(delivered_date)-
+                julianday(order_date)),2)
                 as average_delivery_days,
         sum(
             case
-                when order_delivered_customer_date >
-                order_estimated_delivery_date 
+                when delivered_date >
+                estimated_delivery_date 
                 then 1 else 0
             end) as late_deliveries
-        from orders o join customer c 
+        from orders o join customers c 
         on o.customer_id=c.customer_id
-        where o.order_delivered_customer_date is not null
-        group by c.customer_state
+        where o.delivered_date is not null
+        group by c.state
         order by late_deliveries desc;
         """
     logger.info("Executing delivery by state ")
@@ -82,23 +82,23 @@ def delayed_orders(limit: int = 20,mode: str = "historical") :
 
         order_id,
 
-        order_purchase_timestamp,
+        order_date,
 
-        order_estimated_delivery_date,
+        estimated_delivery_date,
 
-        order_delivered_customer_date,
+        delivered_date,
 
         ROUND(
-            julianday(order_delivered_customer_date) -
-            julianday(order_estimated_delivery_date),
+            julianday(delivered_date) -
+            julianday(estimated_delivery_date),
             2
         ) AS delay_days
 
     FROM orders
 
     WHERE
-        order_delivered_customer_date >
-        order_estimated_delivery_date
+        delivered_date >
+        estimated_delivery_date
 
     ORDER BY delay_days DESC
 
