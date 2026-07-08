@@ -1,114 +1,82 @@
+"""
+Data Transformer.
+
+Performs data cleaning and standardization after schema mapping.
+"""
+from utils.logger import logger
+from config.settings import CANONICAL_TABLES
 import pandas as pd
+from typing import Dict
 
-def transform_customers(df):
-    df=df.drop_duplicates()
-    df["customer_city"] = (df["customer_city"].astype(str).str.strip().str.lower())
-    return df
+class DataTransformer:
+    def __init__(self,datasets:dict):
+        self.datasets=datasets
 
-def transform_orders(df):
-    df=df.drop_duplicates()
-    date_cols=[
-        "order_purchase_timestamp",
-        "order_approved_at",
-        "order_delivered_carrier_date",
-        "order_delivered_customer_date",
-        "order_estimated_delivery_date"
-    ]
-    for col in date_cols:
-        df[col]=pd.to_datetime(df[col],errors='coerce')
-    return df
+    def transform(self):
+        logger.info("Starting transformations..........")
+        transformed={}
 
-def transform_products(df):
-    df=df.drop_duplicates()
-    df["product_category_name"] = (df["product_category_name"].fillna("Unknown"))
+        for tablename,dataframe in self.datasets.items():
+            logger.info("Transforming table %s",tablename)
 
-    print(df.isnull().sum())
-    numeric_cols = [
-        "product_name_lenght",
-        "product_description_lenght",
-        "product_photos_qty",
-        "product_weight_g",
-        "product_length_cm",
-        "product_height_cm",
-        "product_width_cm"
-    ]
+            dataframe=self._convert_dtypes(tablename,dataframe)
+            dataframe=self._clean_text(dataframe)
+            dataframe=self._handle_missing_values(tablename,dataframe)
+            dataframe=self._remove_duplicates(tablename,dataframe)
+            dataframe=self._create_features(tablename,dataframe)
 
-    for col in numeric_cols:
-        df[col] = df[col].fillna(df[col].median())
+            transformed[tablename]=dataframe
+        logger.info("Data transformations completed")
+        return transformed
 
+    def _convert_dtypes(self,tablename:str,dataframe:pd.DataFrame):
+        schema=CANONICAL_TABLES[tablename]['columns']
+        for col,config in schema.items():
+            if col not in dataframe.columns:
+                continue
+            dtype=config["dtype"]
+            try:
+                if dtype=="datetime":
+                    dataframe[col]=pd.to_datetime(dataframe[col],errors='coerce')
+                elif dtype=='float':
+                    dataframe[col]=pd.to_numeric(dataframe[col],errors='coerce')
+                elif dtype=='integer':
+                    dataframe[col]=pd.to_numeric(dataframe[col],errors='coerce').astype("Int64")
+                elif dtype=="string":
+                    dataframe[col]=dataframe[col].astype("string")
+            except Exception as e:
+                logger.warning("unable to convert %s.%s : %s",tablename,col,e)
+        return dataframe
     
-    return df
+    def _clean_text(self,dataframe:pd.DataFrame):
+        for col in dataframe.select_dtypes(include="string"):
+            dataframe[col]=(dataframe[col].str.strip().str.replace(r"\s+"," ",regex=True))
+        return dataframe
 
-def transform_reviews(df):
-    df=df.drop_duplicates()
-    df["review_comment_title"]=(df["review_comment_title"].fillna(""))
-    df["review_comment_message"] =(df["review_comment_message"] .fillna(""))
-    return df
+    def _handle_missing_values(self,tablename,dataframe:pd.DataFrame):
+        schema=CANONICAL_TABLES[tablename]['columns']
+        for col,config in schema.items():
+            if col not in dataframe.columns:
+                continue
+            dtype=config['dtype']
+            if dtype=="string":
+                dataframe[col]=dataframe[col].fillna("")
+        return dataframe
+    
+    def _remove_duplicates(self,tablename,dataframe:pd.DataFrame):
+        primary_keys=CANONICAL_TABLES[tablename]['primary_keys']
+        dataframe=dataframe.drop_duplicates(subset=primary_keys)
+        return dataframe
+    
+    def _create_features(self,table_name: str,dataframe: pd.DataFrame,) :
 
-def transform_sellers(df):
-    return df.drop_duplicates()
+        if (table_name == "orders"and "order_date" in dataframe.columns):
 
-def transform_payments(df):
-    return df.drop_duplicates()
+            dataframe["order_year"] = (dataframe["order_date"].dt.year)
+            dataframe["order_month"] = (dataframe["order_date"].dt.month)
 
-def transform_order_items(df):
+        if (table_name == "orders" and "delivered_date" in dataframe.columns and "order_date" in dataframe.columns):
 
-    df = df.drop_duplicates()
+            dataframe["delivery_days"] = (dataframe["delivered_date"] - dataframe["order_date"]).dt.days
 
-    df["shipping_limit_date"] = pd.to_datetime(df["shipping_limit_date"],errors="coerce")
-    return df
-
-def transform_geolocation(df):
-    return df.drop_duplicates()
-
-def transform_category(df):
-    df=df.drop_duplicates()
-    df["product_category_name"] = (df["product_category_name"].str.strip().str.lower())
-
-    df["product_category_name_english"] = (df["product_category_name_english"].str.strip().str.lower())
-    return df
-
-def enrich_product_with_category(product_df,category_df):
-    return product_df.merge(category_df,on="product_category_name",how="left")
-
-
-if __name__ == "__main__":
-
-    from etl.extract import (
-        extract_customers,
-        extract_orders,
-        extract_products,
-        extract_reviews
-    )
-
-    customers = transform_customers(
-        extract_customers()
-    )
-
-    print("\nCustomers")
-    print(customers.shape)
-    print(customers.isnull().sum())
-
-    orders = transform_orders(
-        extract_orders()
-    )
-
-    print("\nOrders")
-    print(orders.shape)
-    print(orders.isnull().sum())
-
-    products = transform_products(
-        extract_products()
-    )
-
-    print("\nProducts")
-    print(products.shape)
-    print(products.isnull().sum())
-
-    reviews = transform_reviews(
-        extract_reviews()
-    )
-
-    print("\nReviews")
-    print(reviews.shape)
-    print(reviews.isnull().sum())
+        return dataframe

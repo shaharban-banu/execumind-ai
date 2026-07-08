@@ -1,7 +1,13 @@
 """
 Application configuration.
 
-Loads project paths and dataset configuration from YAML.
+Loads:
+- Project paths
+- Database settings
+- Dataset configuration
+- Canonical schema
+- Column mappings
+- Capability definitions
 """
 from pathlib import Path
 import yaml
@@ -21,27 +27,49 @@ DATABASE_URL = f"sqlite:///{SQLITE_DIR}/execumind.db"
 
 CONNECTORS_DIR = BASE_DIR / "connectors"
 
-#Dataset configuration
-#--------------------------
+CONFIG_DIR=BASE_DIR/"config"
 
-CONFIG_FILE=BASE_DIR/"config"/"dataset_config.yaml"
+def load_yaml(filename:str):
+    filepath=CONFIG_DIR/filename
+    if not filepath.exists():
+        raise FileNotFoundError(f"configuration file not found :{filepath}")
 
-with open(CONFIG_FILE,"r",encoding='utf-8') as file:
-    CONFIG=yaml.safe_load(file)
+    with open(filepath,"r",encoding='utf-8') as file:
+        return yaml.safe_load(file)
+    
+#Load configuration
+#----------------------
+DATASET_CONFIG=load_yaml("dataset_config.yaml")
+CANONICAL_SCHEMA = load_yaml("canonical_schema.yaml")
+COLUMN_MAPPING = load_yaml("column_mapping.yaml")
+CAPABILITIES = load_yaml("capabilities.yaml")
+
 
 #Dataset information
 #--------------------------
-DATASET=CONFIG["dataset"]
+DATASET=DATASET_CONFIG["dataset"]
 DATASET_NAME=DATASET["name"]
 CONNECTOR=DATASET["connector"]
 RAW_DATA_PATH=BASE_DIR/DATASET["raw_path"]
 
 #validation rule
 #--------------------------
-VALIDATION=CONFIG["validation"]
+VALIDATION=DATASET_CONFIG["validation"]
 REQUIRED_TABLES=VALIDATION["required_tables"]
 OPTIONAL_TABLES=VALIDATION["optional_tables"]
 
 #Table configuration
 #-------------------------------
-TABLES=CONFIG["tables"]
+TABLES=DATASET_CONFIG["tables"]
+
+#canonical schema
+#--------------------
+CANONICAL_TABLES = CANONICAL_SCHEMA["tables"]
+
+#column mapping
+#---------------------
+COLUMN_MAPPINGS = COLUMN_MAPPING
+
+#capabilities
+#-------------
+SYSTEM_CAPABILITIES = CAPABILITIES["capabilities"]

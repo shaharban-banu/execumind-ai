@@ -1,38 +1,45 @@
-from etl.extract import *
-from etl.transform import *
-from etl.load import *
+"""
+ETL Pipeline for ExecuMind AI.
+"""
 from utils.logger import logger
+from database.database import SessionLocal
+from connectors.connector_factory import get_connector
+from etl.schema_mapper import SchemaMapper
+from etl.transform import DataTransformer
+from etl.validator import DatasetValidator
+from etl.load import DataLoader
 
-customers=transform_customers(extract_customers())
-load_customers(customers)
+class ETLPipeline:
+    def run(self):
+        logger.info("="*50)
+        logger.info("Starting Execumind ETL pipeline")
+        logger.info("="*50)
 
-orders=transform_orders(extract_orders())
-load_orders(orders)
+        session=SessionLocal()
+        try:
+            #extract
+            connector=get_connector()
+            datasets=connector.load_tables()
 
-reviews=transform_reviews(extract_reviews())
-load_reviews(reviews)
+            #schema mapping
+            datasets=SchemaMapper(datasets).map()
 
-sellers=transform_sellers(extract_sellers())
-load_sellers(sellers)
+            #transform
+            datasets=DataTransformer(datasets).transform()
 
-payments=transform_payments(extract_payments())
-load_payments(payments)
+            #validate
+            DatasetValidator(datasets).validate()
 
-order_items=transform_order_items(extract_order_items())
-load_order_items(order_items)
+            #load
+            DataLoader(session,datasets).load()
 
-geolocation=transform_geolocation(extract_geolocation())
-load_geolocation(geolocation)
+            logger.info("ETL pipeline completed successfully")
+        except Exception as e:
+            session.rollback()
+            logger.error(type(e).__name__)
+            logger.error(str(e))
+            # logger.error("ETL pipeline failed: %s", e)
+            raise
+        finally:
+            session.close()
 
-products=transform_products(extract_products())
-
-category=transform_category(extract_category_translation())
-
-products=enrich_product_with_category(products,category)
-load_products(products)
-load_category(category)
-
-
-
-
-logger.info("ETL pipeline completed successfully")

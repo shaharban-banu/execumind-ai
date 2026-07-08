@@ -76,4 +76,114 @@ tables:
     enabled: true
     file: product_category_name_translation.csv
     primary_keys:
-      - product_name
+      - product_category_name
+
+
+#--------------------------
+#dataset:
+
+#   name: Flipkart Demo E-Commerce Dataset
+
+#   connector: csv
+
+#   raw_path: data/raw/flipkart_demo_ecommerce_2024_2025
+
+# validation:
+
+#   required_tables:
+
+#     - customers
+#     - orders
+#     - order_items
+#     - payments
+#     - products
+
+#   optional_tables:
+
+#     - reviews
+#     - sellers
+#     - categories
+#     - deliveries
+
+# tables:
+
+#   customers:
+
+#     enabled: true
+
+#     file: customers.csv
+
+#     primary_keys:
+#       - customer_id
+
+#   orders:
+
+#     enabled: true
+
+#     file: orders.csv
+
+#     primary_keys:
+#       - order_id
+
+#   order_items:
+
+#     enabled: true
+
+#     file: order_items.csv
+
+#     primary_keys:
+#       - order_item_id
+
+#   payments:
+
+#     enabled: true
+
+#     file: payments.csv
+
+#     primary_keys:
+#       - payment_id
+
+#   products:
+
+#     enabled: true
+
+#     file: products.csv
+
+#     primary_keys:
+#       - product_id
+
+#   reviews:
+
+#     enabled: true
+
+#     file: reviews.csv
+
+#     primary_keys:
+#       - review_id
+
+#   sellers:
+
+#     enabled: true
+
+#     file: sellers.csv
+
+#     primary_keys:
+#       - seller_id
+
+#   categories:
+
+#     enabled: true
+
+#     file: categories.csv
+
+#     primary_keys:
+#       - category_id
+
+#   deliveries:
+
+#     enabled: true
+
+#     file: deliveries.csv
+
+#     primary_keys:
+#       - delivery_id
