@@ -1,137 +1,75 @@
-"""
-Context Formatter.
+from langchain_core.documents import Document
+import json
 
-Formats retrieved context into
-LLM-friendly text.
-"""
-
-
-def format_reviews(reviews: list[dict]) -> str:
+def format_context(documents: list[Document],) :
     """
-    Format review retrieval results.
-
-    Args:
-        reviews:
-            Retrieved reviews.
-
-    Returns:
-        str:
-            Formatted reviews.
-    """
-
-    if not reviews:
-        return "No customer reviews retrieved."
-
-    formatted = []
-
-    for index, review in enumerate(reviews, start=1):
-
-        formatted.append(
-            f"""
-Review {index}
-
-Review ID : {review["review_id"]}
-
-Rating    : {review["review_score"]}
-
-Review
-
-{review["text"]}
-"""
-        )
-
-    return "\n".join(formatted)
-
-
-def format_business_docs(
-    documents: list[dict]
-) -> str:
-    """
-    Format retrieved business documents.
-
-    Args:
-        documents:
-            Retrieved document chunks.
-
-    Returns:
-        str:
-            Formatted business documents.
+    Format retrieved context.
     """
 
     if not documents:
-        return "No business documents retrieved."
+        return "No supporting documents."
 
     formatted = []
 
-    for index, doc in enumerate(documents, start=1):
+    for index, doc in enumerate(documents,start=1,):
+
+        source = doc.metadata.get("source","Unknown",)
+
+        page = doc.metadata.get("page","-")
 
         formatted.append(
             f"""
-Document {index}
+            Document {index}
 
-Source
+            Source: {source}
 
-{doc["source"]}
+            Page: {page}
 
-Page
-
-{doc["page"]}
-
-Content
-
-{doc["text"]}
-"""
-        )
+            Content:
+            {doc.page_content}
+            """
+                    )
 
     return "\n".join(formatted)
 
-
-def format_sql_results(
-    rows: list[dict]
-) -> str:
+def format_sql_results(rows) -> str:
     """
-    Format SQL query results.
-
-    Args:
-        rows:
-            SQL result rows.
-
-    Returns:
-        str:
-            Formatted SQL output.
+    Format SQL tool output for LLM prompts.
     """
 
-    if not rows:
-        return "No SQL results."
+    if rows is None:
+        return "No data returned."
 
-    formatted = []
+    if isinstance(rows, str):
+        return rows
 
-    for row in rows:
+    if isinstance(rows, dict):
+        return json.dumps(rows, indent=2)
 
-        formatted.append(
-            "\n".join(f"{k}: {v}" for k, v in row.items()))
+    if isinstance(rows, list):
+        if len(rows) == 0:
+            return "No records found."
 
-    return "\n\n".join(formatted)
+        return json.dumps(rows, indent=2, default=str)
+
+    return str(rows)
 
 
-def format_forecast(
-    forecast: dict
-) -> str:
+def format_forecast(forecast) -> str:
     """
-    Format forecast output.
-
-    Args:
-        forecast:
-            Forecast dictionary.
-
-    Returns:
-        str:
-            Formatted forecast.
+    Format forecast output for LLM prompts.
     """
 
-    if not forecast:
+    if forecast is None:
         return "No forecast available."
-    formatted=[]
-    for f in forecast:
-        formatted.append("\n".join(f"{k}: {v}"for k, v in f.items()))
-    return "\n\n".join(formatted)
+
+    if isinstance(forecast, dict):
+        return json.dumps(forecast, indent=2)
+
+    if isinstance(forecast, list):
+        if len(forecast) == 0:
+            return "No forecast available."
+
+        return json.dumps(forecast, indent=2, default=str)
+
+    return str(forecast)

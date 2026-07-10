@@ -245,6 +245,16 @@ tables:
 
     required: false
 
+    text_column: review_text
+
+    metadata_columns:
+      - review_id
+      - order_id
+      - review_score
+      - review_title
+      - review_creation_date
+      - review_answer_date
+
     primary_keys:
       - review_id
 

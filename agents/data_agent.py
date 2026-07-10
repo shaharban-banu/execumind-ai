@@ -53,7 +53,7 @@ class DataAgent(BaseAgent):
 
 if __name__=="__main__":
     agent=DataAgent()
-    response=agent.run(  "How is overall sales performance?"
+    response=agent.run(  "Predict next month's revenue."
     )
 
     print(response.model_dump_json(indent=4))

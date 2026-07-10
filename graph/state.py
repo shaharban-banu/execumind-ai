@@ -30,3 +30,7 @@ class ExecuMindState(TypedDict, total=False):
 
     # Combined evidence (optional)
     evidence: dict
+
+    selected_agents: list[str]
+
+    executive_report: ExecutiveAnalysis

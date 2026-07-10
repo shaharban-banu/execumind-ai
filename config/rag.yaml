@@ -1,0 +1,39 @@
+version: 1.0
+
+embedding:
+
+  model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+chunking:
+
+  chunk_size: 500
+
+  chunk_overlap: 100
+
+retrieval:
+
+  strategy: hybrid
+
+  retrieval_top_k: 40
+
+context:
+
+  review_context_k: 5
+
+  business_context_k: 3
+  
+reranking:
+
+  enabled: true
+
+  model: cross-encoder/ms-marco-MiniLM-L-6-v2
+
+  rerank_top_k: 10
+
+vector_store:
+
+  type: faiss
+
+  index_path: data/vectorstore/faiss.index
+
+  metadata_path: data/vectorstore/metadata.pkl

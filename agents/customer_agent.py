@@ -1,38 +1,82 @@
-"""Customer Intelligence Agent"""
+"""
+Customer Intelligence Agent.
+"""
 
 from utils.logger import logger
 
 from agents.base_agent import BaseAgent
-from mcp.tools.search_docs import search_docs
+from rag.AdavancedRAGpipeline import AdvancedRAGPipeline
 from schemas.customer import CustomerAnalysis
-from services.context_formatter import (format_reviews,format_business_docs)
+from services.context_formatter import format_context
+
 
 class CustomerIntelligenceAgent(BaseAgent):
-    """Uses review RAG and business knowledge to analyse customer issues"""
+    """
+    Customer Intelligence Agent.
 
-    PROMPT_FILE="customer_agent.txt"
-    RESPONSE_SCHEMA=CustomerAnalysis
+    Uses the Unified Hybrid RAG pipeline to answer
+    customer intelligence questions.
+    """
 
-    def _retrieve_context(self,question:str):
-        """retrieve customer reviews and business documents"""
-        return search_docs(query=question,method='faiss')
-    
+    PROMPT_FILE = "customer_agent.txt"
 
-    def _prepare_prompt(self, question, context):
-        reviews=format_reviews(context["reviews"])
-        business_docs=format_business_docs(context["business_docs"])
-        prompt=self.load_prompt()
-        return prompt.format(question=question,
-                             reviews=reviews,
-                             business_docs=business_docs)
+    RESPONSE_SCHEMA = CustomerAnalysis
 
-    
-if __name__=="__main__":
-    agent=CustomerIntelligenceAgent()
-    result=agent.run("why are customers complaining about late deliveries?")
-    print("\n")
-    print("=" * 80)
-    print("CUSTOMER ANALYSIS")
-    print("=" * 80)
+    def __init__(
+        self,
+        rag_pipeline: AdvancedRAGPipeline,
+        llm_service=None,
+    ):
+        super().__init__(llm_service)
 
-    print(result.model_dump_json(indent=4))
+        self.rag_pipeline = rag_pipeline
+
+    def _retrieve_context(
+        self,
+        question: str,
+    ):
+        """
+        Retrieve supporting documents using
+        the Unified Hybrid RAG Pipeline.
+        """
+
+        logger.info(
+            "Retrieving customer context..."
+        )
+
+        return self.rag_pipeline.retrieve(
+            query=question,
+        )
+
+    def _prepare_prompt(
+        self,
+        question: str,
+        context,
+    ):
+        """
+        Build final prompt.
+        """
+        reviews = []
+        business_docs = []
+
+        for doc in context:
+
+            if doc.metadata.get("source") == "reviews":
+                reviews.append(doc)
+
+            elif doc.metadata.get("source") == "business_document":
+                business_docs.append(doc)
+        # reviews = reviews[:5]
+        # business_docs = business_docs[:5]
+
+        prompt = self.load_prompt()
+
+        formatted_context = format_context(
+            reviews=reviews,
+            business_docs=business_docs,
+        )
+
+        return prompt.format(
+            question=question,
+            context=formatted_context,
+        )

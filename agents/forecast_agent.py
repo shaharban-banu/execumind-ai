@@ -39,6 +39,10 @@ class ForecastAgent(BaseAgent):
             logger.info("Executing tool %s",tool_name,)
             try:
                 context[tool_name]=tool()
+
+                print(tool_name)
+                print(context[tool_name])
+                
             except Exception:
                 logger.exception("Tool %s failed",tool_name)
                 context[tool_name]={"error":"execution failed"}
@@ -54,3 +58,10 @@ class ForecastAgent(BaseAgent):
             """)
 
         return prompt_template.format(question=question,context="\n".join(formatted_context),)
+
+if __name__=="__main__":
+    agent=ForecastAgent()
+    response=agent.run(  "What is the expected business performance over the next six months?"
+    )
+
+    print(response.model_dump_json(indent=4))

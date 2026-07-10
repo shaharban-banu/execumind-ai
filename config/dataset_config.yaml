@@ -3,6 +3,23 @@ dataset:
   connector: csv
   raw_path: data/raw
 
+documents:
+
+  reviews:
+    enabled: true
+    source_type: database
+    table_name: reviews
+
+  business_documents:
+    enabled: true
+    source_type: directory
+    path: rag/docs/raw_docs
+
+    supported_formats:
+      - pdf
+      - md
+      - txt
+
 validation:
 
   required_tables:

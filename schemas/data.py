@@ -10,4 +10,4 @@ class DataAnalysis(BaseModel):
     kpis:list[KPI]
     trends:list[str]
     anomalies:list[str]
-    recommendation:list[Recommendation]
+    recommendations:list[Recommendation]
