@@ -89,10 +89,8 @@ temp/
 # Data Files (usually large)
 # ==========================================
 data/raw/*
-data/processed/*
-data/embeddings/*
-data/indexes/*
-data/exports/*
+data/sqlite/*
+# data/vectorstore/*
 
 # Keep folder structure
 !data/raw/.gitkeep
@@ -154,7 +152,8 @@ __pypackages__/
 __init__.py
 pytest.ini
 structure.txt
-tests/
+tests/test_*
+tests/validate_load.py
 frontend/
 notebooks/
 bm25_evaluation.py
