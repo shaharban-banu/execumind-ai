@@ -1,37 +1,50 @@
 from langchain_core.documents import Document
 import json
 
-def format_context(documents: list[Document],) :
+def format_context(reviews: list[Document],
+    business_docs: list[Document],) :
     """
-    Format retrieved context.
+    Format customer reviews and business documents separately.
     """
 
-    if not documents:
+    sections = []
+
+    if reviews:
+        sections.append("===== CUSTOMER REVIEWS =====\n")
+
+        for i, doc in enumerate(reviews, start=1):
+            sections.append(
+                f"""
+Review {i}
+
+Source: {doc.metadata.get("source", "Unknown")}
+
+Content:
+{doc.page_content}
+"""
+            )
+
+    if business_docs:
+        sections.append("\n===== BUSINESS DOCUMENTS =====\n")
+
+        for i, doc in enumerate(business_docs, start=1):
+            sections.append(
+                f"""
+Document {i}
+
+Source: {doc.metadata.get("source", "Unknown")}
+
+Page: {doc.metadata.get("page", "-")}
+
+Content:
+{doc.page_content}
+"""
+            )
+
+    if not sections:
         return "No supporting documents."
 
-    formatted = []
-
-    for index, doc in enumerate(documents,start=1,):
-
-        source = doc.metadata.get("source","Unknown",)
-
-        page = doc.metadata.get("page","-")
-
-        formatted.append(
-            f"""
-            Document {index}
-
-            Source: {source}
-
-            Page: {page}
-
-            Content:
-            {doc.page_content}
-            """
-                    )
-
-    return "\n".join(formatted)
-
+    return "\n".join(sections)
 def format_sql_results(rows) -> str:
     """
     Format SQL tool output for LLM prompts.

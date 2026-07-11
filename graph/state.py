@@ -10,6 +10,8 @@ from typing import TypedDict
 from schemas.customer import CustomerAnalysis
 from schemas.data import DataAnalysis
 from schemas.forecast import ForecastAnalysis
+from schemas.executive import ExecutiveAnalysis
+from schemas.planner import PlannerDecision
 
 class ExecuMindState(TypedDict, total=False):
     """
@@ -21,6 +23,8 @@ class ExecuMindState(TypedDict, total=False):
     # User question
     question: str
 
+    planner_decision: PlannerDecision
+    
     # Agent outputs
     customer_analysis: CustomerAnalysis
 
@@ -28,9 +32,4 @@ class ExecuMindState(TypedDict, total=False):
 
     forecast_analysis: ForecastAnalysis
 
-    # Combined evidence (optional)
-    evidence: dict
-
-    selected_agents: list[str]
-
-    executive_report: ExecutiveAnalysis
+    executive_analysis: ExecutiveAnalysis

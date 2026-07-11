@@ -4,95 +4,113 @@ LangGraph Nodes.
 Each node wraps a specialist agent and updates
 the shared graph state.
 """
-
+from tests.rag_test_setup import create_test_pipeline
 from graph.state import ExecuMindState
 
 from agents.customer_agent import CustomerIntelligenceAgent
 from agents.data_agent import DataAgent
 from agents.forecast_agent import ForecastAgent
+from agents.executive_agent import ExecutiveAgent
+from agents.planner_agent import PlannerAgent
+
 
 from utils.logger import logger
+
+logger.info("Initializing RAG pipeline...")
+rag_pipeline = create_test_pipeline()
 # --------------------------------------------------
 # Agent instances
 # --------------------------------------------------
 
-customer_agent = CustomerIntelligenceAgent()
+customer_agent = CustomerIntelligenceAgent(rag_pipeline)
 
 data_agent = DataAgent()
 
 forecast_agent = ForecastAgent()
 
+executive_agent = ExecutiveAgent()
+
+planner_agent=PlannerAgent()
 
 # --------------------------------------------------
-# Customer Node
+# Planner Node
 # --------------------------------------------------
+def planner_node(state: ExecuMindState):
 
-def customer_node(state: ExecuMindState,) -> ExecuMindState:
-    """
-    Execute the Customer Intelligence Agent.
-    """
+    logger.info("Running Planner Agent")
 
-    logger.info("Running Customer Agent")
-
-    response = customer_agent.run(state["question"])
+    response = planner_agent.run(
+        state["question"]
+    )
+    logger.info(
+        "Planner selected: %s",
+        response.result.selected_agents,
+    )
+    logger.info(
+    "Planner reasoning: %s",
+    response.result.reasoning,
+)
 
     return {
-    "customer_analysis": response.result
-}
-
-
-# --------------------------------------------------
-# Data Node
-# --------------------------------------------------
-
-def data_node(state: ExecuMindState,) -> ExecuMindState:
-    """
-    Execute the Data Intelligence Agent.
-    """
-
-    logger.info("Running Data Agent")
-
-    response = data_agent.run(state["question"])
-
-    return {
-    "data_analysis": response.result
-}
-
-
-# --------------------------------------------------
-# Forecast Node
-# --------------------------------------------------
-
-def forecast_node(state: ExecuMindState,) -> ExecuMindState:
-    """
-    Execute the Forecast Intelligence Agent.
-    """
-
-    logger.info("Running Forecast Agent")
-
-    response = forecast_agent.run(state["question"])
-
-    return {
-    "forecast_analysis": response.result
-}
-
-# --------------------------------------------------
-# Evidence Aggregation Node
-# --------------------------------------------------
-
-def aggregate_evidence_node(
-    state: ExecuMindState,
-) -> ExecuMindState:
-    """
-    Aggregate outputs from all specialist agents.
-    """
-
-    logger.info("Aggregating agent evidence")
-
-    state["evidence"] = {
-        "customer": state.get("customer_analysis"),
-        "data": state.get("data_analysis"),
-        "forecast": state.get("forecast_analysis"),
+         "planner_decision": response.result
     }
+# --------------------------------------------------
+# Executive Node
+# --------------------------------------------------
 
-    return state
+def executive_node(state: ExecuMindState,) -> ExecuMindState:
+    """
+    Execute selected specialist agents and
+    synthesize their outputs.
+    """
+
+    logger.info("Running Executive Agent")
+
+    decision=state["planner_decision"]
+
+    context = {}
+
+    if "customer" in decision.selected_agents:
+        logger.info("Executing Customer Agent")
+
+        response = customer_agent.run(
+            state["question"]
+        )
+
+        customer = response.result
+
+        context["customer_analysis"] =customer.model_dump(exclude={"evidence"})
+
+    if "data" in decision.selected_agents:
+
+        logger.info("Executing Data Agent")
+
+        response = data_agent.run(
+            state["question"]
+        )
+
+        data = response.result
+        context["data_analysis"] = data.model_dump(exclude={"evidence"})
+
+    if "forecast" in decision.selected_agents:
+
+        logger.info("Executing Forecast Agent")
+
+        response = forecast_agent.run(
+            state["question"]
+        )
+
+        forecast = response.result
+        context["forecast_analysis"] =forecast.model_dump(exclude={"evidence"})
+
+    logger.info("Generating Executive Report")
+
+    executive_response = executive_agent.run(
+        question=state["question"],
+        context=context,
+    )
+
+    return {
+        **context,
+        "executive_analysis": executive_response.result,
+    }

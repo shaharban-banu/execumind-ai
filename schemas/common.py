@@ -47,4 +47,4 @@ class Prediction(BaseModel):
     """
     metric: str = Field(description="Forecast metric.")
     predicted_value: float = Field(description="Predicted value.")
-    confidence: float = Field(description="Prediction confidence.")
+    #confidence: float = Field(description="Prediction confidence.")

@@ -8,7 +8,7 @@ Customer, Data, and Forecast agents.
 from langgraph.graph import (StateGraph,START,END,)
 
 from graph.state import ExecuMindState
-from graph.nodes import (customer_node,data_node,forecast_node,aggregate_evidence_node)
+from graph.nodes import (planner_node,executive_node)
 
 def build_graph():
     """
@@ -23,61 +23,31 @@ def build_graph():
     # ---------------------------------------
     # Register nodes
     # ---------------------------------------
-
     workflow.add_node(
-        "customer_agent",
-        customer_node,
+        "planner_agent",
+        planner_node,
     )
+    
 
     workflow.add_node(
-        "data_agent",
-        data_node,
-    )
-
-    workflow.add_node(
-        "forecast_agent",
-        forecast_node,
-    )
-
-    workflow.add_node(
-    "aggregate_evidence",
-    aggregate_evidence_node,
+        "executive_agent",
+        executive_node,
     )
     # ---------------------------------------
     # Define workflow
     # ---------------------------------------
     workflow.add_edge(
-    START,
-    "customer_agent",
-    )
-
-    workflow.add_edge(
         START,
-        "data_agent",
+        "planner_agent",
     )
 
     workflow.add_edge(
-        START,
-        "forecast_agent",
+        "planner_agent",
+        "executive_agent",
     )
 
     workflow.add_edge(
-        "customer_agent",
-        "aggregate_evidence",
-    )
-
-    workflow.add_edge(
-        "data_agent",
-        "aggregate_evidence",
-    )
-
-    workflow.add_edge(
-        "forecast_agent",
-        "aggregate_evidence",
-    )
-
-    workflow.add_edge(
-        "aggregate_evidence",
+        "executive_agent",
         END,
     )
    
@@ -86,3 +56,13 @@ def build_graph():
 
 
 graph = build_graph()
+
+if __name__ == "__main__":
+    state = {
+         "question": "How is overall sales performance?"
+    }
+
+    result = graph.invoke(state)
+
+    #print(result["executive_analysis"])
+    print(result)

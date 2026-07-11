@@ -2,20 +2,19 @@
 Executive Advisor Schema.
 """
 
-from pydantic import BaseModel
-from schemas.common import (Recommendation,)
+from pydantic import BaseModel,Field
+from typing import List
+from schemas.common import (Recommendation,Evidence)
 
 
 class ExecutiveAnalysis(BaseModel):
 
-    executive_summary: str
+    executive_summary: str=Field(description="overall executive summary")
 
-    customer_insights: list[str]
+    key_findings: List[str] = Field(default_factory=list,description="Most important findings.")
 
-    business_insights: list[str]
+    business_risks: list[str]  = Field(default_factory=list,description="Major business risks.")
 
-    forecast_insights: list[str]
+    strategic_recommendations: list[Recommendation]= Field(default_factory=list)
 
-    strategic_recommendations: list[Recommendation]
-
-    confidence: float
+    evidence: List[Evidence] = Field(default_factory=list)

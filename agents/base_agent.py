@@ -76,7 +76,11 @@ class BaseAgent(ABC):
         start_time=time.perf_counter()
         try:
             logger.info("Running %s ",self.__class__.__name__)
-            context=self._retrieve_context(question,**kwargs)
+            
+            context = kwargs.pop("context", None)
+            if context is None:
+                context = self._retrieve_context(question, **kwargs)
+                
             prompt=self._prepare_prompt(question,context)
             result=self._generate(prompt)
             execution_time=round(time.perf_counter()-start_time,2)
