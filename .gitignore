@@ -155,7 +155,7 @@ structure.txt
 tests/test_*
 tests/validate_load.py
 frontend/
-notebooks/
+notebooks/*
 bm25_evaluation.py
 test_hybrid.py
 rag/docs/extracted
@@ -167,3 +167,4 @@ evaluation/chunk_level_evaluation_dataset_fixed.csv
 evaluation/chunk_level_evaluation_dataset.csv
 test_gemini.py
 services/mock_llm.py
+dataset
