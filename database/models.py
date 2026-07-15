@@ -1,129 +1,266 @@
-from sqlalchemy import (Column,Integer,String,Float,ForeignKey,PrimaryKeyConstraint,DateTime)
+"""
+database/models.py
+
+SQLAlchemy models for the canonical e-commerce schema.
+"""
+
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    PrimaryKeyConstraint,
+    String,
+)
 from sqlalchemy.orm import declarative_base
 
-Base=declarative_base()
+Base = declarative_base()
+
+# ==========================================================
+# Customers
+# ==========================================================
 
 class Customer(Base):
-    __tablename__="customers"
-    customer_id=Column(String,primary_key=True,nullable=False,index=True)
-    customer_unique_id = Column(String)
-    zip_code = Column(String)
-    city = Column(String)
-    state = Column(String)
+
+    __tablename__ = "customers"
+
+    customer_id = Column(
+        String,
+        primary_key=True,
+        nullable=False,
+        index=True,
+    )
+
+    customer_name = Column(String)
+    customer_email = Column(String)
+    customer_phone = Column(String)
+
+    customer_city = Column(String)
+    customer_state = Column(String)
+    customer_country = Column(String)
+
+    customer_created_date = Column(DateTime)
+
+
+# ==========================================================
+# Orders
+# ==========================================================
 
 class Order(Base):
 
     __tablename__ = "orders"
 
-    order_id = Column(String, primary_key=True,nullable=False,index=True)
+    order_id = Column(
+        String,
+        primary_key=True,
+        nullable=False,
+        index=True,
+    )
 
     customer_id = Column(
         String,
-        ForeignKey("customers.customer_id"),nullable=False,index=True
+        ForeignKey("customers.customer_id"),
+        nullable=False,
+        index=True,
     )
 
+    order_date = Column(DateTime)
+
     order_status = Column(String)
-    order_date = Column(DateTime,nullable=False,index=True)
-    approved_date = Column(DateTime)
-    carrier_delivery_date = Column(DateTime)
-    delivered_date = Column(DateTime)
+
+    order_value = Column(Float)
+
     estimated_delivery_date = Column(DateTime)
+
+    delivered_date = Column(DateTime)
+
+
+# ==========================================================
+# Products
+# ==========================================================
 
 class Product(Base):
 
     __tablename__ = "products"
 
-    product_id = Column(String, primary_key=True,nullable=False,index=True)
-    category = Column(String,index=True)
-    product_name_length = Column(Integer)
-    product_description_length = Column(Integer)
-    photos_count = Column(Integer)
-    weight = Column(Float)
-    length = Column(Float)
-    height = Column(Float)
-    width = Column(Float)
-
-class Review(Base):
-
-    __tablename__ = "reviews"
-
-    review_id = Column(String, primary_key=True,nullable=False,index=True)
-
-    order_id = Column(
+    product_id = Column(
         String,
-        ForeignKey("orders.order_id"),nullable=False,index=True
+        primary_key=True,
+        nullable=False,
+        index=True,
     )
 
-    review_score = Column(Integer)
-    review_title = Column(String)
-    review_text = Column(String)
-    review_creation_date = Column(DateTime)
-    review_answer_date = Column(DateTime)
+    product_name = Column(String)
+
+    product_category = Column(
+        String,
+        index=True,
+    )
+
+    price = Column(Float)
+
+    weight = Column(Float)
+
+
+# ==========================================================
+# Sellers
+# ==========================================================
 
 class Seller(Base):
 
     __tablename__ = "sellers"
 
-    seller_id = Column(String, primary_key=True,nullable=False,index=True)
-    zip_code = Column(String)
-    city = Column(String)
-    state = Column(String)
-
-class Payment(Base):
-
-    __tablename__ = "payments"
-
-    order_id = Column(
+    seller_id = Column(
         String,
-        ForeignKey("orders.order_id"),nullable=False,index=True
+        primary_key=True,
+        nullable=False,
+        index=True,
     )
 
-    payment_sequence = Column(String,nullable=False)
-    payment_type = Column(String)
-    installments = Column(Integer)
-    sales_amount = Column(Float,nullable=False)
+    seller_name = Column(String)
 
-    __table_args__ = (PrimaryKeyConstraint("order_id","payment_sequence"),)
+    seller_city = Column(String)
+
+    seller_state = Column(String)
+
+
+# ==========================================================
+# Order Items
+# ==========================================================
 
 class OrderItem(Base):
 
     __tablename__ = "order_items"
 
-    order_id = Column(String,ForeignKey("orders.order_id"),nullable=False,index=True)
-    order_item_id = Column(String,nullable=False)
-    product_id = Column(String,ForeignKey("products.product_id"),nullable=False,index=True)
-    seller_id = Column(String,ForeignKey("sellers.seller_id"),index=True)
-    shipping_limit_date = Column(DateTime)
-    item_price = Column(Float,nullable=False)
+    order_id = Column(
+        String,
+        ForeignKey("orders.order_id"),
+        nullable=False,
+        index=True,
+    )
+
+    order_item_id = Column(
+        String,
+        nullable=False,
+    )
+
+    product_id = Column(
+        String,
+        ForeignKey("products.product_id"),
+        nullable=False,
+        index=True,
+    )
+
+    seller_id = Column(
+        String,
+        ForeignKey("sellers.seller_id"),
+        index=True,
+    )
+
+    quantity = Column(Integer)
+
+    unit_price = Column(Float)
+
     freight_cost = Column(Float)
+
+    order_item_value = Column(Float)
 
     __table_args__ = (
         PrimaryKeyConstraint(
             "order_id",
-            "order_item_id"
+            "order_item_id",
         ),
     )
 
-class Geolocation(Base):
 
-    __tablename__ = "geolocation"
+# ==========================================================
+# Payments
+# ==========================================================
 
-    zip_code = Column(String,nullable=False)
-    latitude = Column(Float,nullable=False)
-    longitude = Column(Float,nullable=False)
-    city = Column(String)
-    state = Column(String)
+class Payment(Base):
+
+    __tablename__ = "payments"
+
+    payment_id = Column(
+        String,
+        primary_key=True,
+        nullable=False,
+        index=True,
+    )
+
+    order_id = Column(
+        String,
+        ForeignKey("orders.order_id"),
+        nullable=False,
+        index=True,
+    )
+
+    payment_method = Column(String)
+
+    payment_value = Column(Float)
+
+    payment_installments = Column(Integer)
+
+
+# ==========================================================
+# Reviews
+# ==========================================================
+
+class Review(Base):
+
+    __tablename__ = "reviews"
+
+    review_id = Column(String,nullable=False,)
+
+    order_id = Column(
+        String,
+        ForeignKey("orders.order_id"),nullable=False, index=True,)
+
+    review_score = Column(Integer)
+
+    review_title = Column(String)
+
+    review_comment = Column(String)
+
+    review_date = Column(DateTime)
 
     __table_args__ = (
         PrimaryKeyConstraint(
-            "zip_code",
-            "latitude",
-            "longitude"
+            "review_id",
+            "order_id",
         ),
     )
 
-class CategoryTranslation(Base):
-    __tablename__="category_translation"
 
-    category=Column(String,primary_key=True,nullable=False,index=True)
-    category_english=Column(String)
+# ==========================================================
+# Deliveries
+# ==========================================================
+
+class Delivery(Base):
+
+    __tablename__ = "deliveries"
+
+    delivery_id = Column(
+        String,
+        primary_key=True,
+        nullable=False,
+        index=True,
+    )
+
+    order_id = Column(
+        String,
+        ForeignKey("orders.order_id"),
+        nullable=False,
+        index=True,
+    )
+
+    carrier = Column(String)
+
+    shipped_date = Column(DateTime)
+
+    delivered_date = Column(DateTime)
+
+    delivery_status = Column(String)
+
+    freight_cost = Column(Float)

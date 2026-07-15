@@ -1,0 +1,136 @@
+"""
+scanner.py
+
+Scans uploaded datasets and loads supported files into memory.
+Supported formats:
+- CSV
+- Excel (.xlsx, .xls)
+- JSON
+
+This module does not perform any analysis or transformation.
+"""
+from __future__ import annotations
+from pathlib import Path
+from utils.logger import logger
+import pandas as pd
+from ingestion.models.dataset import DatasetMetadata
+from ingestion.models.tables import TableMetadata
+
+class DatasetScanner:
+    """
+    Scans a dataset directory or file and creates DatasetMetadata.
+    """
+
+    SUPPORTED_EXTENSIONS = {".csv", ".xlsx", ".xls", ".json"}
+
+    def scan(self, path: str) -> DatasetMetadata:
+        """
+        Scan a dataset path.
+
+        Args:
+            path: File or directory path.
+
+        Returns:
+            DatasetMetadata object.
+        """
+        dataset_path = Path(path)
+
+        if not dataset_path.exists():
+            raise FileNotFoundError(f"Dataset not found: {path}")
+
+        logger.info("Starting dataset scan: %s", dataset_path)
+
+        if dataset_path.is_dir():
+            tables = self._scan_directory(dataset_path)
+            file_type = "directory"
+        else:
+            tables = [self._scan_file(dataset_path)]
+            file_type = dataset_path.suffix.lower().replace(".", "")
+
+        dataset = DatasetMetadata(
+            dataset_name=dataset_path.stem,
+            source_path=str(dataset_path),
+            file_type=file_type,
+            tables=tables,
+        )
+
+        logger.info(
+            "Dataset scan completed. Loaded %d table(s).",
+            len(dataset.tables),
+        )
+
+        return dataset
+
+    def _scan_directory(self, directory: Path) -> list[TableMetadata]:
+        """
+        Scan all supported files inside a directory.
+        """
+        tables = []
+
+        for file in sorted(directory.iterdir()):
+            if file.is_file() and file.suffix.lower() in self.SUPPORTED_EXTENSIONS:
+                logger.info("Loading %s", file.name)
+                tables.append(self._scan_file(file))
+
+        if not tables:
+            raise ValueError("No supported dataset files found.")
+
+        return tables
+
+    def _scan_file(self, file_path: Path) -> TableMetadata:
+        """
+        Scan a single dataset file.
+        """
+        suffix = file_path.suffix.lower()
+
+        if suffix == ".csv":
+            dataframe = self._read_csv(file_path)
+
+        elif suffix in {".xlsx", ".xls"}:
+            dataframe = self._read_excel(file_path)
+
+        elif suffix == ".json":
+            dataframe = self._read_json(file_path)
+
+        else:
+            raise ValueError(f"Unsupported file type: {suffix}")
+
+        return self._create_table_metadata(
+            table_name=file_path.stem,
+            dataframe=dataframe,
+        )
+
+    @staticmethod
+    def _read_csv(path: Path) -> pd.DataFrame:
+        """
+        Read a CSV file.
+        """
+        return pd.read_csv(path)
+
+    @staticmethod
+    def _read_excel(path: Path) -> pd.DataFrame:
+        """
+        Read an Excel file.
+        """
+        return pd.read_excel(path)
+
+    @staticmethod
+    def _read_json(path: Path) -> pd.DataFrame:
+        """
+        Read a JSON file.
+        """
+        return pd.read_json(path)
+
+    @staticmethod
+    def _create_table_metadata(
+        table_name: str,
+        dataframe: pd.DataFrame,
+    ) -> TableMetadata:
+        """
+        Create initial TableMetadata from a DataFrame.
+        """
+        return TableMetadata(
+            table_name=table_name,
+            row_count=len(dataframe),
+            dataframe=dataframe,
+        )
