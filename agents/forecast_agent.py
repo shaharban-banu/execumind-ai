@@ -39,9 +39,7 @@ class ForecastAgent(BaseAgent):
             logger.info("Executing tool %s",tool_name,)
             try:
                 context[tool_name]=tool()
-
-                print(tool_name)
-                print(context[tool_name])
+                logger.debug("%s returned %d forecasts",tool_name,len(context[tool_name]),)
                 
             except Exception:
                 logger.exception("Tool %s failed",tool_name)

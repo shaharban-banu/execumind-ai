@@ -1,0 +1,46 @@
+from pathlib import Path
+import json
+
+REPORT_DIR = Path("forecast/reports")
+
+
+class ForecastConfidence:
+
+    @staticmethod
+    def get(metric: str):
+
+        with open(
+            REPORT_DIR / f"{metric}_metrics.json",
+            "r",
+        ) as f:
+
+            report = json.load(f)
+
+        mape = report["MAPE"]
+
+        if mape < 10:
+            level = "Very High"
+            score = 95
+
+        elif mape < 20:
+            level = "High"
+            score = 85
+
+        elif mape < 30:
+            level = "Moderate"
+            score = 70
+
+        elif mape < 50:
+            level = "Low"
+            score = 50
+
+        else:
+            level = "Very Low"
+            score = 30
+
+        return {
+            "score": score,
+            "level": level,
+            "mape": round(mape, 2),
+            "baseline_mape": report["baseline_mape"],
+        }

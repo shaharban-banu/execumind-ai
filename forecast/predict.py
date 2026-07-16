@@ -9,6 +9,8 @@ import joblib
 import pandas as pd
 from prophet import Prophet
 from utils.logger import logger
+from forecast.confidence import ForecastConfidence
+
 
 MODEL_DIR=Path("forecast/models")
 
@@ -35,10 +37,13 @@ class ForecastPredictor:
         forecast=forecast.tail(periods)
         result=[]
 
+        confidence = ForecastConfidence.get(metric)
+
         for _,row in forecast.iterrows():
             result.append({
                 "date":row["ds"].strftime("%Y-%m"),
                 "prediction":round(row["yhat"],2),
+                "confidence":confidence,
                 "lower_bound":round(row["yhat_lower"],2),
                 "upper_bound":round(row["yhat_upper"],2),
             })
