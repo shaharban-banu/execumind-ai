@@ -9,7 +9,7 @@ import pandas as pd
 from langchain_core.documents import Document
 from rag.config.loader_config import LoaderConfig
 from rag.loaders.base_loader import BaseLoader
-from rag.schema.schema_registry import SchemaRegistry
+from rag.registry import RAG_TABLES
 from utils.logger import logger
 
 class CSVLoader(BaseLoader):
@@ -19,18 +19,21 @@ class CSVLoader(BaseLoader):
     Loads any canonical CSV file into LangChain Documents.
     """
 
-    def __init__(self,config: LoaderConfig,schema_registry: SchemaRegistry,) :
+    def __init__(self,config: LoaderConfig) :
 
         self.config = config
-        self.schema_registry = schema_registry
 
         self._validate_config()
 
-        self.table_schema = self.schema_registry.get_table_schema(self.config.table_name)
+        if self.config.table_name not in RAG_TABLES:
+            raise ValueError(
+                f"Table '{self.config.table_name}' is not configured for RAG."
+            )
 
-        self.text_column = self.table_schema.text_column
+        table = RAG_TABLES[self.config.table_name]
 
-        self.metadata_columns = (self.table_schema.metadata_columns)
+        self.text_column = table.text_column
+        self.metadata_columns = table.metadata_columns
 
     def load(self) :
         """

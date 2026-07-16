@@ -19,11 +19,11 @@ def sales_summary(mode:str="historical"):
             - total_revenue
             - average_order_value
     """
-    sql="""select count(distinct o.order_id) as total_orders,
-    round(sum(p.sales_amount),2) as total_revenue,
-    round(avg(p.sales_amount),2) as average_order_value
-    from orders o join payments p
-    on o.order_id=p.order_id;
+    sql="""SELECT
+        COUNT(DISTINCT order_id) AS total_orders,
+        ROUND(SUM(payment_value),2) AS total_revenue,
+        ROUND(SUM(payment_value) / COUNT(DISTINCT order_id),2) AS average_order_value
+    FROM payments;
     """ 
     logger.info("Executing sales summary")
     return query_db(sql,mode)
@@ -33,8 +33,8 @@ def monthly_sales(mode:str="historical"):
     Retrieve monthly revenue trend.
     """
     sql="""select 
-        strftime('%Y-%m',order_date) as month,
-        round(sum(p.sales_amount),2) as revenue,
+        strftime('%Y-%m',o.order_date) as month,
+        round(sum(p.payment_value),2) as revenue,
         count(distinct o.order_id) as orders
         from orders o join payments p
         on o.order_id=p.order_id
@@ -44,28 +44,28 @@ def monthly_sales(mode:str="historical"):
 
 def sales_by_state(mode:str="historical"):
     sql="""select
-        c.state,
-        round(sum(p.sales_amount),2) as revenue,
+        c.customer_state,
+        round(sum(p.payment_value),2) as revenue,
         count(distinct o.order_id) as total_orders
         from orders o join customers c
         on o.customer_id=c.customer_id
         join payments p on o.order_id=p.order_id
-        group by c.state
+        group by c.customer_state
         order by revenue desc;
         """
     logger.info("Executing sales by state")
     return query_db(sql,mode)
 
 def sales_by_category(mode:str="historical"):
-    sql="""select 
-    coalesce(ct.category_english,pr.category) as category,
-    round(sum(oi.item_price),2) as revenue,
-    count(*) as items_sold
-    from order_items oi join products pr 
-        on oi.product_id=pr.product_id 
-    join category_translation ct 
-        on pr.category=ct.category
-        group by COALESCE(ct.category_english, pr.category) order by revenue desc; """
+    sql="""SELECT
+            p.product_category,
+            ROUND(SUM(oi.order_item_value),2) AS revenue,
+            SUM(oi.quantity) AS items_sold
+        FROM order_items oi
+        JOIN products p
+        ON oi.product_id=p.product_id
+        GROUP BY p.product_category
+        ORDER BY revenue DESC;"""
     
     logger.info("Executing sales by category")
     return query_db(sql,mode)
@@ -78,8 +78,8 @@ def top_products(limit: int = 10,mode: str = "historical") :
     sql = f"""
     SELECT
         product_id,
-        COUNT(*) AS units_sold,
-        ROUND(SUM(_item_price), 2) AS revenue
+        SUM(quantity) AS units_sold,
+        ROUND(SUM(order_item_value),2) AS revenue
     FROM order_items
     GROUP BY product_id
     ORDER BY revenue DESC

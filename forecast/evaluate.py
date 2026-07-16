@@ -36,17 +36,29 @@ def evaluate_model(metric: str):
     df_cv = cross_validation(
         model,
         initial="540 days",
-        period="60 days",
-        horizon="60 days"
+        period="30 days",
+        horizon="30 days"
     )
-    print("\n========== Revenue Cross Validation ==========\n")
+    print(f"\n========== {metric.upper()} Cross Validation ==========\n")
     print(df_cv[["ds", "y", "yhat"]].head(20))
 
-    print("\n========== Smallest Actual Revenue ==========\n")
-    print(df_cv.nsmallest(10, "y")[["ds", "y", "yhat"]])
+    # print("\n========== Smallest Actual Revenue ==========\n")
+    # print(df_cv.nsmallest(10, "y")[["ds", "y", "yhat"]])
 
-    print("\n========== Revenue Statistics ==========\n")
+    print(f"\n========== {metric.upper()} Statistics ==========\n")
     print(df_cv["y"].describe())
+
+    print("Number of CV rows:", len(df_cv))
+
+    print(df_cv.head())
+
+    print(df_cv.tail())
+
+    print(df_cv["cutoff"].unique())
+
+    print(df_cv["ds"].min())
+
+    print(df_cv["ds"].max())
 
     df_perf = performance_metrics(df_cv)
 

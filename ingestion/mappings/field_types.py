@@ -36,6 +36,12 @@ CUSTOMER_FIELDS = [
         description="Unique customer identifier.",
     ),
     CanonicalField(
+        name="customer_master_id",
+        entity="customers",
+        data_type="string",
+        required=False,
+    ),
+    CanonicalField(
         name="customer_name",
         entity="customers",
         data_type="string",
@@ -281,6 +287,7 @@ REVIEW_FIELDS = [
         data_type="string",
         description="Review comment.",
     ),
+    CanonicalField(name="review_text",entity="reviews", data_type="string"),
     CanonicalField(
         name="review_date",
         entity="reviews",

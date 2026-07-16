@@ -31,7 +31,8 @@ class Customer(Base):
         nullable=False,
         index=True,
     )
-
+    customer_master_id = Column(String)
+    
     customer_name = Column(String)
     customer_email = Column(String)
     customer_phone = Column(String)
@@ -224,6 +225,8 @@ class Review(Base):
     review_comment = Column(String)
 
     review_date = Column(DateTime)
+
+    review_text=Column(String)
 
     __table_args__ = (
         PrimaryKeyConstraint(

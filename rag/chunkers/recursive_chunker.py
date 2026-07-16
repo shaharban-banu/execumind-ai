@@ -2,7 +2,7 @@
 Recursive text chunker.
 """
 from utils.logger import logger
-from langchain_core.documents import Document
+#from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from rag.chunkers.base_chunker import BaseChunker
 

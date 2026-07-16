@@ -9,7 +9,7 @@ from rag.AdavancedRAGpipeline import AdvancedRAGPipeline
 from rag.builder import RAGPipelineBuilder
 from rag.config.loader_config import LoaderConfig
 from rag.config.rag_config import load_rag_config
-from rag.schema.schema_registry import SchemaRegistry
+
 
 
 def create_test_pipeline() -> AdvancedRAGPipeline:
@@ -18,10 +18,6 @@ def create_test_pipeline() -> AdvancedRAGPipeline:
     """
 
     session = SessionLocal()
-
-    schema_registry = SchemaRegistry(
-        Path("config/canonical_schema.yaml")
-    )
 
     loader_configs = []
 
@@ -59,15 +55,14 @@ def create_test_pipeline() -> AdvancedRAGPipeline:
     builder = RAGPipelineBuilder(
         rag_config=load_rag_config(),
         loader_configs=loader_configs,
-        schema_registry=schema_registry,
+
     )
 
     pipeline = builder.build()
 
     if (
     Path(pipeline.vector_store.index_path).exists()
-    and Path(pipeline.vector_store.metadata_path).exists()
-):
+    and Path(pipeline.vector_store.metadata_path).exists()):
         pipeline.load_index()
     else:
         pipeline.build_index()

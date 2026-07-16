@@ -31,6 +31,11 @@ CUSTOMER_SYNONYMS = {
     "registration_date":"customer_created_date",
     "created_date":"customer_created_date",
     "join_date":"customer_created_date",
+    "customer_unique_id": "customer_master_id",
+    "buyer_unique_id": "customer_master_id",
+    "client_id": "customer_master_id",
+    "member_id": "customer_master_id",
+    "master_customer_id": "customer_master_id",
 }
 
 # ==========================================================
@@ -108,20 +113,30 @@ PAYMENT_SYNONYMS = {
 # ==========================================================
 
 REVIEW_SYNONYMS = {
+    # Entity aliases
     "rating": "review",
     "ratings": "review",
     "feedback": "review",
     "comment": "review",
-    
     "comments": "review",
     "testimonial": "review",
-    "rating":"review_score",
-    "score":"review_score",
-    "review_score":"review_score",
-    "review_text":"review_comment",
-    "comment":"review_comment",
-    "feedback":"review_comment",
-    "review_comment":"review_comment",
+
+    # Fields
+    "review_score": "review_score",
+    "score": "review_score",
+    "rating_score": "review_score",
+
+    "review_title": "review_title",
+    "review_comment_title": "review_title",
+    "title": "review_title",
+
+    "review_comment": "review_comment",
+    "review_comment_message": "review_comment",
+    "message": "review_comment",
+    "review_message": "review_comment",
+
+    # Combined field (generated later in Transformer)
+    "review_text": "review_text",
 }
 
 # ==========================================================

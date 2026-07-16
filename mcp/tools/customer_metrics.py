@@ -24,13 +24,13 @@ def customer_summary(mode: str = "historical") :
         - average_orders_per_customer
     """
     sql = """
-    SELECT
-        COUNT(DISTINCT c.customer_id) AS total_customers,
-        COUNT(DISTINCT c.customer_unique_id) AS unique_customers,
+        SELECT
+        COUNT(c.customer_id) AS total_customer_records,
+        COUNT(DISTINCT c.customer_master_id) AS unique_customers,
         COUNT(o.order_id) AS total_orders,
         ROUND(
             CAST(COUNT(o.order_id) AS REAL) /
-            NULLIF(COUNT(DISTINCT c.customer_unique_id),0),
+            NULLIF(COUNT(DISTINCT c.customer_master_id),0),
             2
         ) AS average_orders_per_customer
     FROM customers c
@@ -51,8 +51,9 @@ def customer_growth(mode: str = "historical") :
     sql = """
     SELECT
         strftime('%Y-%m', order_date) AS month,
-        COUNT(DISTINCT customer_id) AS new_customers
-    FROM orders
+        COUNT(DISTINCT c.customer_master_id) AS new_customers
+    FROM orders o JOIN customers c
+    ON o.customer_id = c.customer_id
     GROUP BY month
     ORDER BY month;
     """
@@ -68,15 +69,20 @@ def repeat_customer_rate(mode: str = "historical") :
     """
 
     sql = """
-    SELECT
-        customer_unique_id,
-        COUNT(o.order_id) AS total_orders
-    FROM customers c
-    JOIN orders o
-        ON c.customer_id = o.customer_id
-    GROUP BY customer_unique_id
-    HAVING COUNT(o.order_id) > 1
-    ORDER BY total_orders DESC;
+        SELECT
+        ROUND(
+            100.0 * COUNT(*) /
+            (SELECT COUNT(DISTINCT customer_master_id) FROM customers),
+            2
+        ) AS repeat_customer_rate
+    FROM (
+        SELECT c.customer_master_id
+        FROM orders o
+        JOIN customers c
+            ON o.customer_id = c.customer_id
+        GROUP BY c.customer_master_id
+        HAVING COUNT(*) > 1
+    );
     """
 
     logger.info("Executing repeat customer analysis")
@@ -91,10 +97,10 @@ def customers_by_state(mode: str = "historical"):
 
     sql = """
     SELECT
-        state,
+        customer_state,
         COUNT(*) AS total_customers
     FROM customers
-    GROUP BY state
+    GROUP BY customer_state
     ORDER BY total_customers DESC;
     """
 
@@ -109,16 +115,49 @@ def customer_order_frequency(mode: str = "historical") :
     """
 
     sql = """
-    SELECT
-        customer_unique_id,
-        COUNT(o.order_id) AS total_orders
-    FROM customers c
-    JOIN orders o
-        ON c.customer_id = o.customer_id
-    GROUP BY customer_unique_id
-    ORDER BY total_orders DESC;
+            SELECT
+        total_orders,
+        COUNT(*) AS customers
+        FROM
+        (
+        SELECT
+        customer_id,
+        COUNT(*) AS total_orders
+        FROM orders
+        GROUP BY customer_id
+        )
+        GROUP BY total_orders
+        ORDER BY total_orders;
     """
 
     logger.info("Executing customer order frequency")
+
+    return query_db(sql, mode)
+
+def customer_retention(mode: str = "historical") :
+    """
+    Retrieve customer retention.
+    """
+
+    sql = """
+        SELECT
+        ROUND(
+            100.0 * COUNT(*) /
+            (SELECT COUNT(DISTINCT customer_master_id) FROM customers),
+            2
+        ) AS customer_retention_rate
+    FROM
+    (
+        SELECT
+            c.customer_master_id
+        FROM orders o
+        JOIN customers c
+            ON o.customer_id = c.customer_id
+        GROUP BY c.customer_master_id
+        HAVING COUNT(*) > 1
+    );
+    """
+
+    logger.info("Executing customer retention")
 
     return query_db(sql, mode)

@@ -5,8 +5,7 @@ Every loader converts a data source into a list of LangChain
 Document objects for downstream RAG processing.
 """
 from abc import ABC,abstractmethod
-from typing import List
-from langchain_core.documents import Document
+
 
 class BaseLoader(ABC):
     @abstractmethod

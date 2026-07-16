@@ -21,8 +21,8 @@ def seller_summary(mode: str = "historical"):
     sql = """
     SELECT
         COUNT(DISTINCT seller_id) AS total_sellers,
-        COUNT(*) AS total_items_sold,
-        ROUND(SUM(item_price), 2) AS total_revenue
+        SUM(quantity) AS total_items_sold,
+        ROUND(SUM(order_item_value), 2) AS total_revenue
     FROM order_items;
     """
 
@@ -40,8 +40,8 @@ def top_sellers(limit: int = 10,mode: str = "historical"):
     sql = f"""
     SELECT
         seller_id,
-        COUNT(*) AS items_sold,
-        ROUND(SUM(item_price), 2) AS revenue
+        SUM(quantity) AS items_sold,
+        ROUND(SUM(order_item_value), 2) AS revenue
     FROM order_items
     GROUP BY seller_id
     ORDER BY revenue DESC
@@ -60,7 +60,7 @@ def seller_revenue(mode: str = "historical"):
     sql = """
     SELECT
         seller_id,
-        ROUND(SUM(item_price), 2) AS revenue
+        ROUND(SUM(order_item_value), 2) AS revenue
     FROM order_items
     GROUP BY seller_id
     ORDER BY revenue DESC;
@@ -121,10 +121,10 @@ def sellers_by_state(mode: str = "historical"):
     """
     sql = """
     SELECT
-        state,
+        seller_state,
         COUNT(*) AS total_sellers
     FROM sellers
-    GROUP BY state
+    GROUP BY seller_state
     ORDER BY total_sellers DESC;
     """
 

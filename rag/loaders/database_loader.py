@@ -10,22 +10,22 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from rag.config.loader_config import LoaderConfig
 from rag.loaders.base_loader import BaseLoader
-from rag.schema.schema_registry import SchemaRegistry
+from rag.registry import RAG_TABLES
+
 from utils.logger import logger
 
 class DatabaseLoader(BaseLoader):
     """
     Loads review data from supported sources.
     """
-    def __init__(self,config:LoaderConfig,schema_registry: SchemaRegistry,):
+    def __init__(self,config:LoaderConfig):
         self.config=config
-        self.schema_registry = schema_registry
 
         self._validate_config()
-        # Load schema once
-        self.table_schema = self.schema_registry.get_table_schema(self.config.table_name)
-        self.text_column = self.table_schema["text_column"]
-        self.metadata_columns = self.table_schema.get("metadata_columns",[],)
+        
+        table_config=RAG_TABLES[self.config.table_name]
+        self.text_column = table_config.text_column
+        self.metadata_columns = table_config.metadata_columns
 
     def load(self):
         rows=self._fetch_rows()
@@ -40,11 +40,16 @@ class DatabaseLoader(BaseLoader):
         if not self.config.table_name:
             raise ValueError("Table name is required.")
 
-        if not self.schema_registry.table_exists(self.config.table_name):
-            raise ValueError(f"Unknown table '{self.config.table_name}'.")
+        if self.config.table_name not in RAG_TABLES:
+            raise ValueError(f"Unsupported RAG table: {self.config.table_name}")
         
     def _fetch_rows(self):
-        query=text(f"select * from {self.config.table_name}")
+        columns=[self.text_column,*self.metadata_columns,]
+
+        query=text(f"""
+            SELECT {", ".join(columns)}
+            FROM {self.config.table_name}
+            """)
         try:
             result=(self.config.session.execute(query).mappings().all())
             return list(result)

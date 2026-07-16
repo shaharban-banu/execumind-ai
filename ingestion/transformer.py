@@ -31,8 +31,14 @@ class Transformer:
             df = self._trim_strings(df)
 
             df = self._convert_datatypes(df,table.columns,)
+
+            df = self._normalize_quantity(table.name, df)
+
+            df = self._generate_derived_fields(table.name, df)
             
             df = self._generate_missing_ids(table.name,df,)
+
+            df = self._fill_missing_customer_master_id(table.name, df)
 
             df = self._normalize_booleans(df)
 
@@ -45,6 +51,9 @@ class Transformer:
             df = self._handle_missing_values(df,table.columns,)
 
             df = self._create_features(df,)
+
+            if table.name=="reviews":
+                df=self._create_review_text(df)
 
             table.dataframe = df
             table.row_count=len(df)
@@ -350,4 +359,99 @@ class Transformer:
 
         return df
     
+    @staticmethod
+    def _create_review_text(df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Combine review title and review comment into one
+        searchable text field.
+        """
+
+        title = (
+            df["review_title"]
+            if "review_title" in df.columns
+            else ""
+        )
+
+        comment = (
+            df["review_comment"]
+            if "review_comment" in df.columns
+            else ""
+        )
+
+        df["review_text"] = (
+            title.fillna("").astype(str)
+            + "\n"
+            + comment.fillna("").astype(str)
+        ).str.strip()
+
+        return df
+    
+    @staticmethod
+    def _fill_missing_customer_master_id(
+        table_name: str,
+        df: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """
+        If the dataset doesn't provide a customer_master_id,
+        fall back to customer_id.
+        """
+
+        if table_name != "customers":
+            return df
+
+        if (
+            "customer_master_id" in df.columns
+            and "customer_id" in df.columns
+        ):
+            df["customer_master_id"] = (
+                df["customer_master_id"]
+                .fillna(df["customer_id"])
+            )
+
+        return df
+    @staticmethod
+    def _normalize_quantity(
+        table_name: str,
+        df: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """
+        Ensure every order item has a quantity.
+        If quantity is missing, assume 1.
+        """
+
+        if table_name != "order_items":
+            return df
+
+        if "quantity" not in df.columns:
+            df["quantity"] = 1
+
+        else:
+            df["quantity"] = df["quantity"].fillna(1)
+
+        return df
+    
+    @staticmethod
+    def _generate_derived_fields(
+        table_name: str,
+        df: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """Generate canonical derived fields.
+        """
+
+        if table_name == "order_items":
+
+            if (
+                "order_item_value" in df.columns
+                and "unit_price" in df.columns
+            ):
+
+                missing = df["order_item_value"].isna()
+
+                df.loc[missing, "order_item_value"] = (
+                    df.loc[missing, "unit_price"]
+                    * df.loc[missing, "quantity"]
+                )
+
+        return df
+            
 

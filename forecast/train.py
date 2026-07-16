@@ -33,9 +33,13 @@ def train_metric(metric):
     """
     logger.info("Training Prophet model %s",metric)
     df=load_time_series(metric)
-    model=Prophet(yearly_seasonality=True,
+   
+    print(df.shape)
+    model=Prophet(yearly_seasonality=False,
                   weekly_seasonality=False,
-                  daily_seasonality=False,)
+                  daily_seasonality=False,
+                  n_changepoints=5,
+                  changepoint_prior_scale=0.05,)
     model.fit(df)
     MODEL_PATH=MODEL_DIR/f"{metric}.pkl"
     joblib.dump(model,MODEL_PATH)

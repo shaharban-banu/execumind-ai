@@ -50,7 +50,7 @@ def late_delivery_rate(mode:str="historical"):
     return query_db(sql,mode)
 
 def delivery_by_state(mode:str="historical"):
-    sql="""select c.state,
+    sql="""select c.customer_state,
         count(*) as total_orders,
         round(avg(julianday(delivered_date)-
                 julianday(order_date)),2)
@@ -64,7 +64,7 @@ def delivery_by_state(mode:str="historical"):
         from orders o join customers c 
         on o.customer_id=c.customer_id
         where o.delivered_date is not null
-        group by c.state
+        group by customer_state
         order by late_deliveries desc;
         """
     logger.info("Executing delivery by state ")

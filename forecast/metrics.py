@@ -25,7 +25,16 @@ def evaluate_forecast(actual,predicted,) -> dict:
 
     rmse = np.sqrt(mean_squared_error(actual,predicted,))
 
-    mape = np.mean(np.abs((actual - predicted)/ actual)) * 100
+    actual = np.asarray(actual)
+    predicted = np.asarray(predicted)
+
+    mask = actual != 0
+
+    mape = (
+        np.mean(
+            np.abs((actual[mask] - predicted[mask]) / actual[mask])
+        ) * 100
+    )
 
     return {
         "MAE": round(mae, 2),

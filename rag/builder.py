@@ -17,7 +17,7 @@ from rag.rerankers.cross_encoder_reranker import (CrossEncoderReranker,)
 # from rag.retrievers.hybrid_retriever import HybridRetriever
 # from rag.retrievers.hyde_retriever import HyDERetriever
 from rag.AdavancedRAGpipeline import AdvancedRAGPipeline
-from rag.schema.schema_registry import SchemaRegistry
+
 
 class RAGPipelineBuilder:
     """
@@ -28,11 +28,11 @@ class RAGPipelineBuilder:
         self,
         rag_config: RAGConfig,
         loader_configs: list[LoaderConfig],
-        schema_registry: SchemaRegistry,
+        
     ):
         self.rag_config = rag_config
         self.loader_configs = loader_configs
-        self.schema_registry = schema_registry
+       
     def build(self):
         """
         Build the complete RAG pipeline.
@@ -92,7 +92,7 @@ class RAGPipelineBuilder:
 
             loader = LoaderFactory.create_loader(
                 config=config,
-                schema_registry=self.schema_registry,
+               
             )
             loaders.append(loader)
         return loaders
