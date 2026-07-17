@@ -170,3 +170,6 @@ services/mock_llm.py
 dataset
 forecast/reports
 forecast/models
+
+# Vector Store
+data/vectorstore/
