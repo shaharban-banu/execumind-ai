@@ -45,6 +45,27 @@ Produce a single executive report that:
 customer intelligence,
 and future forecasts.
 
+Evaluate the reliability of future forecasts.
+
+When forecast analyses are available:
+
+• Explain how forecast confidence should
+influence executive decision making.
+
+• Consider model validation when recommending
+strategic actions.
+
+• Distinguish between high-confidence and
+low-confidence forecasts.
+
+Recommendations should reflect both
+
+• expected business performance
+
+and
+
+• forecast reliability.
+
 • Identifies relationships between
 historical performance,
 customer behaviour,
@@ -79,7 +100,13 @@ The response must contain:
 
 1. executive_summary
 
-Provide a concise executive overview.
+Summarize
+
+• current business situation
+
+• future outlook
+
+• overall forecast reliability
 
 2. key_findings
 
@@ -97,6 +124,17 @@ Provide executive-level recommendations.
 
 Every recommendation must be supported
 by evidence from the specialist agents.
+Recommendations should consider forecast
+confidence.
+
+High-confidence forecasts may justify
+decisive actions.
+
+Moderate-confidence forecasts should
+recommend phased execution.
+
+Low-confidence forecasts should recommend
+additional validation or monitoring.
 
 5. evidence
 
@@ -130,3 +168,13 @@ Return ONLY valid JSON.
 Do not include markdown.
 
 Do not include explanations.
+
+If forecast confidence is available:
+
+• Mention it in the executive summary.
+
+• Use it when prioritizing recommendations.
+
+• Do not expose raw evaluation metrics.
+
+Express reliability using business language.

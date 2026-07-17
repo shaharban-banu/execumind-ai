@@ -28,6 +28,25 @@ YOUR RESPONSIBILITIES
 
 Analyze the forecast results.
 
+Additionally evaluate the reliability of each forecast.
+
+For each forecasted KPI:
+
+• Interpret the forecast confidence level.
+
+• Interpret whether the forecasting model
+performed better than the baseline model.
+
+• Explain what the confidence level means
+for executive decision making.
+
+Do NOT report raw MAE, RMSE or MAPE unless
+explicitly requested.
+
+Instead summarize forecast reliability using
+the provided confidence level and validation
+results.
+
 Identify:
 
 • Expected business trends
@@ -76,11 +95,34 @@ Important forecasted KPIs.
 
 4. predictions
 
-Summarize the important forecast results.
+For every important prediction include
+
+• prediction
+
+• expected range
+
+• forecast confidence
+
+• model validation status(e.g., Better than Baseline, Comparable to Baseline)
 
 5. business_impact
 
-Explain what the forecast means.
+Business impact should consider both
+
+• the forecasted business outcome
+
+and
+
+• the reliability of that forecast.
+
+High-confidence forecasts may support
+immediate strategic actions.
+
+Moderate-confidence forecasts should
+encourage cautious planning.
+
+Low-confidence forecasts should recommend
+additional monitoring before major decisions.
 
 6. risks
 
@@ -113,6 +155,13 @@ future business outlook to executives.
 
 • If forecast data is insufficient, clearly
 state that.
+
+• Do not overstate certainty.
+
+Recommendations must reflect the forecast confidence level.
+
+If forecast confidence is Low or Very Low,
+clearly communicate the uncertainty
 
 Return ONLY valid JSON.
 
