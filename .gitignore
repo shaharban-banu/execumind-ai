@@ -154,7 +154,7 @@ pytest.ini
 structure.txt
 tests/test_*
 tests/validate_load.py
-frontend/
+
 notebooks/*
 bm25_evaluation.py
 test_hybrid.py
@@ -173,3 +173,42 @@ forecast/models
 
 # Vector Store
 data/vectorstore/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Cache
+.eslintcache
+.cache/
+
+# Vite
+vite.svg
+
+# TypeScript
+*.tsbuildinfo

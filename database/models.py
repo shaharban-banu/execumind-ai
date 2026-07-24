@@ -11,8 +11,9 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     PrimaryKeyConstraint,
-    String,
+    String,Text
 )
+from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -267,3 +268,30 @@ class Delivery(Base):
     delivery_status = Column(String)
 
     freight_cost = Column(Float)
+
+# ==========================================================
+# Executive recommendation for frontend
+# ==========================================================
+class ExecutiveRecommendation(Base):
+    __tablename__ = "executive_recommendations"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    priority = Column(String(20), nullable=False)
+
+    action = Column(Text, nullable=False)
+
+    rationale = Column(Text, nullable=False)
+
+    executive_summary = Column(Text)
+
+    key_findings = Column(Text)      # JSON string
+
+    business_risks = Column(Text)    # JSON string
+
+    evidence = Column(Text)          # JSON string
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )

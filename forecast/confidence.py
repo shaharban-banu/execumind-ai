@@ -42,5 +42,7 @@ class ForecastConfidence:
             "score": score,
             "level": level,
             "mape": round(mape, 2),
-            "baseline_mape": report["baseline_mape"],
+            "baseline_mape": None,
+            "summary": f"Forecast reliability is {level.lower()} based on historical model performance.",
+            "evaluation_method": "Rolling Cross Validation",
         }

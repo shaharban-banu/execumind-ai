@@ -79,64 +79,50 @@ OUTPUT REQUIREMENTS
 Return a valid JSON object matching the
 ForecastAnalysis schema.
 
-Include:
+The JSON must contain ONLY these fields:
 
 1. executive_summary
 
-A concise summary of future business outlook.
+A concise summary of the forecast and its business implications.
 
 2. forecast_period
 
-Forecast horizon.
+Forecast horizon (e.g., "Next 6 Months").
 
-3. key_kpis
+3. kpis
 
-Important forecasted KPIs.
+Forecasted business KPIs.
 
-4. predictions
+Each KPI must contain:
+• metric
+• value
+• unit
 
-For every important prediction include
+4. risks
 
-• prediction
+List of potential future business risks.
 
-• expected range
+5. recommendations
 
-• forecast confidence
+Each recommendation must be an object containing:
 
-• model validation status(e.g., Better than Baseline, Comparable to Baseline)
+• priority
+• action
+• rationale
 
-5. business_impact
+6. evidence
 
-Business impact should consider both
+Supporting evidence for the forecast.
 
-• the forecasted business outcome
+Each evidence object must contain:
 
-and
+• source
+• reference
+• text
 
-• the reliability of that forecast.
+Do NOT generate any additional fields.
 
-High-confidence forecasts may support
-immediate strategic actions.
-
-Moderate-confidence forecasts should
-encourage cautious planning.
-
-Low-confidence forecasts should recommend
-additional monitoring before major decisions.
-
-6. risks
-
-Potential future risks.
-
-7. recommendations
-
-Actions management should take.
-
-8. evidence
-
-Reference the forecast metrics that support each
-conclusion.
-
+Return ONLY valid JSON.
 ==================================================
 RULES
 ==================================================

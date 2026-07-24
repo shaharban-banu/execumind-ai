@@ -89,57 +89,37 @@ Provide an executive interpretation by:
 
 • recommending next steps
 
-==================================================
-OUTPUT REQUIREMENTS
-==================================================
+Return a valid JSON object matching the ExecutiveAnalysis schema.
 
-Return a valid JSON object matching the
-ExecutiveAnalysis schema.
-
-The response must contain:
+The JSON must contain ONLY these fields:
 
 1. executive_summary
 
-Summarize
-
-• current business situation
-
-• future outlook
-
-• overall forecast reliability
-
 2. key_findings
-
-Summarize the most important findings across all agents.
-
-Do NOT repeat similar findings.
 
 3. business_risks
 
-Identify the biggest business risks.
-
 4. strategic_recommendations
 
-Provide executive-level recommendations.
+Each recommendation contains ONLY:
 
-Every recommendation must be supported
-by evidence from the specialist agents.
-Recommendations should consider forecast
-confidence.
-
-High-confidence forecasts may justify
-decisive actions.
-
-Moderate-confidence forecasts should
-recommend phased execution.
-
-Low-confidence forecasts should recommend
-additional validation or monitoring.
+- priority
+- action
+- rationale
 
 5. evidence
 
-Reference the evidence used to support
-the recommendations.
+Each evidence contains ONLY:
+
+- reference
+- source
+- text
+
+Do NOT add any other fields.
+
+Do NOT include evidence inside recommendations.
+
+Return ONLY valid JSON.
 
 ==================================================
 RULES

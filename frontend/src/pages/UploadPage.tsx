@@ -1,0 +1,606 @@
+
+import {
+  Card,
+  CardHeader,
+} from "../components/ui/Card";
+import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/Button';
+import { Skeleton } from '../components/ui/Feedback';
+import {
+  getDatasets,
+  uploadDataset,
+  processDataset,
+  uploadKnowledge,
+  getKnowledgeDocuments,
+  generateKnowledgeIndex,
+} from "../lib/api";
+import type { DatasetRecord } from '../lib/types';
+import { formatRelativeTime, cn } from '../lib/utils';
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  FileText,
+  FileType,
+  FileCode2,
+} from "lucide-react";
+import { FolderOpen } from "lucide-react";
+
+
+const statusMap = {
+  ready: { variant: 'emerald' as const, label: 'Ready' },
+  processing: { variant: 'amber' as const, label: 'Processing' },
+  failed: { variant: 'rose' as const, label: 'Failed' },
+};
+
+const typeColors: Record<string, string> = {
+  CSV: 'bg-brand-50 text-brand-600',
+  Excel: 'bg-emerald-50 text-emerald-600',
+  JSON: 'bg-amber-50 text-amber-600',
+};
+
+export function UploadPage() {
+  const [datasets, setDatasets] = useState<DatasetRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [knowledgeFiles, setKnowledgeFiles] = useState<File[]>([]);
+  const [knowledgeDocs, setKnowledgeDocs] = useState<any[]>([]);
+  const [showPreview, setShowPreview] = useState<DatasetRecord | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [processResult, setProcessResult] = useState<any>(null);
+  const [indexing, setIndexing] = useState(false);
+  const [indexMessage, setIndexMessage] = useState("");
+  const [knowledgeUploading, setKnowledgeUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
+  const [uploadError, setUploadError] = useState("");
+  
+  
+
+  const loadDatasets = useCallback(() => {
+    setLoading(true);
+    getDatasets().then((d) => { setDatasets(d); setLoading(false); });
+  }, []);
+ const loadKnowledge = useCallback(() => {
+    getKnowledgeDocuments().then((docs) => {
+        setKnowledgeDocs(docs);
+    });
+}, []);
+
+  useEffect(() => {
+    loadDatasets();
+    loadKnowledge();
+}, [loadDatasets, loadKnowledge]);
+
+  function handleFiles(files: FileList | null) {
+  if (!files || files.length === 0) return;
+
+  setSelectedFiles(Array.from(files));
+}
+  function handleKnowledgeFiles(
+    event: React.ChangeEvent<HTMLInputElement>
+) {
+    if (!event.target.files) return;
+
+    setKnowledgeFiles(Array.from(event.target.files));
+}
+
+
+  async function handleUpload() {
+  if (selectedFiles.length === 0) return;
+
+  setUploading(true);
+  setUploadProgress(0);
+
+  const interval = setInterval(() => {
+    setUploadProgress((p) => Math.min(p + Math.random() * 18, 95));
+  }, 120);
+
+  try {
+    await uploadDataset(selectedFiles);
+
+    // Start ingestion
+    const result = await processDataset();
+
+    // Save the result for the UI
+    setProcessResult(result);
+
+    setUploadProgress(100);
+    clearInterval(interval);
+
+    setTimeout(() => {
+      setUploading(false);
+      setSelectedFiles([]);
+      setUploadProgress(0);
+      loadDatasets();
+    }, 600);
+
+  } catch (error) {
+    clearInterval(interval);
+    setUploading(false);
+    console.error(error);
+  }
+}
+async function handleKnowledgeUpload() {
+    if (knowledgeFiles.length === 0) return;
+
+    try {
+        setKnowledgeUploading(true);
+        setUploadMessage("");
+        setUploadError("");
+
+        await uploadKnowledge(knowledgeFiles);
+
+        setKnowledgeFiles([]);
+
+        await loadKnowledge();
+
+        setUploadMessage("Documents uploaded successfully.");
+
+    } catch (error) {
+        console.error(error);
+        setUploadError("Upload failed. Please try again.");
+    } finally {
+        setKnowledgeUploading(false);
+    }
+}
+async function handleGenerateIndex() {
+    try {
+        setIndexing(true);
+        setIndexMessage("");
+
+        const result = await generateKnowledgeIndex();
+
+        setIndexMessage(result.message);
+    } catch (error) {
+        console.error(error);
+        setIndexMessage("Failed to generate knowledge index.");
+    } finally {
+        setIndexing(false);
+    }
+}
+function getFileIcon(fileName: string) {
+    const extension = fileName.split(".").pop()?.toLowerCase();
+
+    switch (extension) {
+        case "pdf":
+            return <FileText className="h-5 w-5 text-red-500" />;
+
+        case "doc":
+        case "docx":
+            return <FileType className="h-5 w-5 text-blue-500" />;
+
+        case "txt":
+            return <FileCode2 className="h-5 w-5 text-gray-500" />;
+
+        default:
+            return <FileText className="h-5 w-5 text-slate-500" />;
+    }
+}
+
+  return (
+    <div className="space-y-6">
+      {/* Drop zone */}
+      <Card className="overflow-hidden">
+        <div className="p-6">
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              handleFiles(e.dataTransfer.files);
+            }}
+            onClick={() => inputRef.current?.click()}
+            className={cn(
+              'flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-all duration-200',
+              dragging ? 'border-brand-400 bg-brand-50/60 scale-[1.01]' : 'border-slate-200 bg-slate-50/40 hover:border-brand-300 hover:bg-brand-50/30'
+            )}
+          >
+            <input
+              ref={inputRef}
+              type="file"
+              multiple
+              accept=".csv"
+              className="hidden"
+              onChange={(e) => handleFiles(e.target.files)}
+            />
+            <div className={cn(
+              'mb-4 flex h-14 w-14 items-center justify-center rounded-2xl transition-colors',
+              dragging ? 'bg-brand-100 text-brand-600' : 'bg-white text-slate-400 shadow-sm'
+            )}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <path d="M7 9l5-5 5 5" />
+                <path d="M12 4v12" />
+              </svg>
+            </div>
+            <h3 className="font-display text-base font-semibold text-slate-900">
+              {dragging ? 'Drop to upload' : 'Drag & drop your dataset'}
+            </h3>
+            <p className="mt-1 text-sm text-slate-500">
+              or <span className="font-medium text-brand-600">browse files</span> · CSV, Excel, JSON, Parquet up to 50MB
+            </p>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              {['CSV', 'XLSX', 'JSON', 'Parquet'].map((f) => (
+                <span key={f} className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-500">{f}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Selected file + upload progress */}
+          {selectedFiles.length > 0 && (
+            <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></svg>
+                  </div>
+                  <div className="min-w-0">
+                    {selectedFiles.map((file) => (
+                      <div key={file.name} className="mb-2">
+                        <p className="truncate text-sm font-medium text-slate-900">
+                          {file.name}
+                        </p>
+
+                        <p className="text-xs text-slate-400">
+                          {(file.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {!uploading && uploadProgress < 100 && (
+                  <Button size="sm" onClick={handleUpload}>Upload & Analyze</Button>
+                )}
+                {uploadProgress === 100 && <Badge variant="emerald" tone="solid" dot>Uploaded</Badge>}
+              </div>
+              {uploading && (
+                <div className="mt-3">
+                  <div className="mb-1.5 flex justify-between text-xs">
+                    <span className="text-slate-500">Analyzing dataset structure…</span>
+                    <span className="font-medium text-brand-600">{Math.round(uploadProgress)}%</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-600 transition-all duration-200" style={{ width: `${uploadProgress}%` }} />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </Card>
+      <Card>
+    <CardHeader
+        title="Knowledge Base"
+        subtitle="Upload PDFs, DOCX or TXT files to enhance AI responses."
+    />
+
+    <div className="space-y-5 p-5">
+
+        {/* Upload Area */}
+        <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center transition hover:border-blue-400 hover:bg-slate-50">
+
+            <FolderOpen className="h-10 w-10 text-brand-500" />
+
+            <h3 className="font-semibold text-slate-800">
+                Drag & drop your documents
+            </h3>
+
+            <p className="text-sm text-slate-500 mt-2">
+                or
+                <label className="ml-1 cursor-pointer text-blue-600">
+                    browse files
+                    <input
+                        hidden
+                        multiple
+                        type="file"
+                        accept=".pdf,.docx,.txt"
+                        onChange={handleKnowledgeFiles}
+                    />
+                </label>
+            </p>
+
+            <p className="mt-3 text-xs text-slate-400">
+                PDF, DOCX and TXT supported
+            </p>
+        </div>
+
+        {/* Selected Files */}
+        {knowledgeFiles.length > 0 && (
+            <div className="rounded-lg border bg-slate-50 p-4">
+
+                <p className="mb-3 font-medium">
+                    Selected Files
+                </p>
+
+                <div className="space-y-2">
+
+                    {knowledgeFiles.map(file => (
+
+                        <div
+                            key={file.name}
+                            className="flex items-center gap-2 text-sm text-slate-700"
+                        >
+                            {getFileIcon(file.name)}
+                            <span>{file.name}</span>
+                        </div>
+
+                    ))}
+
+                </div>
+
+            </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+
+            <Button
+                onClick={handleKnowledgeUpload}
+                disabled={knowledgeFiles.length === 0 || knowledgeUploading}
+            >
+                {knowledgeUploading
+                    ? "Uploading..."
+                    : "Upload Documents"}
+            </Button>
+
+            <Button
+                variant="secondary"
+                onClick={handleGenerateIndex}
+                disabled={knowledgeDocs.length === 0 || indexing}
+            >
+                {indexing
+                    ? "Generating..."
+                    : "Generate Knowledge Index"}
+            </Button>
+
+        </div>
+
+        {/* Upload Success */}
+        {uploadMessage && (
+            <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+                <p className="text-sm text-green-700">
+                    ✅ {uploadMessage}
+                </p>
+            </div>
+        )}
+
+        {/* Upload Error */}
+        {uploadError && (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                <p className="text-sm text-red-700">
+                    ❌ {uploadError}
+                </p>
+            </div>
+        )}
+
+        {/* Index Message */}
+        {indexMessage && (
+            <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+                <p className="text-sm text-green-700">
+                    ✅ {indexMessage}
+                </p>
+            </div>
+        )}
+
+        {/* Status */}
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+
+            <h4 className="font-semibold text-green-800">
+                🟢 Knowledge Base Ready
+            </h4>
+
+            <p className="mt-1 text-sm text-green-700">
+                {knowledgeDocs.length} Documents 
+            </p>
+
+        </div>
+        <h3 className="font-semibold text-slate-800">
+            Uploaded Documents
+        </h3>
+        {/* Uploaded Documents */}
+        <div className="space-y-3">
+
+            {knowledgeDocs.map(doc => (
+
+                <div
+                    key={doc.name}
+                    className="flex items-center justify-between rounded-lg border bg-white p-4"
+                >
+
+                    <div className="flex items-center gap-3">
+
+                        {getFileIcon(doc.name)}
+
+                        <div>
+
+                            <p className="font-medium">
+                                {doc.name}
+                            </p>
+
+                            <p className="text-sm text-slate-500">
+                                {doc.type}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div className="text-sm text-slate-500">
+                        {doc.size} MB
+                    </div>
+
+                </div>
+
+            ))}
+
+        </div>
+
+    </div>
+</Card>
+      {processResult && (
+      <Card>
+        <div className="p-6">
+            <h2 className="text-lg font-semibold text-green-700">
+              ✅ Ingestion Completed Successfully
+            </h2>
+
+            <p className="mt-2 text-sm text-slate-600">
+              Your dataset has been analyzed and loaded into the canonical database.
+            </p>
+            <div className="mt-6">
+              <h3 className="mb-2 text-sm font-semibold text-slate-800">
+                Tables Created
+              </h3>
+
+              <ul className="space-y-2">
+                {processResult.tables.map((table: string) => (
+                  <li
+                    key={table}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
+                  >
+                    ✅ {table}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Dataset library */}
+      <Card>
+        <CardHeader
+          title="Dataset Library"
+          subtitle={`${datasets.length} datasets connected to ExecuMind AI`}
+          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5" /><path d="M3 12a9 3 0 0 0 18 0" /></svg>}
+        />
+        <div className="overflow-x-auto px-2 py-2">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wider text-slate-400">
+                <th className="px-3 py-3 font-semibold">Name</th>
+                <th className="px-3 py-3 font-semibold">Type</th>
+                <th className="hidden px-3 py-3 font-semibold sm:table-cell">Rows</th>
+                <th className="hidden px-3 py-3 font-semibold md:table-cell">Columns</th>
+                <th className="hidden px-3 py-3 font-semibold lg:table-cell">Quality</th>
+                <th className="px-3 py-3 font-semibold">Status</th>
+                <th className="hidden px-3 py-3 font-semibold lg:table-cell">Uploaded</th>
+                <th className="px-3 py-3" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {loading
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <tr key={i}>
+                      <td colSpan={8} className="px-3 py-4"><Skeleton className="h-10" /></td>
+                    </tr>
+                  ))
+                : datasets.map((ds) => {
+                    const st = statusMap[ds.status];
+                    return (
+                      <tr key={ds.id} className="group transition hover:bg-slate-50/60">
+                        <td className="px-3 py-3">
+                          <div className="flex items-center gap-2.5">
+                            <span className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold', typeColors[ds.type] ?? 'bg-slate-100 text-slate-500')}>
+                              {ds.type.slice(0, 3).toUpperCase()}
+                            </span>
+                            <span className="font-medium text-slate-800">{ds.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-3 py-3 text-slate-500">{ds.type}</td>
+                        <td className="hidden px-3 py-3 text-slate-600 sm:table-cell">{ds.rows.toLocaleString()}</td>
+                        <td className="hidden px-3 py-3 text-slate-600 md:table-cell">{ds.columns}</td>
+                        <td className="hidden px-3 py-3 lg:table-cell">
+                          {ds.quality > 0 ? (
+                            <div className="flex items-center gap-2">
+                              <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-100">
+                                <div className={cn('h-full rounded-full', ds.quality >= 90 ? 'bg-emerald-500' : ds.quality >= 75 ? 'bg-amber-500' : 'bg-rose-500')} style={{ width: `${ds.quality}%` }} />
+                              </div>
+                              <span className="text-xs text-slate-500">{ds.quality}%</span>
+                            </div>
+                          ) : '—'}
+                        </td>
+                        <td className="px-3 py-3">
+                          <Badge variant={st.variant} tone="soft" dot={ds.status === 'processing'}>{st.label}</Badge>
+                        </td>
+                        <td className="hidden px-3 py-3 text-xs text-slate-400 lg:table-cell">{formatRelativeTime(ds.uploadedAt)}</td>
+                        <td className="px-3 py-3 text-right">
+                          <button
+                            onClick={() => setShowPreview(ds)}
+                            disabled={ds.status !== 'ready'}
+                            className="rounded-lg px-2.5 py-1 text-xs font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40"
+                          >
+                            Preview
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Preview drawer */}
+      {showPreview && (
+        <>
+          <div className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-sm" onClick={() => setShowPreview(null)} />
+          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-lg overflow-y-auto bg-white shadow-2xl animate-slide-in">
+            <div className="sticky top-0 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
+              <div>
+                <h3 className="font-display text-base font-semibold text-slate-900">{showPreview.name}</h3>
+                <p className="text-xs text-slate-400">{showPreview.rows.toLocaleString()} rows · {showPreview.columns} columns · {showPreview.size}</p>
+              </div>
+              <button onClick={() => setShowPreview(null)} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-5">
+              <div className="mb-4 grid grid-cols-3 gap-3">
+                <Stat label="Data Quality" value={`${showPreview.quality}%`} />
+                <Stat label="Rows" value={showPreview.rows.toLocaleString()} />
+                <Stat label="Columns" value={String(showPreview.columns)} />
+              </div>
+              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Schema Preview</h4>
+              <div className="overflow-hidden rounded-xl border border-slate-200">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50">
+                    <tr className="text-left text-xs uppercase tracking-wider text-slate-400">
+                      <th className="px-3 py-2 font-semibold">Column</th>
+                      <th className="px-3 py-2 font-semibold">Type</th>
+                      <th className="px-3 py-2 font-semibold">Sample</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {showPreview.preview.map((c) => (
+                      <tr key={c.column}>
+                        <td className="px-3 py-2.5 font-medium text-slate-700">{c.column}</td>
+                        <td className="px-3 py-2.5"><Badge variant="slate" tone="soft">{c.type}</Badge></td>
+                        <td className="px-3 py-2.5 font-mono text-xs text-slate-500">{c.sample}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="mt-5 flex gap-2">
+                <Button variant="primary" size="sm" fullWidth>Use for Forecasting</Button>
+                <Button variant="secondary" size="sm" fullWidth>Profile Data</Button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-3">
+      <p className="text-[11px] uppercase tracking-wider text-slate-400">{label}</p>
+      <p className="mt-0.5 font-display text-lg font-bold text-slate-900">{value}</p>
+    </div>
+  );
+}

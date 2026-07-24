@@ -16,23 +16,15 @@ import instructor
 import json
 from groq import Groq
 
-from services.mock_llm import MockLLM
 
-load_dotenv()
+
+load_dotenv(override=True)
 
 class LLMService:
     """shared LLM client"""
 
     def __init__(self):
-        self.use_mock = (os.getenv("USE_MOCK_LLM", "False").lower() == "true")
-
-        if self.use_mock:
-
-            logger.info("Using Mock LLM")
-
-            self.mock = MockLLM()
-
-            return
+       
         self.provider = os.getenv("LLM_PROVIDER", "gemini").lower()
 
         if self.provider == "gemini":
@@ -50,6 +42,7 @@ class LLMService:
         elif self.provider == "groq":
 
             api_key = os.getenv("GROQ_API_KEY")
+            print("Groq Key:", api_key[:12] + "...")
 
             if not api_key:
                 raise ValueError("GROQ_API_KEY not found")
@@ -57,7 +50,8 @@ class LLMService:
 
             self.client = instructor.from_groq(groq_client)
 
-            self.model = "llama-3.3-70b-versatile"
+            #self.model = "llama-3.3-70b-versatile"
+            self.model ="llama-3.1-8b-instant"
 
             logger.info("Groq LLM initialised")
 
@@ -68,8 +62,8 @@ class LLMService:
         """generate LLM response"""
 
         try:
-            if self.use_mock:
-                return self.mock.generate(prompt,response_schema,)
+            # if self.use_mock:
+            #     return self.mock.generate(prompt,response_schema,)
             
             if self.provider == "gemini":
                 response=self.client.models.generate_content(model=self.model,

@@ -47,30 +47,23 @@ the available data is insufficient.
 OUTPUT REQUIREMENTS
 ==================================================
 
-Return a valid JSON object matching the DataAnalysis
-schema.
+Return a valid JSON object matching the DataAnalysis schema.
 
-The response must include:
+The JSON must contain ONLY these fields:
 
 1. executive_summary
-   A concise summary for executives.
 
-2. key_kpis
-   Important business metrics with their values.
+2. kpis
 
-3. insights
-   Important findings supported by the data.
+3. trends
 
-4. business_interpretation
-   Explain what the numbers mean.
+4. anomalies
 
 5. recommendations
-   Actionable business recommendations.
 
-6. evidence
-   Every insight must reference the relevant
-   business capability or metric.
+Do not generate any additional fields.
 
+Return ONLY valid JSON.
 ==================================================
 RULES
 ==================================================

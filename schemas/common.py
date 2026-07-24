@@ -15,13 +15,7 @@ class Evidence(BaseModel):
     source:str=Field(description="Knowledge source")
     reference:str=Field(description="Review ID or document page.")
     text:str=Field(description="Evidence text")
-class Issue(BaseModel):
-    """
-    Business issue identified by an agent.
-    """
-    title:str=Field(description="Issue title")
-    description:str=Field(description="Issue description")
-    severity:str=Field(description="Low|Medium|High")
+
 
 class Recommendation(BaseModel):
     """

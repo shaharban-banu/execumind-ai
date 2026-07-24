@@ -150,6 +150,15 @@ class AdvancedRAGPipeline:
             query=query,
             top_k=retrieval_top_k,
         )
+        logger.info("Retrieved Documents:")
+
+        for i, doc in enumerate(documents):
+            logger.info(
+                f"{i+1}. Source={doc.metadata.get('source_name')} "
+                f"File={doc.metadata.get('file_name')} "
+                f"Page={doc.metadata.get('page')} "
+                f"Table={doc.metadata.get('table_name')}"
+            )
 
         logger.info(
             "Retrieved %d documents.",

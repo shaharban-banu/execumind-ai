@@ -24,14 +24,26 @@ class DataAgent(BaseAgent):
         """execute required mcp tools"""
 
         logger.info("Selecting MCP tools")
-        tool_names=self.tool_selector.select_tools(question)
+
+        if mode=="executive":
+            tool_names=[
+                "sales_summary",
+                "customer_summary",
+                "delivery_summary",
+                "category_performance",
+                "payment_summary"
+            ]
+        else:
+            tool_names=self.tool_selector.select_tools(question)
         #print(tool_names)
         context={}
         for tool_name in tool_names:
             tool=TOOL_REGISTRY.get(tool_name)
+
             if tool is None:
                 logger.warning("unknown tool selected :%s",tool_name)
                 continue
+
             logger.info("Executing tool %s",tool_name,)
             try:
                 context[tool_name]=tool(mode=mode)
