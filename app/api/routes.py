@@ -4,7 +4,9 @@ ExecuMind API Routes.
 from datetime import datetime, timezone
 import time
 from fastapi import APIRouter
-
+from database.database import SessionLocal
+import json
+from database.models import ExecutiveRecommendation
 from app.api.schemas import (
     QuestionRequest,
     HealthResponse,AskResponse,ForecastResponse,DashboardResponse
@@ -19,6 +21,7 @@ from typing import List
 from pathlib import Path
 from datetime import datetime
 from ingestion.pipeline import IngestionPipeline
+from rag.services.index_service import IndexService
 import pandas as pd
 
 from services.executive_recommendation_generator import ExecutiveRecommendationGenerator
@@ -31,6 +34,7 @@ graph = build_graph()
 predictor = ForecastPredictor()
 dashboard_service = DashboardService()
 pipeline = IngestionPipeline()
+index_service = IndexService()
 
 
 @router.get("/health",tags=["System"],summary="Health Check",response_model=HealthResponse,)
@@ -70,20 +74,7 @@ def forecast(metric:str):
     return {
         "metric":metric.title(),
         **data,
-    }
-
-@router.get("/dashboard",tags=["Dashboard"],response_model=DashboardResponse,)
-def dashboard():
-
-    kpis = dashboard_service.get_dashboard()
-
-    return {
-        "kpis": kpis,
-        "system": {
-            "database": "Connected",
-            "forecast_models": "Ready",
-            "vector_store": "Loaded",
-        },
+        
     }
 
 @router.post("/datasets/upload", tags=["Dataset"])
@@ -162,67 +153,100 @@ def process_dataset():
 
     return result
 
-# @router.get(
-#     "/dashboard/summary",
-#     tags=["Dashboard"],
-#     summary="Executive dashboard summary"
-# )
-# def dashboard_summary():
-#     question = (
-#         "Provide a concise executive dashboard summary. "
-#         "Return the top business opportunity, the biggest risk, "
-#         "and one actionable recommendation."
-#     )
+@router.post("/platform/process", tags=["Platform"])
+def process_platform():
 
-#     start = time.perf_counter()
+    ingestion_result=pipeline.run("dataset")
 
-#     try:
-#         result = graph.invoke({
-#             "question": question
-#         })
+    # Stop if ETL failed
+    if not ingestion_result["success"]:
+        return {
+            "success": False,
+            "stage": "ingestion",
+            "error": ingestion_result,
+        }
 
-#     except Exception as e:
-#         return {
-#             "executive_summary": "Executive summary is temporarily unavailable.",
-#             "opportunity": "",
-#             "risk": "",
-#             "recommendation": {
-#                 "priority": "Info",
-#                 "action": "Please try again later.",
-#                 "rationale": str(e),
-#             },
-#         }
+    rag_result=index_service.build_index()
 
-#     elapsed_ms = int((time.perf_counter() - start) * 1000)
+    return {
+        "success": True,
+        "platform_status": "ready",
+        "ingestion": ingestion_result,
+        "knowledge": rag_result,
+    }
 
-#     analysis = result["executive_analysis"]
-#     recommendation = (
-#         analysis.strategic_recommendations[0]
-#         if analysis.strategic_recommendations
-#         else None
-#     )
-#     return {
-#         "executive_summary": analysis.executive_summary,
-#         "opportunity": (
-#             analysis.key_findings[0]
-#             if analysis.key_findings
-#             else "No opportunities identified."
-#         ),
-#         "risk": (
-#             analysis.business_risks[0]
-#             if analysis.business_risks
-#             else "No major risks identified."
-#         ),
-#         "recommendation": {
-#             "priority": recommendation.priority if recommendation else "N/A",
-#             "action": recommendation.action if recommendation else "No recommendations available.",
-#             "rationale": recommendation.rationale if recommendation else "",
-#         },
-#         "metadata": {
-#             "execution_time_ms": elapsed_ms,
-#             "generated_at": datetime.now(timezone.utc),
-#         },
-#     }
+@router.get("/dashboard",tags=["Dashboard"],response_model=DashboardResponse,)
+def dashboard():
+
+    kpis = dashboard_service.get_dashboard()
+
+    return {
+        "kpis": kpis,
+        "system": {
+            "database": "Connected",
+            "forecast_models": "Ready",
+            "vector_store": "Loaded",
+        },
+    }
+
+@router.get("/dashboard/summary",tags=["Dashboard"],summary="Executive dashboard summary")
+def dashboard_summary():
+
+    db = SessionLocal()
+
+    try:
+        latest = (
+            db.query(ExecutiveRecommendation)
+            .order_by(ExecutiveRecommendation.created_at.desc())
+            .first()
+        )
+
+        if not latest:
+            return {
+                "executive_summary": "No executive report available.",
+                "opportunity": "",
+                "risk": "",
+                "recommendation": {
+                    "priority": "N/A",
+                    "action": "",
+                    "rationale": "",
+                },
+                "metadata": {},
+            }
+
+        findings = json.loads(latest.key_findings)
+        risks = json.loads(latest.business_risks)
+
+        return {
+            "executive_summary": latest.executive_summary,
+
+            "opportunity": (
+                findings[0]
+                if findings
+                else "No opportunities identified."
+            ),
+
+            "risk": (
+                risks[0]
+                if risks
+                else "No major risks identified."
+            ),
+
+            "recommendation": {
+                "priority": latest.priority,
+                "action": latest.action,
+                "rationale": latest.rationale,
+            },
+
+            "metadata": {
+                "generated_at": latest.created_at.isoformat(),
+                "dataset_loaded": True,
+                "report_ready": True,
+            },
+        }
+
+    finally:
+        db.close()
 
 @router.get(
     "/dashboard/revenue-history",
@@ -249,3 +273,198 @@ def get_recommendations():
     service = ExecutiveRecommendationService()
 
     return service.get_recommendations()
+
+@router.get(
+    "/dashboard/activity",
+    tags=["Dashboard"],
+    summary="Recent executive activity",
+)
+def dashboard_activity():
+
+    db = SessionLocal()
+
+    try:
+        activities = []
+
+        # Executive report (if available)
+        latest_report = (
+            db.query(ExecutiveRecommendation)
+            .order_by(ExecutiveRecommendation.created_at.desc())
+            .first()
+        )
+
+        report_time = (
+            latest_report.created_at.isoformat()
+            if latest_report
+            else datetime.now().isoformat()
+        )
+
+        # Dataset Uploaded
+        if DashboardService.dataset_uploaded():
+            activities.append({
+                "id": "1",
+                "label": "Dataset Uploaded",
+                "detail": "Dataset files uploaded successfully.",
+                "timestamp": report_time,
+                "type": "upload",
+                "actor": "Dataset Scanner",
+            })
+
+        # ETL Completed
+        if DashboardService.dataset_processed():
+            activities.append({
+                "id": "2",
+                "label": "Dataset Processed",
+                "detail": "Dataset transformed into standardized business tables.",
+                "timestamp": report_time,
+                "type": "agent",
+                "actor": "Dataset-Agnostic ETL",
+            })
+
+        # Forecast Ready
+        if DashboardService.forecast_ready():
+            activities.append({
+                "id": "3",
+                "label": "Revenue Forecast Generated",
+                "detail": "Forecast model trained and ready for prediction.",
+                "timestamp": report_time,
+                "type": "forecast",
+                "actor": "Forecast Agent",
+            })
+
+        # Executive Report Ready
+        if latest_report:
+            activities.append({
+                "id": "4",
+                "label": "Executive Intelligence Report Generated",
+                "detail": "Executive recommendations prepared successfully.",
+                "timestamp": latest_report.created_at.isoformat(),
+                "type": "decision",
+                "actor": "Executive Agent",
+            })
+
+        return activities
+
+    finally:
+        db.close()
+
+@router.get(
+    "/dashboard/status",
+    tags=["Dashboard"],
+    summary="Current platform status",
+)
+def dashboard_status():
+
+    db = SessionLocal()
+
+    try:
+        latest_report = (
+            db.query(ExecutiveRecommendation)
+            .order_by(ExecutiveRecommendation.created_at.desc())
+            .first()
+        )
+
+        status = []
+
+        # Dataset
+        status.append({
+            "id": "dataset",
+            "label": "Dataset",
+            "status": (
+                "operational"
+                if DashboardService.dataset_uploaded()
+                else "down"
+            ),
+            "detail": (
+                "Loaded successfully"
+                if DashboardService.dataset_uploaded()
+                else "No dataset uploaded"
+            ),
+        })
+
+        # ETL Pipeline
+        status.append({
+            "id": "etl",
+            "label": "ETL Pipeline",
+            "status": (
+                "operational"
+                if DashboardService.dataset_processed()
+                else "degraded"
+            ),
+            "detail": (
+                "Processing completed"
+                if DashboardService.dataset_processed()
+                else "Waiting for processing"
+            ),
+        })
+
+        # Forecast
+        status.append({
+            "id": "forecast",
+            "label": "Forecast Agent",
+            "status": (
+                "operational"
+                if DashboardService.forecast_ready()
+                else "degraded"
+            ),
+            "detail": (
+                "Forecast model available"
+                if DashboardService.forecast_ready()
+                else "Forecast not generated"
+            ),
+        })
+
+        # Executive Advisor
+        status.append({
+            "id": "executive",
+            "label": "Executive Advisor",
+            "status": (
+                "operational"
+                if latest_report
+                else "degraded"
+            ),
+            "detail": (
+                "Latest report available"
+                if latest_report
+                else "Waiting for report generation"
+            ),
+        })
+
+        return status
+
+    finally:
+        db.close()   
+
+@router.get(
+    "/dashboard/briefing",
+    tags=["Dashboard"],
+    summary="Executive briefing preview",
+)
+def executive_briefing():
+    db = SessionLocal()
+
+    try:
+        latest = (
+            db.query(ExecutiveRecommendation)
+            .order_by(ExecutiveRecommendation.created_at.desc())
+            .first()
+        )
+
+        if not latest:
+            return {
+                "summary": None,
+                "recommendation": None,
+                "risk": None,
+                "report_available": False,
+            }
+
+        return {
+            "summary": latest.executive_summary,
+            "risk": json.loads(latest.business_risks)[0]
+                    if latest.business_risks else None,
+            "recommendation": latest.action,
+            "report_available": True,
+        }
+
+    finally:
+        db.close()

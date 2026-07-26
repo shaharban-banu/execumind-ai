@@ -7,8 +7,8 @@ import type {
   ForecastResult,
   MetricTrend,
   SeriesPoint,
-  ExecutiveActivity,
-  SystemStatusItem,
+  
+ 
 } from './types';
 
 // ============================================================
@@ -67,107 +67,9 @@ export const mockKpis: Kpi[] = [
   },
 ];
 
-export const mockExecutiveActivity: ExecutiveActivity[] = [
-  {
-    id: 'ea-1',
-    label: 'Forecast Agent generated Q4 revenue projection',
-    detail: '94% confidence · $59.2M projected · 120-day horizon',
-    timestamp: new Date(Date.now() - 1000 * 60 * 8).toISOString(),
-    type: 'agent',
-    actor: 'Forecast Agent',
-  },
-  {
-    id: 'ea-2',
-    label: 'New dataset uploaded for analysis',
-    detail: 'orders_2024_q3.csv · 48,210 rows · 24 columns',
-    timestamp: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
-    type: 'upload',
-    actor: 'Data Agent',
-  },
-  {
-    id: 'ea-3',
-    label: 'Planner Agent recommended resource reallocation',
-    detail: 'Reallocate 2 AEs to Mid-Market · +$3.4M ARR projected',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-    type: 'decision',
-    actor: 'Planner Agent',
-  },
-  {
-    id: 'ea-4',
-    label: 'Customer Agent flagged churn risk cohort',
-    detail: '142 accounts showing elevated churn signals · APAC region',
-    timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
-    type: 'alert',
-    actor: 'Customer Agent',
-  },
-  {
-    id: 'ea-5',
-    label: 'Recession scenario modeled',
-    detail: '18% downside case · sensitivity across 4 drivers',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 7).toISOString(),
-    type: 'scenario',
-    actor: 'Planner Agent',
-  },
-  {
-    id: 'ea-6',
-    label: 'Customer Agent identified upsell opportunity',
-    detail: '312 mid-market accounts with >70% expansion probability',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 11).toISOString(),
-    type: 'insight',
-    actor: 'Customer Agent',
-  },
-];
 
-export const mockSystemStatus: SystemStatusItem[] = [
-  {
-    id: 'dataset',
-    label: 'Dataset Loaded',
-    status: 'operational',
-    detail: 'orders_2024_q3.csv · 48,210 rows',
-    latency: '12ms',
-    lastChecked: new Date(Date.now() - 1000 * 30).toISOString(),
-  },
-  {
-    id: 'planner',
-    label: 'Planner Agent',
-    status: 'operational',
-    detail: 'Scenario modeling active',
-    latency: '340ms',
-    lastChecked: new Date(Date.now() - 1000 * 15).toISOString(),
-  },
-  {
-    id: 'customer',
-    label: 'Customer Agent',
-    status: 'operational',
-    detail: 'Churn monitoring · 142 accounts tracked',
-    latency: '280ms',
-    lastChecked: new Date(Date.now() - 1000 * 20).toISOString(),
-  },
-  {
-    id: 'data',
-    label: 'Data Agent',
-    status: 'degraded',
-    detail: 'Processing APAC market signals',
-    latency: '1.2s',
-    lastChecked: new Date(Date.now() - 1000 * 10).toISOString(),
-  },
-  {
-    id: 'forecast',
-    label: 'Forecast Agent',
-    status: 'operational',
-    detail: 'Model v3.2 · 94% accuracy',
-    latency: '560ms',
-    lastChecked: new Date(Date.now() - 1000 * 25).toISOString(),
-  },
-  {
-    id: 'api',
-    label: 'API Status',
-    status: 'operational',
-    detail: 'All endpoints responding',
-    latency: '45ms',
-    lastChecked: new Date(Date.now() - 1000 * 5).toISOString(),
-  },
-];
+
+
 
 export const mockIntelligence: IntelligenceItem[] = [
   {

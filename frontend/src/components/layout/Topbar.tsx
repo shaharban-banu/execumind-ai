@@ -7,7 +7,7 @@ const pageMeta: Record<PageId, { title: string; subtitle: string }> = {
   dashboard: { title: 'Dashboard', subtitle: 'Real-time executive intelligence overview' },
   upload: { title: 'Upload Dataset', subtitle: 'Ingest data for AI-driven analysis' },
   advisor: { title: 'Executive Advisor', subtitle: 'AI-powered strategic recommendations' },
-  forecast: { title: 'Forecast Center', subtitle: 'Predictive modeling and scenario planning' },
+  forecast: { title: 'Forecast Center', subtitle: 'Predictive modeling ' },
   settings: { title: 'Settings', subtitle: 'Platform configuration and preferences' },
 };
 
@@ -49,7 +49,7 @@ export function Topbar({
         <p className="hidden truncate text-xs text-slate-500 sm:block">{meta.subtitle}</p>
       </div>
 
-      {/* Search */}
+      {/* Search
       <div className="relative hidden md:block">
         <svg className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="7" />
@@ -62,7 +62,7 @@ export function Topbar({
         <kbd className="absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] text-slate-400 lg:block">
           ⌘K
         </kbd>
-      </div>
+      </div> */}
 
       {/* Status pill */}
       <div className="hidden items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 sm:flex">

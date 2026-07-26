@@ -199,7 +199,7 @@ export function Sidebar({
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-slate-800">Alex Kim</p>
+                <p className="truncate text-sm font-semibold text-slate-800">Shaharban</p>
                 <p className="truncate text-xs text-slate-400">Chief of Staff</p>
               </div>
             )}

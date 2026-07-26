@@ -17,13 +17,12 @@
 // ============================================================
 import {
   mockIntelligence,
-  mockRecommendations,
+  
   mockRevenueTrend,
   mockSegmentMix,
   mockRiskMatrix,
-  mockExecutiveActivity,
-  mockSystemStatus,
-  mockDatasets,
+  
+ 
   mockChat,
   mockForecast,
 } from "./mockData";
@@ -37,7 +36,7 @@ import axios from "axios";
 import type {
   Kpi,
   IntelligenceItem,
-  AiRecommendation,
+ 
   MetricTrend,
   SeriesPoint,
   DatasetRecord,
@@ -118,10 +117,10 @@ export async function getIntelligence(): Promise<IntelligenceItem[]> {
   return mockIntelligence;
 }
 
-export async function getRecommendations(): Promise<AiRecommendation[]> {
-  await delay(LATENCY);
-  return mockRecommendations;
-}
+// export async function getRecommendations(): Promise<AiRecommendation[]> {
+//   await delay(LATENCY);
+//   return mockRecommendations;
+// }
 
 export async function getRevenueTrend(): Promise<MetricTrend> {
   await delay(LATENCY);
@@ -141,13 +140,13 @@ export async function getRiskMatrix(): Promise<
 }
 
 export async function getExecutiveActivity(): Promise<ExecutiveActivity[]> {
-  await delay(LATENCY);
-  return mockExecutiveActivity;
+    const response = await api.get("/dashboard/activity");
+    return response.data;
 }
 
 export async function getSystemStatus(): Promise<SystemStatusItem[]> {
-  await delay(LATENCY);
-  return mockSystemStatus;
+  const response = await api.get("/dashboard/status");
+  return response.data;
 }
 
 export async function getDatasets(): Promise<DatasetRecord[]> {
@@ -251,6 +250,11 @@ export async function getForecast(): Promise<ForecastResult> {
       horizonMonths: data.forecast.length,
       model: "Prophet",
     },
+    insights: {
+      trend: data.insights.trend,
+      risk: data.insights.risk,
+      recommendation: data.insights.recommendation,
+    },
 
     drivers: [
        {
@@ -337,9 +341,26 @@ export async function processDataset() {
   return data;
 }
 
+export async function processPlatform() {
+  const response = await api.post("/platform/process");
+  return response.data;
+}
+
 export async function getDashboardSummary() {
   const { data } = await api.get("/dashboard/summary");
   return data;
+}
+
+export interface ExecutiveBriefing {
+  summary: string | null;
+  recommendation: string | null;
+  risk: string | null;
+  report_available: boolean;
+}
+
+export async function getExecutiveBriefing(): Promise<ExecutiveBriefing> {
+  const response = await api.get("/dashboard/briefing");
+  return response.data;
 }
 
 export async function getRevenueHistory() {

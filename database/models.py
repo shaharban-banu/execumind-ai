@@ -13,7 +13,8 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     String,Text
 )
-from sqlalchemy.sql import func
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -292,6 +293,6 @@ class ExecutiveRecommendation(Base):
     evidence = Column(Text)          # JSON string
 
     created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
+        DateTime,
+        default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")),
     )

@@ -16,6 +16,10 @@ import {
 import type { Kpi, ExecutiveActivity, SystemStatusItem, MetricTrend, SeriesPoint } from '../lib/types';
 import { formatRelativeTime, cn } from '../lib/utils';
 import type { PageId } from '../components/layout/Sidebar';
+import {
+  getExecutiveBriefing,
+  type ExecutiveBriefing,
+} from "../lib/api";
 
 const accentMap = {
   brand: { text: 'text-brand-600', bg: 'bg-brand-50', stroke: '#2563eb' },
@@ -39,6 +43,7 @@ export function DashboardPage({ onNavigate }: { onNavigate: (p: PageId) => void 
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState<any>(null);
   const [summaryLoading, setSummaryLoading] = useState(true);
+  const [briefing, setBriefing] = useState<ExecutiveBriefing | null>(null);
   const latestRevenue =
   revenueHistory.length > 2
     ? revenueHistory[revenueHistory.length - 3]
@@ -54,6 +59,7 @@ export function DashboardPage({ onNavigate }: { onNavigate: (p: PageId) => void 
         revenueHistory,
         segments,
         summary,
+        briefing,
       ] = await Promise.all([
         getKpis(),
         getExecutiveActivity(),
@@ -61,6 +67,7 @@ export function DashboardPage({ onNavigate }: { onNavigate: (p: PageId) => void 
         getRevenueHistory(),
         getSegmentMix(),
         getDashboardSummary(),
+        getExecutiveBriefing(),
       ]);
       console.log("Revenue API:", revenueHistory);
       console.log("Summary API:", summary);
@@ -69,12 +76,9 @@ export function DashboardPage({ onNavigate }: { onNavigate: (p: PageId) => void 
       setSystemStatus(status);
       setRevenueHistory(revenueHistory);
       setSegments(segments);
-      try {
-        const summary = await getDashboardSummary();
-        setSummary(summary);
-      } catch (err) {
-        console.error("Summary failed:", err);
-      }
+      setSummary(summary);
+      setBriefing(briefing);
+      
     } catch (error) {
       console.error(error);
     } finally {
@@ -96,16 +100,29 @@ export function DashboardPage({ onNavigate }: { onNavigate: (p: PageId) => void 
       <div className="overflow-hidden rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 via-white to-accent-50/40 p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="max-w-2xl">
-            <div className="mb-2 flex items-center gap-2">
-              <Badge variant="brand" tone="soft" dot>AI Briefing · {new Date().toLocaleDateString('en-US', { weekday: 'long' })}</Badge>
-              <Badge variant="emerald" tone="soft" dot>{operationalCount}/{systemStatus.length || 6} systems operational</Badge>
+            <div className="flex items-center gap-4 text-xs">
+                <span className="text-brand-600 font-medium">
+                    AI Briefing
+                </span>
+
+                {summary?.metadata?.dataset_loaded && (
+                    <span className="text-emerald-600 font-medium">
+                        ● Dataset Loaded
+                    </span>
+                )}
+
+                {summary?.metadata?.report_ready && (
+                    <span className="text-emerald-600 font-medium">
+                        ● Report Ready
+                    </span>
+                )}
             </div>
             <h2 className="font-display text-xl font-bold text-slate-900 md:text-2xl">
-              Hai.., Shah. Here's your executive snapshot.
+              Executive snapshot.
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
-              Revenue is trending <span className="font-semibold text-emerald-600">+12.4%</span> with order volume up <span className="font-semibold text-emerald-600">+8.2%</span>.
-              All core agents are operational and processing overnight signals.
+              ExecuMind AI is ready to support executive decision-making.
+              Review the latest business insights or explore forecast trends.
             </p>
           </div>
           <div className="flex shrink-0 gap-2.5">
@@ -228,43 +245,52 @@ export function DashboardPage({ onNavigate }: { onNavigate: (p: PageId) => void 
               </p>
             ) : (
               <>
-                <div className="rounded-xl bg-slate-50 p-3">
-                  <p className="text-xs font-semibold uppercase text-slate-600">
-                    Executive Summary
-                  </p>
-                  <p className="mt-1 text-sm text-slate-700">
-                    {summary?.executive_summary}
-                  </p>
-                </div>
+                <div className="mt-4 space-y-5">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Summary
+                    </p>
 
-                <div className="rounded-xl bg-emerald-50 p-3">
-                  <p className="text-xs font-semibold uppercase text-emerald-700">
-                    Opportunity
-                  </p>
-                  <p className="mt-1 text-sm text-slate-700">
-                    {summary?.opportunity}
-                  </p>
-                </div>
+                    <p className="mt-1 text-sm leading-6 text-slate-700 line-clamp-3">
+                      {briefing?.summary ?? "No executive summary available."}
+                    </p>
+                  </div>
 
-                <div className="rounded-xl bg-amber-50 p-3">
-                  <p className="text-xs font-semibold uppercase text-amber-700">
-                    Risk
-                  </p>
-                  <p className="mt-1 text-sm text-slate-700">
-                    {summary?.risk}
-                  </p>
-                </div>
+                  <div className="border-t pt-4 rounded-lg bg-red-50 border border-red-100 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-red-600">
+                      Primary Risk
+                    </p>
 
-                <div className="rounded-xl bg-blue-50 p-3">
-                  <p className="text-xs font-semibold uppercase text-blue-700">
-                    Recommendation
-                  </p>
-                  <p className="mt-1 text-sm font-medium text-slate-700">
-                    {summary?.recommendation?.action}
-                  </p>
-                  <p className="mt-2 text-xs text-slate-500">
-                    {summary?.recommendation?.rationale}
-                  </p>
+                    <p className="mt-1 text-sm leading-6 text-slate-700">
+                      {briefing?.risk ?? "No business risks detected."}
+                    </p>
+                  </div>
+
+                  <div className="border-t pt-4 rounded-lg bg-brand-50 border border-brand-100 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
+                      Recommendation
+                    </p>
+
+                    <p className="mt-1 text-sm leading-6 text-slate-700">
+                      {briefing?.recommendation ?? "No recommendations available."}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => onNavigate("advisor")}
+                    className="mt-4 inline-flex items-center gap-2 rounded-lg border border-brand-200 bg-brand-50 px-3 py-2 text-sm font-medium text-brand-700 transition hover:bg-brand-100"
+                  >
+                    View Full Report
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M5 12h14M13 5l7 7-7 7" />
+                    </svg>
+                  </button>
                 </div>
               </>
             )}
@@ -316,7 +342,7 @@ export function DashboardPage({ onNavigate }: { onNavigate: (p: PageId) => void 
         <Card>
           <CardHeader
             title="System Status"
-            subtitle={`${operationalCount} of ${systemStatus.length || 6} operational`}
+            subtitle="Current platform health"
             icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>}
             action={
               <span className={cn(
@@ -346,22 +372,18 @@ export function DashboardPage({ onNavigate }: { onNavigate: (p: PageId) => void 
                           <p className="text-sm font-medium text-slate-800">{s.label}</p>
                           <StatusDot variant={sc.dot} pulse={s.status !== 'operational'} />
                         </div>
-                        <p className="truncate text-xs text-slate-500">{s.detail}</p>
+                        <div className="mt-1">
+                          <p className="text-xs text-slate-500">
+                              {s.detail}
+                          </p>
                       </div>
-                      <div className="shrink-0 text-right">
-                        <p className="text-xs font-medium text-slate-600">{s.latency}</p>
-                        <p className="text-[10px] text-slate-400">{formatRelativeTime(s.lastChecked)}</p>
                       </div>
+                     
                     </div>
                   );
                 })}
           </div>
-          {systemStatus.some((s) => s.status === 'degraded') && (
-            <div className="mx-5 mb-4 mt-1 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs text-amber-700">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 9v4M12 17h.01" /><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" /></svg>
-              Data Agent is processing a large dataset — response times may be elevated.
-            </div>
-          )}
+          
         </Card>
       </div>
     </div>

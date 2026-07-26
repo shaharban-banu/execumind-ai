@@ -91,6 +91,10 @@ class AdvancedRAGPipeline:
 
         chunks = self.chunker.chunk(documents)
 
+        for i, chunk in enumerate(chunks):
+            source = chunk.metadata.get("source_name", "unknown")
+            chunk.metadata["chunk_id"] = f"{source}_{i}"
+
         logger.info(
             "Generated %d chunks.",
             len(chunks),

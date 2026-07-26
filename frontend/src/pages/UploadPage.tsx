@@ -9,10 +9,10 @@ import { Skeleton } from '../components/ui/Feedback';
 import {
   getDatasets,
   uploadDataset,
-  processDataset,
+  processPlatform,
   uploadKnowledge,
   getKnowledgeDocuments,
-  generateKnowledgeIndex,
+  
 } from "../lib/api";
 import type { DatasetRecord } from '../lib/types';
 import { formatRelativeTime, cn } from '../lib/utils';
@@ -49,13 +49,17 @@ export function UploadPage() {
   const [showPreview, setShowPreview] = useState<DatasetRecord | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [processResult, setProcessResult] = useState<any>(null);
-  const [indexing, setIndexing] = useState(false);
-  const [indexMessage, setIndexMessage] = useState("");
   const [knowledgeUploading, setKnowledgeUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
   const [uploadError, setUploadError] = useState("");
   
+  const [platformProcessed, setPlatformProcessed] = useState(false);
+  const [platformStatus, setPlatformStatus] = useState<
+  "needs_processing" | "processing" | "ready"
+>("needs_processing");
   
+  const hasDataset = datasets.length > 0;
+  const hasKnowledge = knowledgeDocs.length > 0;
 
   const loadDatasets = useCallback(() => {
     setLoading(true);
@@ -86,40 +90,37 @@ export function UploadPage() {
 }
 
 
-  async function handleUpload() {
-  if (selectedFiles.length === 0) return;
+  async function handleDatasetUpload() {
+    if (selectedFiles.length === 0) return;
 
-  setUploading(true);
-  setUploadProgress(0);
+    setUploading(true);
+    setUploadProgress(0);
 
-  const interval = setInterval(() => {
-    setUploadProgress((p) => Math.min(p + Math.random() * 18, 95));
-  }, 120);
+    const interval = setInterval(() => {
+        setUploadProgress((p) => Math.min(p + Math.random() * 18, 95));
+    }, 120);
 
-  try {
-    await uploadDataset(selectedFiles);
+    try {
+        await uploadDataset(selectedFiles);
 
-    // Start ingestion
-    const result = await processDataset();
+        setUploadProgress(100);
+        clearInterval(interval);
 
-    // Save the result for the UI
-    setProcessResult(result);
+        setPlatformStatus("needs_processing");
 
-    setUploadProgress(100);
-    clearInterval(interval);
+        await loadDatasets();
 
-    setTimeout(() => {
-      setUploading(false);
-      setSelectedFiles([]);
-      setUploadProgress(0);
-      loadDatasets();
-    }, 600);
+        setTimeout(() => {
+            setUploading(false);
+            setSelectedFiles([]);
+            setUploadProgress(0);
+        }, 600);
 
-  } catch (error) {
-    clearInterval(interval);
-    setUploading(false);
-    console.error(error);
-  }
+    } catch (error) {
+        clearInterval(interval);
+        setUploading(false);
+        console.error(error);
+    }
 }
 async function handleKnowledgeUpload() {
     if (knowledgeFiles.length === 0) return;
@@ -133,6 +134,8 @@ async function handleKnowledgeUpload() {
 
         setKnowledgeFiles([]);
 
+        setPlatformStatus("needs_processing");
+
         await loadKnowledge();
 
         setUploadMessage("Documents uploaded successfully.");
@@ -144,21 +147,26 @@ async function handleKnowledgeUpload() {
         setKnowledgeUploading(false);
     }
 }
-async function handleGenerateIndex() {
+
+async function handleProcessPlatform() {
     try {
-        setIndexing(true);
-        setIndexMessage("");
+        const result = await processPlatform();
 
-        const result = await generateKnowledgeIndex();
+        setProcessResult(result);
 
-        setIndexMessage(result.message);
-    } catch (error) {
+        if (result.success) {
+            setPlatformStatus("ready");
+        }
+
+        await loadDatasets();
+        await loadKnowledge();
+
+    }  catch (error) {
+        setPlatformStatus("needs_processing");
         console.error(error);
-        setIndexMessage("Failed to generate knowledge index.");
-    } finally {
-        setIndexing(false);
     }
 }
+
 function getFileIcon(fileName: string) {
     const extension = fileName.split(".").pop()?.toLowerCase();
 
@@ -251,7 +259,9 @@ function getFileIcon(fileName: string) {
                   </div>
                 </div>
                 {!uploading && uploadProgress < 100 && (
-                  <Button size="sm" onClick={handleUpload}>Upload & Analyze</Button>
+                  <Button size="sm" onClick={handleDatasetUpload}>
+                      Upload Dataset
+                  </Button>
                 )}
                 {uploadProgress === 100 && <Badge variant="emerald" tone="solid" dot>Uploaded</Badge>}
               </div>
@@ -345,15 +355,6 @@ function getFileIcon(fileName: string) {
                     : "Upload Documents"}
             </Button>
 
-            <Button
-                variant="secondary"
-                onClick={handleGenerateIndex}
-                disabled={knowledgeDocs.length === 0 || indexing}
-            >
-                {indexing
-                    ? "Generating..."
-                    : "Generate Knowledge Index"}
-            </Button>
 
         </div>
 
@@ -375,27 +376,76 @@ function getFileIcon(fileName: string) {
             </div>
         )}
 
-        {/* Index Message */}
-        {indexMessage && (
-            <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-                <p className="text-sm text-green-700">
-                    ✅ {indexMessage}
-                </p>
-            </div>
-        )}
-
         {/* Status */}
         <div className="rounded-xl border border-green-200 bg-green-50 p-4">
 
-            <h4 className="font-semibold text-green-800">
-                🟢 Knowledge Base Ready
+            <h4 className="font-semibold text-slate-800">
+                📄 Knowledge Documents
             </h4>
 
-            <p className="mt-1 text-sm text-green-700">
-                {knowledgeDocs.length} Documents 
+            <p className="mt-1 text-sm text-slate-600">
+                {knowledgeDocs.length} document{knowledgeDocs.length !== 1 ? "s" : ""} uploaded
+            </p>
+
+            <p className="mt-2 text-sm text-amber-600">
+                These documents will be indexed when you process the platform.
             </p>
 
         </div>
+
+        <Card>
+            <CardHeader
+                title="Platform Processing"
+                subtitle="Run the complete ExecuMind AI initialization."
+            />
+
+            <div className="p-5 space-y-4">
+
+                <div className="space-y-2">
+
+                  <p>
+                      {hasDataset ? "✅" : "⬜"} Dataset Uploaded
+                  </p>
+
+                  <p>
+                      {hasKnowledge ? "✅" : "⬜"} Knowledge Documents Uploaded
+                  </p>
+
+                  <p>
+                      {platformStatus === "ready" ? "✅" : "⬜"} Platform Processed
+                  </p>
+
+              </div>
+
+                <Button
+                    onClick={handleProcessPlatform}
+                    disabled={
+                        !hasDataset ||
+                        !hasKnowledge ||
+                        platformStatus === "processing" ||
+                        platformStatus === "ready"
+                    }
+                    fullWidth
+                >
+                    {platformStatus === "processing"
+                        ? "Processing..."
+                        : platformStatus === "ready"
+                        ? "✓ Platform Ready"
+                        : "Process Platform"}
+                </Button>
+                {platformStatus === "ready" && (
+                    <p className="mt-2 text-center text-sm text-green-600">
+                        Platform is up to date.
+                    </p>
+                )}
+
+                {platformStatus === "needs_processing" && (
+                    <p className="mt-2 text-center text-sm text-amber-600">
+                        New uploads detected. Process the platform to apply changes.
+                    </p>
+                )}
+            </div>
+        </Card>
         <h3 className="font-semibold text-slate-800">
             Uploaded Documents
         </h3>
@@ -440,22 +490,34 @@ function getFileIcon(fileName: string) {
     </div>
 </Card>
       {processResult && (
-      <Card>
-        <div className="p-6">
+        <Card>
+          <div className="p-6">
+
             <h2 className="text-lg font-semibold text-green-700">
-              ✅ Ingestion Completed Successfully
+              ✅ Platform Ready
             </h2>
 
             <p className="mt-2 text-sm text-slate-600">
-              Your dataset has been analyzed and loaded into the canonical database.
+              Dataset processing and knowledge indexing completed successfully.
             </p>
+
+            <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4">
+              <p className="text-sm text-green-700">
+                {processResult.rag.message}
+              </p>
+
+              <p className="mt-1 text-sm text-slate-600">
+                Indexed Documents: <strong>{processResult.rag.documents}</strong>
+              </p>
+            </div>
+
             <div className="mt-6">
               <h3 className="mb-2 text-sm font-semibold text-slate-800">
                 Tables Created
               </h3>
 
               <ul className="space-y-2">
-                {processResult.tables.map((table: string) => (
+                {processResult.ingestion.tables.map((table: string) => (
                   <li
                     key={table}
                     className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
@@ -465,6 +527,7 @@ function getFileIcon(fileName: string) {
                 ))}
               </ul>
             </div>
+
           </div>
         </Card>
       )}

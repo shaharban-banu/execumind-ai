@@ -1,76 +1,23 @@
 import { useEffect, useState } from 'react';
 import { Card, CardHeader } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
-import { Button } from '../components/ui/Button';
-import { BarList } from '../components/ui/Charts';
+
 import { Skeleton } from '../components/ui/Feedback';
-import { getForecast, runScenario } from '../lib/api';
-import type { ForecastResult, ScenarioConfig } from '../lib/types';
+import { getForecast } from '../lib/api';
+import type { ForecastResult } from '../lib/types';
 import { cn } from '../lib/utils';
 
-const scenarioPresets: { name: string; emoji: string; config: ScenarioConfig; desc: string }[] = [
-  { name: 'Base Case', emoji: '', config: { revenueGrowth: 12, costChange: 3, headcountChange: 5, marketVolatility: 20 }, desc: 'Current trajectory' },
-  { name: 'Optimistic', emoji: '', config: { revenueGrowth: 22, costChange: 1, headcountChange: 12, marketVolatility: 12 }, desc: 'Favorable market' },
-  { name: 'Recession', emoji: '', config: { revenueGrowth: -8, costChange: 8, headcountChange: -6, marketVolatility: 55 }, desc: 'Economic downturn' },
-  { name: 'Stress Test', emoji: '', config: { revenueGrowth: -15, costChange: 12, headcountChange: -12, marketVolatility: 80 }, desc: 'Severe downside' },
-];
 
 export function ForecastPage() {
   const [forecast, setForecast] = useState<ForecastResult | null>(null);
   const [loading, setLoading] = useState(true);
-  const [running, setRunning] = useState(false);
-  const [activePreset, setActivePreset] = useState(0);
-  const [config, setConfig] = useState<ScenarioConfig>(scenarioPresets[0].config);
 
   useEffect(() => {
     getForecast().then((d) => { setForecast(d); setLoading(false); });
   }, []);
-
-  async function handleRun() {
-    setRunning(true);
-    try {
-      const result = await runScenario(config);
-      setForecast(result);
-    } finally {
-      setRunning(false);
-    }
-  }
-
-  function selectPreset(i: number) {
-    setActivePreset(i);
-    setConfig(scenarioPresets[i].config);
-  }
-
   const maxForecast = forecast ? Math.max(...forecast.points.map((p) => Math.max(p.historical ?? 0, p.forecast ?? 0))) : 100;
-  const scenarioPoints = forecast
-  ? forecast.points.map((point) => {
-      if (point.forecast === null) return point;
-
-      const multiplier = 1 + config.revenueGrowth / 100;
-
-      return {
-        ...point,
-        forecast: point.forecast * multiplier,
-        lower: point.lower ? point.lower * multiplier : null,
-        upper: point.upper ? point.upper * multiplier : null,
-      };
-    })
-  : [];
-  const baseRevenue = forecast
-  ? forecast.points
-      .filter((p) => p.forecast !== null)
-      .reduce((sum, p) => sum + (p.forecast ?? 0), 0)
-  : 0;
-
-  const scenarioRevenue = scenarioPoints
-    .filter((p) => p.forecast !== null)
-    .reduce((sum, p) => sum + (p.forecast ?? 0), 0);
-
-  const revenueChange =
-    baseRevenue === 0
-      ? 0
-      : ((scenarioRevenue - baseRevenue) / baseRevenue) * 100;
-  return (
+ 
+return (
     <div className="space-y-6">
       {/* Forecast hero with model metadata */}
       <Card className="overflow-hidden border-brand-100">
@@ -136,7 +83,7 @@ export function ForecastPage() {
               <Skeleton className="h-[280px]" />
             ) : (
              <ForecastChart
-                points={scenarioPoints}
+                points={forecast.points}
                 max={maxForecast}
             />
             )}
@@ -194,99 +141,54 @@ export function ForecastPage() {
       </div>
       <Card>
         <CardHeader
-          title="Scenario Impact"
-          subtitle="Estimated outcome based on current assumptions"
+          title="Forecast Insights"
+          subtitle="AI-generated interpretation of the forecast"
+          icon={
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M9 12l2 2 4-4" />
+              <circle cx="12" cy="12" r="9" />
+            </svg>
+          }
         />
 
-        <div className="px-5 pb-5">
-          <p className="text-3xl font-bold text-slate-900">
-            ₹{(scenarioRevenue / 1_000_000).toFixed(2)}M
-          </p>
+        <div className="space-y-5 px-5 pb-5">
+          <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+              Forecast Trend
+            </p>
 
-          <p
-            className={`mt-2 text-sm font-medium ${
-              revenueChange >= 0
-                ? "text-emerald-600"
-                : "text-red-600"
-            }`}
-          >
-            {revenueChange >= 0 ? "▲" : "▼"}{" "}
-            {Math.abs(revenueChange).toFixed(1)}% vs Base Forecast
-          </p>
-        </div>
-      </Card>
-      {/* Scenario planner */}
-      <Card>
-        <CardHeader
-          title="Scenario Planner"
-          subtitle="Scenario adjustments update projected values after simulation."
-          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" /></svg>}
-        />
-        <div className="p-5">
-          {/* Presets */}
-          <div className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-4">
-            {scenarioPresets.map((p, i) => (
-              <button
-                key={p.name}
-                onClick={() => selectPreset(i)}
-                className={cn(
-                  'rounded-xl border p-3 text-left transition',
-                  activePreset === i
-                    ? 'border-brand-300 bg-brand-50/60 ring-2 ring-brand-500/10'
-                    : 'border-slate-200 bg-white hover:border-slate-300'
-                )}
-              >
-                <p className="text-sm font-semibold text-slate-900">{p.name}</p>
-                <p className="mt-0.5 text-xs text-slate-500">{p.desc}</p>
-              </button>
-            ))}
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              {forecast?.insights.trend}
+            </p>
           </div>
+          <div className="rounded-xl border border-red-100 bg-red-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-red-600">
+              Forecast Risk
+            </p>
 
-          {/* Sliders */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Slider
-              label="Revenue Growth"
-              value={config.revenueGrowth}
-              min={-20}
-              max={30}
-              suffix="%"
-              onChange={(v) => setConfig((c) => ({ ...c, revenueGrowth: v }))}
-            />
-            <Slider
-              label="Cost Change"
-              value={config.costChange}
-              min={-5}
-              max={20}
-              suffix="%"
-              onChange={(v) => setConfig((c) => ({ ...c, costChange: v }))}
-            />
-            <Slider
-              label="Headcount Change"
-              value={config.headcountChange}
-              min={-15}
-              max={20}
-              suffix="%"
-              onChange={(v) => setConfig((c) => ({ ...c, headcountChange: v }))}
-            />
-            <Slider
-              label="Market Volatility"
-              value={config.marketVolatility}
-              min={0}
-              max={100}
-              suffix="%"
-              onChange={(v) => setConfig((c) => ({ ...c, marketVolatility: v }))}
-            />
+            <p className="mt-1 text-sm text-slate-700">
+              {forecast?.insights.risk}
+            </p>
           </div>
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
+              Recommendation
+            </p>
 
-          <div className="mt-5 flex items-center gap-3">
-            <Button onClick={handleRun} loading={running} icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 3l14 9-14 9V3z" /></svg>}>
-              Run Scenario
-            </Button>
-            <Button variant="secondary" onClick={() => selectPreset(0)}>Reset to Base</Button>
-            {running && <span className="text-sm text-slate-500">Simulating model…</span>}
+            <p className="mt-1 text-sm text-slate-700">
+              {forecast?.insights.recommendation}
+            </p>
           </div>
         </div>
       </Card>
+
     </div>
   );
 }
@@ -373,43 +275,6 @@ function ForecastChart({
   );
 }
 
-function Slider({
-  label,
-  value,
-  min,
-  max,
-  suffix,
-  onChange,
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  suffix: string;
-  onChange: (v: number) => void;
-}) {
-  return (
-    <div>
-      <div className="mb-2 flex items-center justify-between">
-        <label className="text-sm font-medium text-slate-700">{label}</label>
-        <span className={cn(
-          'rounded-lg px-2 py-0.5 text-sm font-semibold',
-          value > 0 ? 'bg-emerald-50 text-emerald-700' : value < 0 ? 'bg-rose-50 text-rose-700' : 'bg-slate-100 text-slate-600'
-        )}>
-          {value > 0 ? '+' : ''}{value}{suffix}
-        </span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-brand-600"
-      />
-    </div>
-  );
-}
 
 function Metric({ label, value, color }: { label: string; value: string; color: string }) {
   return (

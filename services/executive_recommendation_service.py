@@ -1,3 +1,5 @@
+from datetime import timezone
+
 from sqlalchemy.orm import Session
 
 from database.database import SessionLocal
@@ -46,6 +48,7 @@ class ExecutiveRecommendationService:
                     }for r in recommendations
                 ],
                 "evidence":json.loads(first.evidence),
+                "generated_at":first.created_at.replace(tzinfo=timezone.utc).isoformat(),
             }
         finally:
             db.close()

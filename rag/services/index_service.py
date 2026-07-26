@@ -11,50 +11,75 @@ class IndexService:
 
     def build_index(self):
 
+        rag_config=load_rag_config()
+        # Remove existing index files
+        if rag_config.index_path.exists():
+            rag_config.index_path.unlink()
+
+        if rag_config.metadata_path.exists():
+            rag_config.metadata_path.unlink()
+
         session = SessionLocal()
 
-        loader_configs = []
+        try:
 
-        # Database reviews
-        loader_configs.append(
-            LoaderConfig(
-                source_type="database",
-                source_name="reviews",
-                session=session,
-                table_name="reviews",
-            )
-        )
+            loader_configs = []
 
-        # Business documents
-        docs_dir = Path("rag/docs/uploads")
-
-        for pdf in docs_dir.glob("*.pdf"):
+            # Database reviews
             loader_configs.append(
                 LoaderConfig(
-                    source_type="pdf",
-                    source_name="business_document",
-                    file_path=pdf,
+                    source_type="database",
+                    source_name="reviews",
+                    session=session,
+                    table_name="reviews",
                 )
             )
 
-        for md in docs_dir.glob("*.md"):
-            loader_configs.append(
-                LoaderConfig(
-                    source_type="markdown",
-                    source_name="business_document",
-                    file_path=md,
+            # Business documents
+            docs_dir = Path("rag/docs/uploads")
+
+            for pdf in docs_dir.glob("*.pdf"):
+                loader_configs.append(
+                    LoaderConfig(
+                        source_type="pdf",
+                        source_name="business_document",
+                        file_path=pdf,
+                    )
                 )
-            )
 
-        pipeline = RAGPipelineBuilder(
-            rag_config=load_rag_config(),
-            loader_configs=loader_configs,
-        ).build()
+            for md in docs_dir.glob("*.md"):
+                loader_configs.append(
+                    LoaderConfig(
+                        source_type="markdown",
+                        source_name="business_document",
+                        file_path=md,
+                    )
+                )
 
-        pipeline.build_index()
+            pipeline = RAGPipelineBuilder(
+                rag_config=rag_config,
+                loader_configs=loader_configs,
+            ).build()
 
-        return {
-            "success": True,
-            "documents": len(loader_configs) - 1,# exclude reviews loader
-            "message": "Knowledge index generated successfully."
-        }
+            documents = []
+
+            for loader in pipeline.loaders:
+                documents.extend(loader.load())
+
+            if not documents:
+                return {
+                    "success": False,
+                    "message": "No knowledge sources found to index."
+                }
+
+
+            pipeline.build_index()
+
+            return {
+                "success": True,
+                "documents": len(loader_configs) - 1,# exclude reviews loader
+                "message": "Knowledge index generated successfully."
+            }
+
+        finally:
+            session.close()

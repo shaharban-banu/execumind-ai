@@ -12,6 +12,7 @@ from database.models import (
     Order,
     Payment,
 )
+from pathlib import Path
 
 class DashboardService:
     """Dashboard KPI Service."""
@@ -59,3 +60,34 @@ class DashboardService:
     @staticmethod
     def get_revenue_history():
         return monthly_sales()
+
+    #to give recent activity log
+    @staticmethod
+    def dataset_uploaded() -> bool:
+        dataset_dir = Path("dataset")
+
+        return (
+            dataset_dir.exists()
+            and any(dataset_dir.iterdir())
+        )
+    @staticmethod
+    def dataset_processed() -> bool:
+
+        db = SessionLocal()
+
+        try:
+            order_count = db.query(func.count(Order.order_id)).scalar() or 0
+
+            return order_count > 0
+
+        finally:
+            db.close()
+    @staticmethod
+    def forecast_ready() -> bool:
+
+        model_dir = Path("forecast/models")
+
+        return (
+            model_dir.exists()
+            and any(model_dir.glob("*.pkl"))
+        )

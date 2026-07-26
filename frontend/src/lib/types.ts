@@ -33,8 +33,7 @@ export interface SystemStatusItem {
   label: string;
   status: 'operational' | 'degraded' | 'down';
   detail: string;
-  latency?: string;
-  lastChecked: string;
+  
 }
 
 export type IntelligenceCategory =
@@ -145,6 +144,12 @@ export interface ForecastResult {
     model: string;
   };
 
+  insights: {
+    trend: string;
+    risk: string;
+    recommendation: string;
+  }
+
   drivers: ForecastDriver[];
 }
 
@@ -166,4 +171,5 @@ export interface ExecutiveReport {
   business_risks: string[];
   strategic_recommendations: ExecutiveRecommendation[];
   evidence: Evidence[];
+  generated_at:string;
 }

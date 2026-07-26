@@ -28,7 +28,7 @@ export function SettingsPage() {
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 text-xl font-semibold text-white">AK</div>
             <div className="flex-1">
-              <p className="font-display text-base font-semibold text-slate-900">Alex Kim</p>
+              <p className="font-display text-base font-semibold text-slate-900">Shaharban</p>
               <p className="text-sm text-slate-500">Chief of Staff · ExecuMind AI</p>
               <div className="mt-1.5 flex items-center gap-2">
                 <Badge variant="emerald" tone="soft" dot>Active</Badge>

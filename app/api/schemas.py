@@ -54,6 +54,11 @@ class HistoricalPoint(BaseModel):
     date: str
     value: float
 
+class ForecastInsights(BaseModel):
+    trend: str
+    risk: str
+    recommendation: str
+
 
 class ForecastResponse(BaseModel):
     metric: str
@@ -61,6 +66,7 @@ class ForecastResponse(BaseModel):
     forecast: list[ForecastPoint]
     confidence: ForecastConfidenceResponse
     validation: ForecastValidationResponse
+    insights: ForecastInsights
 
 class DashboardKPIs(BaseModel):
     revenue: float

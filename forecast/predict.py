@@ -60,6 +60,42 @@ class ForecastPredictor:
                 "MAPE": round(metrics["MAPE"], 2),
             },
         }   
+
+    def generate_forecast_insights(self,confidence: dict,validation: dict,):
+        mape = validation["metrics"]["MAPE"]
+        confidence_level = confidence["level"]
+
+        # Trend
+        trend = (
+            "Revenue is expected to remain stable over the forecast horizon."
+        )
+
+        # Risk
+        if mape > 20:
+            risk = (
+                "Forecast uncertainty is relatively high. Business conditions may affect prediction accuracy."
+            )
+        else:
+            risk = (
+                "Forecast uncertainty is low, but changes in customer demand should be monitored."
+            )
+
+        # Recommendation
+        if confidence_level.lower() == "high":
+            recommendation = (
+                "Use this forecast to support inventory and operational planning."
+            )
+        else:
+            recommendation = (
+                "Review forecast regularly and combine it with current business performance before making strategic decisions."
+            )
+
+        return {
+            "trend": trend,
+            "risk": risk,
+            "recommendation": recommendation,
+        }
+
     def predict(self,metric:str,periods:int=6,frequency:str="MS"):
         model=self._load_model(metric)
 
@@ -81,6 +117,7 @@ class ForecastPredictor:
         confidence = ForecastConfidence.get(metric)
         #metrics = self._load_metrics(metric)
         validation = self._load_validation_metrics(metric)
+        insights=self.generate_forecast_insights(confidence,validation)
 
         for _,row in forecast.iterrows():
             result.append({
@@ -96,6 +133,7 @@ class ForecastPredictor:
             "forecast": result,
             "confidence": confidence,
             "validation": validation,
+            "insights":insights
         }
 
 if __name__=="__main__":
