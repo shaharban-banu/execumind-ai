@@ -1,5 +1,5 @@
 from graph.nodes import (
-    customer_agent,
+    get_customer_agent,
     data_agent,
     forecast_agent,
     executive_agent,
@@ -33,7 +33,7 @@ class ExecutiveRecommendationGenerator:
         """
 
         # Customer Analysis
-        customer_response = customer_agent.run(
+        customer_response = get_customer_agent().run(
             CUSTOMER_EXECUTIVE_QUESTION
         )
 

@@ -5,7 +5,7 @@ from rag.AdavancedRAGpipeline import AdvancedRAGPipeline
 from rag.builder import RAGPipelineBuilder
 from rag.config.loader_config import LoaderConfig
 from rag.config.rag_config import load_rag_config
-
+from rag.services.pipeline_service import create_pipeline
 
 class IndexService:
 
@@ -75,6 +75,9 @@ class IndexService:
 
             pipeline.build_index()
 
+            # Reload the newly created index
+            self.reload_pipeline()
+
             return {
                 "success": True,
                 "documents": len(loader_configs) - 1,# exclude reviews loader
@@ -83,3 +86,9 @@ class IndexService:
 
         finally:
             session.close()
+
+    def reload_pipeline(self):
+        """
+        Reload the RAG pipeline after rebuilding the index.
+        """
+        self.pipeline = create_pipeline()

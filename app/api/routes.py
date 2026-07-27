@@ -26,7 +26,7 @@ import pandas as pd
 
 from services.executive_recommendation_generator import ExecutiveRecommendationGenerator
 from services.executive_recommendation_service import ExecutiveRecommendationService
-
+from rag.config.rag_config import load_rag_config
 
 
 router = APIRouter()
@@ -173,6 +173,20 @@ def process_platform():
         "platform_status": "ready",
         "ingestion": ingestion_result,
         "knowledge": rag_result,
+    }
+
+@router.get("/platform/status", tags=["Platform"])
+def platform_status():
+
+    rag_config = load_rag_config()
+
+    ready = (
+        rag_config.index_path.exists()
+        and rag_config.metadata_path.exists()
+    )
+
+    return {
+        "platform_ready": ready
     }
 
 @router.get("/dashboard",tags=["Dashboard"],response_model=DashboardResponse,)

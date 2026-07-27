@@ -92,8 +92,8 @@ class AdvancedRAGPipeline:
         chunks = self.chunker.chunk(documents)
 
         for i, chunk in enumerate(chunks):
-            source = chunk.metadata.get("source_name", "unknown")
-            chunk.metadata["chunk_id"] = f"{source}_{i}"
+            #source = chunk.metadata.get("source_name", "unknown")
+            chunk.metadata["chunk_id"] = i
 
         logger.info(
             "Generated %d chunks.",
@@ -209,3 +209,9 @@ class AdvancedRAGPipeline:
             semantic_retriever=semantic,
             bm25_retriever=bm25,
         )
+
+    def is_ready(self) -> bool:
+        """
+        Returns True if the knowledge index is loaded.
+        """
+        return hasattr(self.vector_store, "documents")

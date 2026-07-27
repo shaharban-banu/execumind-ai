@@ -154,8 +154,10 @@ pytest.ini
 structure.txt
 tests/test_*
 tests/validate_load.py
+tests/export_retrieval_results.py
 
-notebooks/*
+notebooks/dataset_exploration.ipynb
+notebooks/chunks.csv
 bm25_evaluation.py
 test_hybrid.py
 rag/docs/extracted

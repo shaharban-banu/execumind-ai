@@ -1,0 +1,1323 @@
+question,rank,chunk_id,source,file,text
+Why are customers unhappy?,1,23604,,,"Péssimo atendimento, não entregam no prazo, sem qualquer tipo de satisfação ao cliente. Horrível!"
+Why are customers unhappy?,2,42091,,,"Ruim
+Falta de respeito com cliente"
+Why are customers unhappy?,3,27776,,,"Cliente super insatisfeit
+Quero informar que acho uma falta de respeito com consumir final ficar aguardando algo que já foi pago e não entregue, favor resolver essa situação urgente ou estarei acionando minha ADVOGADA."
+Why are customers unhappy?,4,8516,,,"Desrespeito com o cliente
+Falta de respeito com o cliente"
+Why are customers unhappy?,5,38275,,,Insatisfação total com essa loja vende um produto é não entrega tremenda falta de respeito
+Why are customers unhappy?,6,15545,,,"Decepção
+Pessima loja. Vendem recebem e não entregam."
+Why are customers unhappy?,7,8115,,,"Produto recebido divergente ao comprado, gerando frustração e perda de oferta de outras opções analisadas."
+Why are customers unhappy?,8,24130,,,"Empresa não da nenhuma satisfação. Estava contando com a compra, muita insatisfação."
+Why are customers unhappy?,9,35913,,,Ponto negativo foi a venda de produto que não possui em estoque. O que frustra o consumidor.
+Why are customers unhappy?,10,29272,,,"Não gostei.
+Não gostei do tratamento ao cliente faz pouco caso não esto contento com a loja."
+What are the most common customer complaints?,1,42928,,olist_executive_playbook.pdf,"• Improve fulfillment performance.
+Scenario 2: Customer Ratings Decline
+• Analyze negative reviews using sentiment analysis.
+• Identify recurring complaint themes.
+• Audit seller performance.
+• Improve customer support processes.
+Scenario 3: Delivery Delays Increase
+• Monitor on-time delivery rate.
+• Identify logistics bottlenecks.
+• Review regional delivery performance.
+• Optimize fulfillment workflows.
+Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers."
+What are the most common customer complaints?,2,27776,,,"Cliente super insatisfeit
+Quero informar que acho uma falta de respeito com consumir final ficar aguardando algo que já foi pago e não entregue, favor resolver essa situação urgente ou estarei acionando minha ADVOGADA."
+What are the most common customer complaints?,3,672,,,"Comunicação e respeito com o consumidor. É raro,comprar aqui sempre"
+What are the most common customer complaints?,4,10460,,,Recomendaria a loja por sua rapidez e preocupação com o cliente.
+What are the most common customer complaints?,5,30705,,,"Pessimo atendimento, sem canal de reclamação 
+fornecedor"
+What are the most common customer complaints?,6,8516,,,"Desrespeito com o cliente
+Falta de respeito com o cliente"
+What are the most common customer complaints?,7,12377,,,"Gostaria de saber a quem e como reclamar para receber o produto correto.
+Grata."
+What are the most common customer complaints?,8,12417,,,"Comprei um produto e recebi outro e inferior.
+Gostaria de receber uma resposta à reclamação que fiz anteriormente.
+Att.
+Suzana Costa"
+What are the most common customer complaints?,9,6612,,,"vou registrar queixa no reclameaqui porque, apesar de informar que, me enviaram produto para tensao errada (pedi 110V e mandaram 220V) apresentei reclamaçao e nao me deram satisfaçao"
+What are the most common customer complaints?,10,36503,,,Até a data de hoje 15/01/18 não recebi meus produtos. E o atendimento da lannister é horroroso pois só temos acesso a reclamações por meio do site. uma total falta de respeito para com os clientes.
+What causes positive customer reviews?,1,42773,,consumer_behavior.pdf,"satisfaction, while previous articles such as Kim et al. (2009) mentioned that positive customer 
+reviews would predict higher e-loyalty, this study’s analysis revealed no significant relationship 
+between review scores and repeat purchase behavior in either the general population or the 
+subset of repeat buyers. Furthermore, the descriptive data highlighted an overwhelmingly 
+transactional market, with 99.4% of customers making only a single purchase. This lack of"
+What causes positive customer reviews?,2,42699,,consumer_behavior.pdf,"regarding the relationship between positive customer reviews and e-loyalty, the fluctuation of 
+seasonal sales during holiday periods, and the influence of geographic urbanization on product 
+preferences. Utilizing regression analyses on 100,000 orders from 2016 to 2018, the results 
+showed no significant relationship between positive review scores and repeat purchasing 
+behavior, revealing an overwhelmingly transactional market where 99.4% of customers are one-"
+What causes positive customer reviews?,3,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+What causes positive customer reviews?,4,42721,,consumer_behavior.pdf,"who express high satisfaction through positive reviews are more likely to demonstrate loyalty 
+through repeat purchases, thereby providing a measurable link between positive feedback and 
+customer retention. This e-commerce platform provides a wide variety of product types, ranging 
+from daily necessities like ‘food’, ‘drinks’, to big purchases that people only buy when needed, 
+such as ‘computer_accessories’ or ‘console_games’. Therefore, it would be necessary to"
+What causes positive customer reviews?,5,42720,,consumer_behavior.pdf,"trust and providing social proof to businesses. Trust, which then influences a customer's decision 
+to buy, suggests that it has a longer-term effect on customer e-loyalty (Kim et al., 2009). 
+However, the direct connection between the act of reviewing and the reviewer's subsequent 
+loyalty is less explored. This hypothesis seeks to bridge that gap by testing whether customers 
+who express high satisfaction through positive reviews are more likely to demonstrate loyalty"
+What causes positive customer reviews?,6,42758,,consumer_behavior.pdf,"13 
+ 
+ 
+H1: Customer Reviews and E-Loyalty 
+Table 1 reveals a statistically significant correlation (r = .01, p < .01) between review 
+scores and the number of orders. However, it is crucial to interpret this with caution. In 
+extremely large datasets (N = 97967), even a virtually weak positive relationship can appear 
+""statistically significant"" simply because of the sample size (see Table 1-2). Practically speaking,"
+What causes positive customer reviews?,7,42887,,ecommerce_analysis.pdf,"98 S. Gogineni et al.
+When we look at sentiment scores across product types and delivery performance, there 
+are clear trends. Visualizations showing word frequency indicate that negative word ""at-
+raso"" is used often and is an indicator of customer displeasure due to delayed delivery. 
+Customers consistently reference a negative experience based on logistics performance 
+in low-star-rated reviews transactional to service level. Particularly, reviews with 1 star"
+What causes positive customer reviews?,8,23343,,,avaliaçao positiva
+What causes positive customer reviews?,9,33187,,,Avaliação positiva
+What causes positive customer reviews?,10,26610,,,"Relogio
+Qualidade deixa a desejar pelo preço"
+How can customer satisfaction be improved?,1,38644,,,Cliente muito satisfeito
+How can customer satisfaction be improved?,2,8821,,,"Ótima
+Satisfação ao cliente"
+How can customer satisfaction be improved?,3,8772,,,"Satisfação
+O produto é bom"
+How can customer satisfaction be improved?,4,1817,,,Exemplo de fidelidade entre cliente e empresa
+How can customer satisfaction be improved?,5,34644,,,Compromisso e respeito para com os clientes
+How can customer satisfaction be improved?,6,32181,,,Parabéns pelo compromisso com os clientes
+How can customer satisfaction be improved?,7,4688,,,"Satisfação com a compra
+Muito satisfeito, produto de ótima qualidade e rapidez na entrega.recomendo sim essa loja, continue assim sempre melhorando cada vez mais."
+How can customer satisfaction be improved?,8,3383,,,"Satisfeita
+Satisfeita com o produto otima qualidade"
+How can customer satisfaction be improved?,9,1993,,,"bom serviço
+Satisfatória, é a palavra que define minha experiência de compra com essa loja. obrigado pelo atendimento. Pode atuar no mercado com esse nível de compromisso."
+How can customer satisfaction be improved?,10,137,,,"10
+Cada vez que compro mais fico satisfeita parabéns pela honestidade com seus clientes 👏👏👏👏?"
+What customer expectations are not being met?,1,5694,,,"Atraso na entrega sem dar satisfação ao cliente, que com certeza escolheu o produto com cuidado e com as melhores expectativas. Falta de consideração."
+What customer expectations are not being met?,2,37739,,,produto de acordo com as expectativas
+What customer expectations are not being met?,3,6078,,,Corresponde as expectativas
+What customer expectations are not being met?,4,1548,,,Produto não atendeu as expectativas
+What customer expectations are not being met?,5,42117,,,"Atendimento das expectativas
+Recomendo"
+What customer expectations are not being met?,6,14997,,,Dentro das expectativas
+What customer expectations are not being met?,7,41063,,,"Recomendo
+produto dentro das expectativas."
+What customer expectations are not being met?,8,27776,,,"Cliente super insatisfeit
+Quero informar que acho uma falta de respeito com consumir final ficar aguardando algo que já foi pago e não entregue, favor resolver essa situação urgente ou estarei acionando minha ADVOGADA."
+What customer expectations are not being met?,9,40131,,,Ate o presente momento nao recebi meu produto acho uma falta de respeito com o cliente
+What customer expectations are not being met?,10,10584,,,"Entrega do produto
+Falta de atenção e respeito com cliente"
+Which issues affect satisfaction the most?,1,7618,,,Satisfação
+Which issues affect satisfaction the most?,2,4138,,,Satisfação
+Which issues affect satisfaction the most?,3,27753,,,satisfação
+Which issues affect satisfaction the most?,4,26487,,,Satisfação garantida
+Which issues affect satisfaction the most?,5,33373,,,"Recomendo
+Satisfação"
+Which issues affect satisfaction the most?,6,8772,,,"Satisfação
+O produto é bom"
+Which issues affect satisfaction the most?,7,22006,,,"Satisfacao
+Excelente produto"
+Which issues affect satisfaction the most?,8,1125,,,"Satisfeita
+Satisfeita"
+Which issues affect satisfaction the most?,9,7989,,,"Satisfeito
+Satisfeito"
+Which issues affect satisfaction the most?,10,621,,,"Satisfeito
+Satisfeito"
+What recurring themes appear in customer feedback?,1,42928,,olist_executive_playbook.pdf,"• Improve fulfillment performance.
+Scenario 2: Customer Ratings Decline
+• Analyze negative reviews using sentiment analysis.
+• Identify recurring complaint themes.
+• Audit seller performance.
+• Improve customer support processes.
+Scenario 3: Delivery Delays Increase
+• Monitor on-time delivery rate.
+• Identify logistics bottlenecks.
+• Review regional delivery performance.
+• Optimize fulfillment workflows.
+Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers."
+What recurring themes appear in customer feedback?,2,42721,,consumer_behavior.pdf,"who express high satisfaction through positive reviews are more likely to demonstrate loyalty 
+through repeat purchases, thereby providing a measurable link between positive feedback and 
+customer retention. This e-commerce platform provides a wide variety of product types, ranging 
+from daily necessities like ‘food’, ‘drinks’, to big purchases that people only buy when needed, 
+such as ‘computer_accessories’ or ‘console_games’. Therefore, it would be necessary to"
+What recurring themes appear in customer feedback?,3,42699,,consumer_behavior.pdf,"regarding the relationship between positive customer reviews and e-loyalty, the fluctuation of 
+seasonal sales during holiday periods, and the influence of geographic urbanization on product 
+preferences. Utilizing regression analyses on 100,000 orders from 2016 to 2018, the results 
+showed no significant relationship between positive review scores and repeat purchasing 
+behavior, revealing an overwhelmingly transactional market where 99.4% of customers are one-"
+What recurring themes appear in customer feedback?,4,42885,,ecommerce_analysis.pdf,"Fig 14. Sankey Diagram showing flow. Order-> Payment-> Delivery-> Review 
+4.5 Sentiment Analysis 
+User feedback is a key indicator of perceived service quality in e-commerce platforms. 
+In the Olist dataset, text-based attributes such as reviews are processed using natural 
+language processing techniques such as tokenization, stopword removal, and lemmati-
+zation. Sentiment polarity scores are computed using lexicon-based methods such as"
+What recurring themes appear in customer feedback?,5,42887,,ecommerce_analysis.pdf,"98 S. Gogineni et al.
+When we look at sentiment scores across product types and delivery performance, there 
+are clear trends. Visualizations showing word frequency indicate that negative word ""at-
+raso"" is used often and is an indicator of customer displeasure due to delayed delivery. 
+Customers consistently reference a negative experience based on logistics performance 
+in low-star-rated reviews transactional to service level. Particularly, reviews with 1 star"
+What recurring themes appear in customer feedback?,6,42718,,consumer_behavior.pdf,"timeframe. 
+In the e-commerce ecosystem, online reviews are a critical form of user-generated 
+content that serves as both direct feedback for the firm and a purchasing guide for other"
+What recurring themes appear in customer feedback?,7,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+What recurring themes appear in customer feedback?,8,42929,,olist_executive_playbook.pdf,"Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers.
+• Launch loyalty programs.
+• Offer personalized promotions.
+• Track repeat purchase behavior.
+Scenario 5: Forecast Shows Revenue Risk
+• Review forecasting results.
+• Identify declining categories.
+• Prepare mitigation plans.
+• Monitor KPIs weekly.
+Executive KPIs"
+What recurring themes appear in customer feedback?,9,22786,,,"recomendo
+produto atendeu as expectativa"
+What recurring themes appear in customer feedback?,10,35970,,,"Regular
+O produto que recebi ñ foi igual ao anunciado. Já mandei email e já fiz reclamação no site. Estou aguardando resposta!"
+Are customers satisfied with product quality?,1,8772,,,"Satisfação
+O produto é bom"
+Are customers satisfied with product quality?,2,41318,,,"Satisfeito
+Conforme combinado, produto de qualidade."
+Are customers satisfied with product quality?,3,2126,,,"Excelente
+Satisfeita com o produto"
+Are customers satisfied with product quality?,4,28385,,,Qualidade do produto deixa a desejar
+Are customers satisfied with product quality?,5,17219,,,Recomendo produtos. Toma qualidade.
+Are customers satisfied with product quality?,6,39697,,,"Satisfação com o produto.
+Entrega dentro do prazo, produto de qualidade."
+Are customers satisfied with product quality?,7,21776,,,Satisfeita com o produto é loja
+Are customers satisfied with product quality?,8,15317,,,Muito Satisfeita com a compra e com o produto
+Are customers satisfied with product quality?,9,35824,,,"Produto de qualidade!
+Compromisso com o cliente e qualidade no produto resumem essa compra."
+Are customers satisfied with product quality?,10,3383,,,"Satisfeita
+Satisfeita com o produto otima qualidade"
+How do delivery experiences influence reviews?,1,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+How do delivery experiences influence reviews?,2,42841,,ecommerce_analysis.pdf,"iables. Delivery performance is assessed by three common metrics, including delivery 
+delay (actual delivery date – estimated delivery date), on-time delivery ratio and 95th 
+percentile of delivery delay. Reviews are preprocessed and transformed into set of fea-
+tures (sentiment indicators) using natural language processing techniques (tokenizing, 
+removing stop words, lemmatizing), for downstream sentiment analysis. Geospatial at-"
+How do delivery experiences influence reviews?,3,42888,,ecommerce_analysis.pdf,"in low-star-rated reviews transactional to service level. Particularly, reviews with 1 star 
+or 2 star ratings mention poor delivery service. High start ratings are associated with 
+good product quality and on-time delivery. 
+Pearson Correlation (Sentiment vs. Review Score) 
+S i = sentiment polarity score for review i, Ri= numeric review rating. 
+ Si=
+1
+m∑
+s(wj)
+m
+j=1
+ r=
+∑(Si−S̅)(Ri−R̅)
+√∑(Si−S̅)2 ∑(Ri−R̅)2 (29)"
+How do delivery experiences influence reviews?,4,42928,,olist_executive_playbook.pdf,"• Improve fulfillment performance.
+Scenario 2: Customer Ratings Decline
+• Analyze negative reviews using sentiment analysis.
+• Identify recurring complaint themes.
+• Audit seller performance.
+• Improve customer support processes.
+Scenario 3: Delivery Delays Increase
+• Monitor on-time delivery rate.
+• Identify logistics bottlenecks.
+• Review regional delivery performance.
+• Optimize fulfillment workflows.
+Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers."
+How do delivery experiences influence reviews?,5,5694,,,"Atraso na entrega sem dar satisfação ao cliente, que com certeza escolheu o produto com cuidado e com as melhores expectativas. Falta de consideração."
+How do delivery experiences influence reviews?,6,41765,,,mas entrega se deu um destaque pela eficiência do produto quanto a questão de preço ai deixou a desejar mas recomendo sem duvida
+How do delivery experiences influence reviews?,7,37292,,,"*****
+satisfação pela compra e entrega"
+How do delivery experiences influence reviews?,8,36338,,,"Avaliação de entrega
+Produto entregue até antes do prazo. Em prefeitas condições. Super recomendo."
+How do delivery experiences influence reviews?,9,12265,,,"Atendimento
+Muito bom desde a compra, entrega, feedback muito bom.
+Agradecido"
+How do delivery experiences influence reviews?,10,718,,,"Troca / devolução
+a experiência de compra on-line e a entrega foram boas, porém o produto não atendeu às expectativas e estou tendo dificuldades com a troca /devolução."
+What customer pain points should executives prioritize?,1,22586,,,"super recomendo
+responsabilidade dom o cliente...parabéns."
+What customer pain points should executives prioritize?,2,27620,,,"Totalmente responsáveis, produto entregue, informação dada ao cliente, preocupação com o cliente. Recomendo."
+What customer pain points should executives prioritize?,3,5998,,,"recomendado
+satisfeita pela presteza no atendimento"
+What customer pain points should executives prioritize?,4,174,,,"recomendo
+trabalho com profissionalismo das lojas lannister. indico com certeza"
+What customer pain points should executives prioritize?,5,6363,,,"Cliente assíduo poderia ter vantagem, como desconto"
+What customer pain points should executives prioritize?,6,10460,,,Recomendaria a loja por sua rapidez e preocupação com o cliente.
+What customer pain points should executives prioritize?,7,18396,,,"talvez recomendaria
+Frustração"
+What customer pain points should executives prioritize?,8,34644,,,Compromisso e respeito para com os clientes
+What customer pain points should executives prioritize?,9,39342,,,"Recomendamos NEGOCIAR com esta Empresa ""targaryen"""
+What customer pain points should executives prioritize?,10,32224,,,"Talvez recomendaria
+A empresa deveria responder aos e-mail dos cliente 
+Deveria revê essa questão, porque empresa que se comunica com seus cliente passa mais credibilidade e demostra que esta atento ao seu cliente."
+What are the most common delivery issues?,1,32220,,,Atraso na entrega
+What are the most common delivery issues?,2,23668,,,Atraso na entrega
+What are the most common delivery issues?,3,20675,,,Atraso na entrega
+What are the most common delivery issues?,4,5267,,,Atraso na entrega
+What are the most common delivery issues?,5,7578,,,Demora a entrega
+What are the most common delivery issues?,6,41704,,,Demora na entrega
+What are the most common delivery issues?,7,20575,,,Demora na entrega
+What are the most common delivery issues?,8,8871,,,Demora na entrega
+What are the most common delivery issues?,9,3076,,,Demora na entrega
+What are the most common delivery issues?,10,12587,,,"sem comentarios, muito confusa a informação sobre entrega"
+Why are deliveries delayed?,1,3730,,,A entrega atrasou
+Why are deliveries delayed?,2,3299,,,demora na entrega
+Why are deliveries delayed?,3,23219,,,Muita demora na entrega
+Why are deliveries delayed?,4,18938,,,Muita demora na entrega
+Why are deliveries delayed?,5,9064,,,Muita demora na entrega
+Why are deliveries delayed?,6,5578,,,Muita demora na entrega
+Why are deliveries delayed?,7,37488,,,muita demora na entrega
+Why are deliveries delayed?,8,31093,,,Ultimamente estão atrasando muito as entregas
+Why are deliveries delayed?,9,9769,,,demora na entrega (ainda nao chegou fora do prazo)
+Why are deliveries delayed?,10,30674,,,O atraso na entrega prejudicou a obra
+How does delivery performance affect customer satisfaction?,1,42930,,olist_executive_playbook.pdf,"• Revenue Growth
+• Order Volume
+• Customer Satisfaction
+• Average Review Score
+• On-Time Delivery Rate
+• Customer Retention Rate
+• Forecast Accuracy"
+How does delivery performance affect customer satisfaction?,2,8821,,,"Ótima
+Satisfação ao cliente"
+How does delivery performance affect customer satisfaction?,3,37292,,,"*****
+satisfação pela compra e entrega"
+How does delivery performance affect customer satisfaction?,4,27795,,,Além da qualidade do produto e eficiência na logistica da entrega
+How does delivery performance affect customer satisfaction?,5,2544,,,Satisfeito com a entrega... atendimento e produto
+How does delivery performance affect customer satisfaction?,6,41765,,,mas entrega se deu um destaque pela eficiência do produto quanto a questão de preço ai deixou a desejar mas recomendo sem duvida
+How does delivery performance affect customer satisfaction?,7,12058,,,Satisfeita com produto e entrega no prazo
+How does delivery performance affect customer satisfaction?,8,9123,,,"Depender dos correios hoje em dia coloca a satisfação do cliente com o fornecedor em risco, pois os correios, não são precisos em seus serviços."
+How does delivery performance affect customer satisfaction?,9,33595,,,"Super satisfeita com a compra feita, a entrega e o suporte e atenção com o cliente."
+How does delivery performance affect customer satisfaction?,10,32421,,,"No caso dos correios, como empresa para entrega, eu estou satisfeito, mais acho que a empresa deveria rever seus fornecedores de serviços, principalmente de empresas de entrega de mercadoria. só acho."
+What logistics improvements should the company make?,1,31271,,,Boa logística
+What logistics improvements should the company make?,2,27795,,,Além da qualidade do produto e eficiência na logistica da entrega
+What logistics improvements should the company make?,3,36779,,,Acredito que se as entregas ocorressem através de empresas de logística privadas chegariam com mais agilidade.
+What logistics improvements should the company make?,4,22282,,,"Excelente
+É uma logística dinâmica que cumpre com suas responsabilidades"
+What logistics improvements should the company make?,5,28517,,,"Só precisam melhorar a logística de entrega, para que a encomenda possa ser entregue mais rápido."
+What logistics improvements should the company make?,6,38969,,,muito boa a logistica da empresa produto dentro das caracteristicas
+What logistics improvements should the company make?,7,13863,,,"A versatilidade e a logística são componentes da equipe do baratheon.
+
+ Muito bom."
+What logistics improvements should the company make?,8,3430,,,"super recomendo
+Ótimo atendimento em todos os níveis: Rastreamento, passo a passo da compra desde a confirmação, logística de entrega pelo site da lannister e correio, entrega antes do prazo, logística perfeita."
+What logistics improvements should the company make?,9,29829,,,Solicito melhoras no prazo de entrega dos produtos.
+What logistics improvements should the company make?,10,16888,,,A lannister precisa melhorar a qualidade da entrega
+Which shipping problems occur most frequently?,1,37899,,,Houve problema no transporte e em consequência disso um grande atraso. Mas foi a primeira vez que ocorreu. Os produtos sempre são entregues antes do prazo.
+Which shipping problems occur most frequently?,2,39500,,,TERRIVEL ESTE PROBLEMA DA ENTREGA
+Which shipping problems occur most frequently?,3,15542,,,Produto entregue se problemas obrigado
+Which shipping problems occur most frequently?,4,7342,,,"entrega
+Favor procurar utra transportadora...Correios sem qualidade."
+Which shipping problems occur most frequently?,5,31847,,,entregas via transportadora muito demorada
+Which shipping problems occur most frequently?,6,34423,,,muitos desencontros nas entregas de produtos
+Which shipping problems occur most frequently?,7,27795,,,Além da qualidade do produto e eficiência na logistica da entrega
+Which shipping problems occur most frequently?,8,22092,,,A empreza e otima pessimo e a transportadora correios que retem o produto 4 dias parado sem rastreio
+Which shipping problems occur most frequently?,9,36634,,,A demora pra entrega é maior que de outros produtos e isso é desanimador
+Which shipping problems occur most frequently?,10,42191,,,"Produto nao entregue conforme a previsão de entrega. 
+Enviado pelos Correios, onde sabemos que o serviço prestado é precário. 
+Deveriam reavaliar o tipo de transportadora a enviar."
+Are delivery promises being fulfilled?,1,6453,,,Aparentemente promete
+Are delivery promises being fulfilled?,2,8071,,,Entrega o que promete
+Are delivery promises being fulfilled?,3,40226,,,Produto de acordo com o prometido.
+Are delivery promises being fulfilled?,4,34335,,,Cumpre o que promete
+Are delivery promises being fulfilled?,5,29951,,,Cumpre o que promete
+Are delivery promises being fulfilled?,6,9311,,,Cumpre o que promete
+Are delivery promises being fulfilled?,7,37144,,,produto entregue conforme o prometido
+Are delivery promises being fulfilled?,8,35065,,,Cumpre com oque promete
+Are delivery promises being fulfilled?,9,10303,,,promessa cumprida entrega no prazo muinto bom.
+Are delivery promises being fulfilled?,10,38144,,,"Falta mais compromisso
+Espero mais dedicação nas proximas entregas"
+What operational bottlenecks affect delivery?,1,27795,,,Além da qualidade do produto e eficiência na logistica da entrega
+What operational bottlenecks affect delivery?,2,1612,,,"EFICIENCIA
+Despacho e entrega rápida"
+What operational bottlenecks affect delivery?,3,23219,,,Muita demora na entrega
+What operational bottlenecks affect delivery?,4,18938,,,Muita demora na entrega
+What operational bottlenecks affect delivery?,5,9064,,,Muita demora na entrega
+What operational bottlenecks affect delivery?,6,5578,,,Muita demora na entrega
+What operational bottlenecks affect delivery?,7,38129,,,Muita demora na entrega.
+What operational bottlenecks affect delivery?,8,22563,,,Muita demora na entrega.
+What operational bottlenecks affect delivery?,9,20303,,,Muita demora na entrega.
+What operational bottlenecks affect delivery?,10,4972,,,Muita demora na entrega.
+How can late deliveries be reduced?,1,41374,,,demora com a entrega
+How can late deliveries be reduced?,2,19548,,,Produto com entrega atrasada
+How can late deliveries be reduced?,3,13557,,,demora na entrega .
+How can late deliveries be reduced?,4,32390,,,Produto com o prazo de entrega atrasado
+How can late deliveries be reduced?,5,11772,,,O tempo de entrega poderia ser mais curto.
+How can late deliveries be reduced?,6,38437,,,Pessimo muita demora na entrega
+How can late deliveries be reduced?,7,31093,,,Ultimamente estão atrasando muito as entregas
+How can late deliveries be reduced?,8,30674,,,O atraso na entrega prejudicou a obra
+How can late deliveries be reduced?,9,39142,,,"demora na entrega
+demora na entrega"
+How can late deliveries be reduced?,10,4928,,,A entrega esta atrasada.
+What evidence suggests logistics problems?,1,42884,,ecommerce_analysis.pdf,"t=
+Dp1̅̅̅̅̅̅−Dp2̅̅̅̅̅̅
+√
+sp1
+2
+Np1+
+sp2
+2
+Np2
+ (28) 
+sp1
+2 , sp2
+2 = sample variances of delays for two groups 
+ Np1, Np2= sample sizes 
+These evaluations show whether logistics performance differs across payment types. 
+Understanding the relationship between financial behavior and operational perfor-
+mance is crucial for improving e-commerce logistics operations. 
+ 
+ Fig 14. Sankey Diagram showing flow. Order-> Payment-> Delivery-> Review 
+4.5 Sentiment Analysis"
+What evidence suggests logistics problems?,2,42872,,ecommerce_analysis.pdf,"bouring states exhibit similar delivery delays. 
+4.4 Logistics & Supply Chain Analytics 
+The Olist dataset provides an excellent opportunity for assessing end-to-end logistics 
+performance. The timestamps of each purchase, approval, shipping, and delivery event 
+are available in the dataset. By utilising this information, we can create different supply 
+chain KPIs such as processing time, shipping lead-time, and over all fulfilment dura-"
+What evidence suggests logistics problems?,3,31271,,,Boa logística
+What evidence suggests logistics problems?,4,15542,,,Produto entregue se problemas obrigado
+What evidence suggests logistics problems?,5,7342,,,"entrega
+Favor procurar utra transportadora...Correios sem qualidade."
+What evidence suggests logistics problems?,6,31847,,,entregas via transportadora muito demorada
+What evidence suggests logistics problems?,7,34423,,,muitos desencontros nas entregas de produtos
+What evidence suggests logistics problems?,8,42191,,,"Produto nao entregue conforme a previsão de entrega. 
+Enviado pelos Correios, onde sabemos que o serviço prestado é precário. 
+Deveriam reavaliar o tipo de transportadora a enviar."
+What evidence suggests logistics problems?,9,40043,,,Pagar caro pelo frete e a empresa escolher os Correios como forma de transporte é certamente uma política que deve ser revista. Os Correios tem histórico negativo na entrega de e-commerce.
+What evidence suggests logistics problems?,10,27617,,,"Caixa veio amassada dificuldade paarmazenamento pós i
+Uso."
+Which delivery issues have the greatest business impact?,1,20397,,,Otima compra e entrega.
+Which delivery issues have the greatest business impact?,2,27795,,,Além da qualidade do produto e eficiência na logistica da entrega
+Which delivery issues have the greatest business impact?,3,10173,,,Produto de qualidade e loja séria na entrega.
+Which delivery issues have the greatest business impact?,4,6290,,,"Prazo cumprido, 
+qualidade presente
+entrega o que vende"
+Which delivery issues have the greatest business impact?,5,27188,,,"Nota dez
+Ótima emoresa coerente com o serviço de entrega e também com os produtos"
+Which delivery issues have the greatest business impact?,6,11027,,,"Produto de qualidade, entrega como previsto."
+Which delivery issues have the greatest business impact?,7,15168,,,importante no envio do produto dentro do prazo
+Which delivery issues have the greatest business impact?,8,36867,,,"Atendimento, produto e entrega perfeitos"
+Which delivery issues have the greatest business impact?,9,23214,,,Tudo certo com a entrega e com a mercadoria
+Which delivery issues have the greatest business impact?,10,32421,,,"No caso dos correios, como empresa para entrega, eu estou satisfeito, mais acho que a empresa deveria rever seus fornecedores de serviços, principalmente de empresas de entrega de mercadoria. só acho."
+What quality issues do customers report?,1,42928,,olist_executive_playbook.pdf,"• Improve fulfillment performance.
+Scenario 2: Customer Ratings Decline
+• Analyze negative reviews using sentiment analysis.
+• Identify recurring complaint themes.
+• Audit seller performance.
+• Improve customer support processes.
+Scenario 3: Delivery Delays Increase
+• Monitor on-time delivery rate.
+• Identify logistics bottlenecks.
+• Review regional delivery performance.
+• Optimize fulfillment workflows.
+Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers."
+What quality issues do customers report?,2,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+What quality issues do customers report?,3,42930,,olist_executive_playbook.pdf,"• Revenue Growth
+• Order Volume
+• Customer Satisfaction
+• Average Review Score
+• On-Time Delivery Rate
+• Customer Retention Rate
+• Forecast Accuracy"
+What quality issues do customers report?,4,27620,,,"Totalmente responsáveis, produto entregue, informação dada ao cliente, preocupação com o cliente. Recomendo."
+What quality issues do customers report?,5,27776,,,"Cliente super insatisfeit
+Quero informar que acho uma falta de respeito com consumir final ficar aguardando algo que já foi pago e não entregue, favor resolver essa situação urgente ou estarei acionando minha ADVOGADA."
+What quality issues do customers report?,6,10173,,,Produto de qualidade e loja séria na entrega.
+What quality issues do customers report?,7,6218,,,"Excelente atendimento ao
+Interesse em agradar o cliente e ótima mercadoria"
+What quality issues do customers report?,8,34644,,,Compromisso e respeito para com os clientes
+What quality issues do customers report?,9,28413,,,otimo produto e qualidade e atendimento top
+What quality issues do customers report?,10,35824,,,"Produto de qualidade!
+Compromisso com o cliente e qualidade no produto resumem essa compra."
+Which products receive the most complaints?,1,24602,,,"reclamação
+produto incorreto"
+Which products receive the most complaints?,2,34423,,,muitos desencontros nas entregas de produtos
+Which products receive the most complaints?,3,5076,,,"Avaliação
+Loja recomendada. Produto de péssima qualidade."
+Which products receive the most complaints?,4,5848,,,Produtos de baixa qualidade.
+Which products receive the most complaints?,5,22137,,,"recomendo
+produto chegou MUITO RÁPIDO, de qualidade, recomendo"
+Which products receive the most complaints?,6,24952,,,"recomendo
+melhor custo beneficio de produtos semelhantes disponiveis no mercado"
+Which products receive the most complaints?,7,18250,,,"Comprei dois produtos e veio faltando um produto, enviei uma reclamação e estou aguardando resposta."
+Which products receive the most complaints?,8,12377,,,"Gostaria de saber a quem e como reclamar para receber o produto correto.
+Grata."
+Which products receive the most complaints?,9,30360,,,Insatisfação com a descrição do produto.
+Which products receive the most complaints?,10,12417,,,"Comprei um produto e recebi outro e inferior.
+Gostaria de receber uma resposta à reclamação que fiz anteriormente.
+Att.
+Suzana Costa"
+What product strengths are frequently mentioned?,1,11718,,,"Bom
+Qualidade do produto razoavel"
+What product strengths are frequently mentioned?,2,4553,,,produtos de qualidade
+What product strengths are frequently mentioned?,3,27944,,,Produto atende às características.
+What product strengths are frequently mentioned?,4,2128,,,"Produto de Qualidade
+O produto em questão, apresenta boa qualidade o que consequentemente me leva a recomendar o mesmo."
+What product strengths are frequently mentioned?,5,2307,,,"PRODUTO DE QUALIDADE 
+ATENDEU A NECESSIDADE
+RECOMENDO."
+What product strengths are frequently mentioned?,6,28385,,,Qualidade do produto deixa a desejar
+What product strengths are frequently mentioned?,7,36799,,,"O PRODUTO ESTÁ DENTRO DOS PADRÕES DE QUALIDADE,ATENDENDO MINHA EXPECTATIVA"
+What product strengths are frequently mentioned?,8,29400,,,má qualidade do produto
+What product strengths are frequently mentioned?,9,23277,,,excelente produto preenche as necessidades indicativas do fabricante
+What product strengths are frequently mentioned?,10,33330,,,Qualidade do produto inferior ao desejado!
+How does product quality affect customer loyalty?,1,42720,,consumer_behavior.pdf,"trust and providing social proof to businesses. Trust, which then influences a customer's decision 
+to buy, suggests that it has a longer-term effect on customer e-loyalty (Kim et al., 2009). 
+However, the direct connection between the act of reviewing and the reviewer's subsequent 
+loyalty is less explored. This hypothesis seeks to bridge that gap by testing whether customers 
+who express high satisfaction through positive reviews are more likely to demonstrate loyalty"
+How does product quality affect customer loyalty?,2,42721,,consumer_behavior.pdf,"who express high satisfaction through positive reviews are more likely to demonstrate loyalty 
+through repeat purchases, thereby providing a measurable link between positive feedback and 
+customer retention. This e-commerce platform provides a wide variety of product types, ranging 
+from daily necessities like ‘food’, ‘drinks’, to big purchases that people only buy when needed, 
+such as ‘computer_accessories’ or ‘console_games’. Therefore, it would be necessary to"
+How does product quality affect customer loyalty?,3,42773,,consumer_behavior.pdf,"satisfaction, while previous articles such as Kim et al. (2009) mentioned that positive customer 
+reviews would predict higher e-loyalty, this study’s analysis revealed no significant relationship 
+between review scores and repeat purchase behavior in either the general population or the 
+subset of repeat buyers. Furthermore, the descriptive data highlighted an overwhelmingly 
+transactional market, with 99.4% of customers making only a single purchase. This lack of"
+How does product quality affect customer loyalty?,4,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+How does product quality affect customer loyalty?,5,42703,,consumer_behavior.pdf,"performance (Moorman & Rust, 1999). The core value of marketing is determined by its ability 
+to connect the consumer to the product and build essential market knowledge. In addition, the 
+importance of marketing is further underscored by its significant correlation with company 
+growth (Urbonavičius & Dikčius, 2008). With the rise of online shopping in the digital age, 
+understanding the nuances of consumer behavior has become even more of a challenge, as"
+How does product quality affect customer loyalty?,6,24837,,,avaliação do vendedor
+How does product quality affect customer loyalty?,7,28385,,,Qualidade do produto deixa a desejar
+How does product quality affect customer loyalty?,8,1817,,,Exemplo de fidelidade entre cliente e empresa
+How does product quality affect customer loyalty?,9,18256,,,"Parabenizo pela eficiência e comprometimento, do vendedor com o cliente. Além do produto corresponder exatamente ao que diz o anuncio, a entrega do produto superou minha espectativa."
+How does product quality affect customer loyalty?,10,35824,,,"Produto de qualidade!
+Compromisso com o cliente e qualidade no produto resumem essa compra."
+What improvements should product teams prioritize?,1,23394,,,"Responsabilidade
+Entrega no prazo e qualidade do produto ofertado."
+What improvements should product teams prioritize?,2,183,,,Entrega e qualidade do produto de acordo com o esperado.
+What improvements should product teams prioritize?,3,10001,,,"Produto de qualidade,entregue antes do prazo"
+What improvements should product teams prioritize?,4,8360,,,Produto de qualidade e dentro do prazo
+What improvements should product teams prioritize?,5,32035,,,"Produto de boa qualidade
+Produto atende as expectativas."
+What improvements should product teams prioritize?,6,23277,,,excelente produto preenche as necessidades indicativas do fabricante
+What improvements should product teams prioritize?,7,2620,,,Recomendo mas precisa melhorar o rastreamento dos produtos
+What improvements should product teams prioritize?,8,11122,,,"Entrega antes do prazo, mas a empresa precisa melhor na atualização de status de envio do produto.
+
+Produto avaliado de forma positiva!"
+What improvements should product teams prioritize?,9,29829,,,Solicito melhoras no prazo de entrega dos produtos.
+What improvements should product teams prioritize?,10,36276,,,"Bom
+Produto bom mas, veio com a base manchada e arranhada. O controle de qualidade deve ser mais rigoroso."
+Are damaged products a recurring problem?,1,4694,,,infelizmente recebi o produto danificado
+Are damaged products a recurring problem?,2,38398,,,Recebi o produto danificado
+Are damaged products a recurring problem?,3,36482,,,produto veio danificado
+Are damaged products a recurring problem?,4,17796,,,Porém com alguns arranhões e danos.
+Are damaged products a recurring problem?,5,5324,,,O produto foi entregue dentro do prazo porém um dos produtos veio danificado.
+Are damaged products a recurring problem?,6,15432,,,"Produto com defeito
+Produto veio quebrado"
+Are damaged products a recurring problem?,7,32275,,,"Produto mal embalado
+Produto chegou quebrado é material não é bom"
+Are damaged products a recurring problem?,8,8707,,,"Produto danificado
+Infelizmente recebi o produto que é uma solução p unhas roídas com o frasco vazio e danificado"
+Are damaged products a recurring problem?,9,14851,,,"Entrega Danificada
+Produto chegou danificado, com rachadura no corpo da fonte, entretanto funcional.
+Mas o fato do produto chegar dessa forma, demonstra que o vendedor nao tomou os devidos cuidados no envio."
+Are damaged products a recurring problem?,10,2071,,,"Produto mal embalado
+Produto chegou com risco e manchado."
+What quality trends emerge from customer reviews?,1,42714,,consumer_behavior.pdf,"Dataset provided by Olist. 
+ The selection of customer review scores, seasonality, and urbanization as the core 
+independent variables for this study is based on the following: First, review scores are analyzed 
+to evaluate the satisfaction-loyalty link of the consumers in a digital marketplace where buyers 
+cannot physically inspect goods, high ratings serve as critical social proof that and validates"
+What quality trends emerge from customer reviews?,2,42699,,consumer_behavior.pdf,"regarding the relationship between positive customer reviews and e-loyalty, the fluctuation of 
+seasonal sales during holiday periods, and the influence of geographic urbanization on product 
+preferences. Utilizing regression analyses on 100,000 orders from 2016 to 2018, the results 
+showed no significant relationship between positive review scores and repeat purchasing 
+behavior, revealing an overwhelmingly transactional market where 99.4% of customers are one-"
+What quality trends emerge from customer reviews?,3,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+What quality trends emerge from customer reviews?,4,42721,,consumer_behavior.pdf,"who express high satisfaction through positive reviews are more likely to demonstrate loyalty 
+through repeat purchases, thereby providing a measurable link between positive feedback and 
+customer retention. This e-commerce platform provides a wide variety of product types, ranging 
+from daily necessities like ‘food’, ‘drinks’, to big purchases that people only buy when needed, 
+such as ‘computer_accessories’ or ‘console_games’. Therefore, it would be necessary to"
+What quality trends emerge from customer reviews?,5,42717,,consumer_behavior.pdf,"how geographic density and local market development dictate whether a consumer prioritizes 
+pleasure-oriented (hedonic) or functional (utilitarian) goods (Sinha & Verma, 2019). 
+H1: Customers who leave positive reviews (4 or 5 stars) are more likely to become loyal 
+customers to that store, defined as making one or more subsequent purchases within a reasonable 
+timeframe. 
+In the e-commerce ecosystem, online reviews are a critical form of user-generated"
+What quality trends emerge from customer reviews?,6,42930,,olist_executive_playbook.pdf,"• Revenue Growth
+• Order Volume
+• Customer Satisfaction
+• Average Review Score
+• On-Time Delivery Rate
+• Customer Retention Rate
+• Forecast Accuracy"
+What quality trends emerge from customer reviews?,7,25727,,,Agora e usar o produto para avaliar a qualidade.
+What quality trends emerge from customer reviews?,8,2128,,,"Produto de Qualidade
+O produto em questão, apresenta boa qualidade o que consequentemente me leva a recomendar o mesmo."
+What quality trends emerge from customer reviews?,9,37316,,,"Boa Compra, recomendo
+Produto entregue com sucesso, agora é utilizar para aferir a qualidade dentro do período de garantia."
+What quality trends emerge from customer reviews?,10,35824,,,"Produto de qualidade!
+Compromisso com o cliente e qualidade no produto resumem essa compra."
+Which product categories generate positive feedback?,1,42721,,consumer_behavior.pdf,"who express high satisfaction through positive reviews are more likely to demonstrate loyalty 
+through repeat purchases, thereby providing a measurable link between positive feedback and 
+customer retention. This e-commerce platform provides a wide variety of product types, ranging 
+from daily necessities like ‘food’, ‘drinks’, to big purchases that people only buy when needed, 
+such as ‘computer_accessories’ or ‘console_games’. Therefore, it would be necessary to"
+Which product categories generate positive feedback?,2,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+Which product categories generate positive feedback?,3,27944,,,Produto atende às características.
+Which product categories generate positive feedback?,4,25295,,,"Positivo
+Recomendo, entrega no prazo e produto bom."
+Which product categories generate positive feedback?,5,22401,,,"Bom produto
+O produto atendeu as expectativas."
+Which product categories generate positive feedback?,6,32035,,,"Produto de boa qualidade
+Produto atende as expectativas."
+Which product categories generate positive feedback?,7,183,,,Entrega e qualidade do produto de acordo com o esperado.
+Which product categories generate positive feedback?,8,23277,,,excelente produto preenche as necessidades indicativas do fabricante
+Which product categories generate positive feedback?,9,2128,,,"Produto de Qualidade
+O produto em questão, apresenta boa qualidade o que consequentemente me leva a recomendar o mesmo."
+Which product categories generate positive feedback?,10,35824,,,"Produto de qualidade!
+Compromisso com o cliente e qualidade no produto resumem essa compra."
+Are customers satisfied with payment options?,1,8821,,,"Ótima
+Satisfação ao cliente"
+Are customers satisfied with payment options?,2,33958,,,satisfeito com a compra
+Are customers satisfied with payment options?,3,13356,,,satisfeito com a compra
+Are customers satisfied with payment options?,4,40428,,,Satisfeito com a compra
+Are customers satisfied with payment options?,5,9081,,,Satisfeita com a compra e entrega.
+Are customers satisfied with payment options?,6,6363,,,"Cliente assíduo poderia ter vantagem, como desconto"
+Are customers satisfied with payment options?,7,15052,,,Muito satisfeito com a compra e o atendimento
+Are customers satisfied with payment options?,8,34644,,,Compromisso e respeito para com os clientes
+Are customers satisfied with payment options?,9,42665,,,"Recomendo
+Recomendo, compra segura entrega correta."
+Are customers satisfied with payment options?,10,38389,,,"Satisfeito com a compra e com o atendimento, até a próxima"
+What payment-related issues appear in reviews?,1,42888,,ecommerce_analysis.pdf,"in low-star-rated reviews transactional to service level. Particularly, reviews with 1 star 
+or 2 star ratings mention poor delivery service. High start ratings are associated with 
+good product quality and on-time delivery. 
+Pearson Correlation (Sentiment vs. Review Score) 
+S i = sentiment polarity score for review i, Ri= numeric review rating. 
+ Si=
+1
+m∑
+s(wj)
+m
+j=1
+ r=
+∑(Si−S̅)(Ri−R̅)
+√∑(Si−S̅)2 ∑(Ri−R̅)2 (29)"
+What payment-related issues appear in reviews?,2,42758,,consumer_behavior.pdf,"13 
+ 
+ 
+H1: Customer Reviews and E-Loyalty 
+Table 1 reveals a statistically significant correlation (r = .01, p < .01) between review 
+scores and the number of orders. However, it is crucial to interpret this with caution. In 
+extremely large datasets (N = 97967), even a virtually weak positive relationship can appear 
+""statistically significant"" simply because of the sample size (see Table 1-2). Practically speaking,"
+What payment-related issues appear in reviews?,3,42718,,consumer_behavior.pdf,"timeframe. 
+In the e-commerce ecosystem, online reviews are a critical form of user-generated 
+content that serves as both direct feedback for the firm and a purchasing guide for other"
+What payment-related issues appear in reviews?,4,42928,,olist_executive_playbook.pdf,"• Improve fulfillment performance.
+Scenario 2: Customer Ratings Decline
+• Analyze negative reviews using sentiment analysis.
+• Identify recurring complaint themes.
+• Audit seller performance.
+• Improve customer support processes.
+Scenario 3: Delivery Delays Increase
+• Monitor on-time delivery rate.
+• Identify logistics bottlenecks.
+• Review regional delivery performance.
+• Optimize fulfillment workflows.
+Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers."
+What payment-related issues appear in reviews?,5,42847,,ecommerce_analysis.pdf,"that follow. 
+ Univariate Analysis 
+Orders and Payments: The attribute payment_value has a right-skewed dis-
+tribution with a long tail of high-value purchases. Descriptive statistics show 
+a mean to median ratio of >1.5, which indicates skewness. The attribute 
+freight value also displays heavy-tailed behavior, which may require a log 
+transformation. 
+Customer Attributes: For categorical fields (e.g., customer_state and customer_city),"
+What payment-related issues appear in reviews?,6,13383,,,"compra efetuada,debito autorizado ,pedido cancelado sem explicações.Extrema falta de respeito e consideração com os clientes."
+What payment-related issues appear in reviews?,7,42880,,ecommerce_analysis.pdf,"Average Delay by Payment Type: 
+ Dp̅̅̅̅ =
+1
+Np∑
+(DeliveredDatei−EstimatedDatei)
+Np
+i=1
+ (25) 
+One-Way ANOVA (Analysis of Variance): When comparing more than two payment 
+types, ANOVA verifies whether the mean delivery delays across groups are equal (H0) 
+or at least one group differs significantly (Ha). ANOVA computes an F-ratio, defined 
+as, ratio of between-group variance (differences in mean delivery delay across payment"
+What payment-related issues appear in reviews?,8,31337,,,"A demora da emissão da nota fiscal
+Após o pagamento não é aceitável"
+What payment-related issues appear in reviews?,9,27776,,,"Cliente super insatisfeit
+Quero informar que acho uma falta de respeito com consumir final ficar aguardando algo que já foi pago e não entregue, favor resolver essa situação urgente ou estarei acionando minha ADVOGADA."
+What payment-related issues appear in reviews?,10,42201,,,"Solicito informações sobre a compra e o estorno da compra? Se o valor for devolvido, recomendaria a loja sim"
+How do order fulfilment problems affect customers?,1,42743,,consumer_behavior.pdf,"since it is very unlikely that customers would receive the product on that same day and order it 
+again; thus, the “order_purchase_date” variable was created from the “order_approved_at”, 
+specifically by removing the time in order for an accurate comparison. Finally, the duplicates 
+based on the mentioned criteria were removed to filter for genuine subsequent visits. 
+ 
+In addition to those customers who were repeat buyers, a second data frame for those"
+How do order fulfilment problems affect customers?,2,42742,,consumer_behavior.pdf,"distinguish it from one-time bulk purchases, there are certain criteria that need to be fulfilled: 
+“order_id” that repeats itself will be excluded as a duplicate, and only the first instance will be 
+kept, as it is likely just a listing of the bulk order. Secondly, the orders that are from the same 
+customer-seller pair occurring on the same date were treated as a single transaction instance 
+since it is very unlikely that customers would receive the product on that same day and order it"
+How do order fulfilment problems affect customers?,3,42893,,ecommerce_analysis.pdf,"Model 
+Accuracy 
+Logistic Regression 
+81% 
+Random Forest 
+89% 
+XGBoost 
+92% 
+SVM 
+85% 
+5. Conclusion 
+This study presented a complete analytical pipeline examining the Brazilian e-com-
+merce environment using the Olist dataset. We effectively demonstrated how diverse 
+characteristics related to customers, sellers, payments, and deliveries could be inte-
+grated in order to yield actionable business insights. The framework included several"
+How do order fulfilment problems affect customers?,4,24443,,,"Problems existem, porem, necessario compreende-los."
+How do order fulfilment problems affect customers?,5,5654,,,"Infelizmente, encontramos na internet, lojas que para poderem vender, dizem que tem o produto pedido. Ao finalizar o pedido, o cliente fica à mercê do prazo de entrega que, nem sempre é cumprido."
+How do order fulfilment problems affect customers?,6,28036,,,"Em partes
+Sou cliente há anos, porém sempre há divergências e problemas na entrega, consta como produto entregue, porém foi entregue apenas 1 produto, aguardo solução!"
+How do order fulfilment problems affect customers?,7,14517,,,Prazo de entrega absurdo e demora no retorno do vendedor
+How do order fulfilment problems affect customers?,8,16773,,,"Produto errado
+Mais responsabilidade com os clientes quanto origem do produto,qualidade,certeza de que o produto entregue é de acordo com o pedido"
+How do order fulfilment problems affect customers?,9,32269,,,"Produto errado
+Entrega do produto diferente do solicitado
+Aguardo orientação para a troca"
+How do order fulfilment problems affect customers?,10,20721,,,"Quantidade errada
+A loja deveria prestar mais atenção nos ítens do pedido antes de enviar ao cliente."
+What causes order cancellations?,1,24680,,,"Cancelamento de compra
+Solicitei o cancelamento da compra dentro do prazo de 07 dias (conforme rege o código de defesa do consumidor) e o cancelamento não foi efetuado, produto não entregue e o pagamento não foi estornado."
+What causes order cancellations?,2,20717,,,"Houve problema com o envio, fiz o cancelamento quando o produto estava voltando para o vendedor, e não tive o retorno ainda, voltei a cancelar e estou guardando."
+What causes order cancellations?,3,19164,,,"cancelamento compra
+Foi cancelado a compra antes da emissão de nota fiscal e mesmo assim entregaram o produto sem efetivar o cancelamento solicitado."
+What causes order cancellations?,4,16912,,,"Um dos itens da compra foi cancelado sem que eu pedisse. Foi dito que eu solicitei o cancelamento, mas isso não ocorreu. Não fui ainda informado do por quê desse cancelamento."
+What causes order cancellations?,5,41448,,,Pedido cancelado.
+What causes order cancellations?,6,22125,,,"Péssimo o retorno
+Solicito o cancelamento."
+What causes order cancellations?,7,42523,,,Faltou um pedido na entrega e quando pede para cancelar um produto não te atendem
+What causes order cancellations?,8,27969,,,"Eu havia pedido o cancelamento,no entanto o pedido foi entregue assim mesmo!"
+What causes order cancellations?,9,7961,,,"Lamento muito, mas eu tinha cancelado um pedido. Errei no computador e fiz o mesmo pedido duas vezes sem querer. Cancelei um, mas não adintou, madaram os dois, é lamentável"
+What causes order cancellations?,10,7634,,,"Cancelamento
+Logo em seguida que eu fiz o pedido, que verifiquei que teria compro o produto errado solicitei o cancelamento, o qual nao foi realizado, Eu expliquei o motivo falei da troca por outro produto"
+Which order management improvements are needed?,1,42930,,olist_executive_playbook.pdf,"• Revenue Growth
+• Order Volume
+• Customer Satisfaction
+• Average Review Score
+• On-Time Delivery Rate
+• Customer Retention Rate
+• Forecast Accuracy"
+Which order management improvements are needed?,2,42820,,ecommerce_analysis.pdf,"performance of the model must be stabilized during iterations before deployment. Dur-
+ing this process, the data analysts and scientists should conduct descriptive and infer-
+ential analysis to improve decision making. It allows a competitive advantage and sus-
+tainable growth. 
+2. Relevant work 
+An increasing volume of research in e-commerce has driven transformations around 
+business models, consumer experience, logistics, and analytics. In a more recent publi-"
+Which order management improvements are needed?,3,23053,,,Tudo em ordem
+Which order management improvements are needed?,4,13903,,,Otima.e otima qualidade de compra e entrega
+Which order management improvements are needed?,5,14977,,,"Otimo
+Tudo em ordem"
+Which order management improvements are needed?,6,15335,,,Produto entregue no prazo e em ordem.
+Which order management improvements are needed?,7,28413,,,otimo produto e qualidade e atendimento top
+Which order management improvements are needed?,8,22699,,,A qualidade da bolsa deve melhorar.
+Which order management improvements are needed?,9,29829,,,Solicito melhoras no prazo de entrega dos produtos.
+Which order management improvements are needed?,10,36276,,,"Bom
+Produto bom mas, veio com a base manchada e arranhada. O controle de qualidade deve ser mais rigoroso."
+What trends exist in payment behaviour?,1,42847,,ecommerce_analysis.pdf,"that follow. 
+ Univariate Analysis 
+Orders and Payments: The attribute payment_value has a right-skewed dis-
+tribution with a long tail of high-value purchases. Descriptive statistics show 
+a mean to median ratio of >1.5, which indicates skewness. The attribute 
+freight value also displays heavy-tailed behavior, which may require a log 
+transformation. 
+Customer Attributes: For categorical fields (e.g., customer_state and customer_city),"
+What trends exist in payment behaviour?,2,42884,,ecommerce_analysis.pdf,"t=
+Dp1̅̅̅̅̅̅−Dp2̅̅̅̅̅̅
+√
+sp1
+2
+Np1+
+sp2
+2
+Np2
+ (28) 
+sp1
+2 , sp2
+2 = sample variances of delays for two groups 
+ Np1, Np2= sample sizes 
+These evaluations show whether logistics performance differs across payment types. 
+Understanding the relationship between financial behavior and operational perfor-
+mance is crucial for improving e-commerce logistics operations. 
+ 
+ Fig 14. Sankey Diagram showing flow. Order-> Payment-> Delivery-> Review 
+4.5 Sentiment Analysis"
+What trends exist in payment behaviour?,3,42881,,ecommerce_analysis.pdf,"as, ratio of between-group variance (differences in mean delivery delay across payment 
+types) to within-group variance (variation of delays within the same payment type). A 
+statistically significant result (p<0.05) indicate that payment type has an influence on 
+delivery performance. Consider k=2 
+ F=
+SSB/(k−1)
+SSW/(N−k) SSB= ∑
+Np(Dp̅̅̅̅ −D̅)
+2
+k
+p=1
+ (26) 
+ SSW= ∑
+∑
+(Dip−Dp̅̅̅̅)
+2
+Np
+i=1
+k
+p=1
+ (27) 
+Dˉp = average delay for payment type p 
+Np = number of orders with payment type p"
+What trends exist in payment behaviour?,4,42876,,ecommerce_analysis.pdf,"relationship between payment and logistics. Brazil customers used different payment 
+types such as Credit Card, Boleto, and Vouchers. Comparing these payment types re-
+vealed that delivery results are highly impacted by the mode of payment. In some sce-
+narios, when a credit card is used, the system will only initiate shipping process after 
+receiving a confirmation from the associated bank. Sankey diagrams (Fig 14) will fur-"
+What trends exist in payment behaviour?,5,42880,,ecommerce_analysis.pdf,"Average Delay by Payment Type: 
+ Dp̅̅̅̅ =
+1
+Np∑
+(DeliveredDatei−EstimatedDatei)
+Np
+i=1
+ (25) 
+One-Way ANOVA (Analysis of Variance): When comparing more than two payment 
+types, ANOVA verifies whether the mean delivery delays across groups are equal (H0) 
+or at least one group differs significantly (Ha). ANOVA computes an F-ratio, defined 
+as, ratio of between-group variance (differences in mean delivery delay across payment"
+What trends exist in payment behaviour?,6,31337,,,"A demora da emissão da nota fiscal
+Após o pagamento não é aceitável"
+What trends exist in payment behaviour?,7,6005,,,"custo beneficio otimo
+entrega no prazo
+parabens"
+What trends exist in payment behaviour?,8,6363,,,"Cliente assíduo poderia ter vantagem, como desconto"
+What trends exist in payment behaviour?,9,12823,,,vou receber ainda ? Como fica o pagamento ?
+What trends exist in payment behaviour?,10,42201,,,"Solicito informações sobre a compra e o estorno da compra? Se o valor for devolvido, recomendaria a loja sim"
+How can the checkout experience be improved?,1,7300,,,"ainda estou verificando o atendimento quando precisamos efetuar uma troca ou resolver um problema, esse é o referencial de qualquer atendimento."
+How can the checkout experience be improved?,2,15765,,,"em teste
+Em relação à entrega ocorreu tudo certo, porém ainda preciso de alguns dias para dizer se realmente o efeito será positivo."
+How can the checkout experience be improved?,3,42656,,,Bom atendimento diante do que foi solicitado
+How can the checkout experience be improved?,4,430,,,"Atenciosos,ligam para dar acompanhamento. Bom prazo de validade. Demorou de chegar. Agora é verificar a qualidade do produto."
+How can the checkout experience be improved?,5,5998,,,"recomendado
+satisfeita pela presteza no atendimento"
+How can the checkout experience be improved?,6,30132,,,"Recomendo
+Ainda estou testando o produto, mas a princípio funcionou bem. Ponto negativo: Mais uma vez a demora em relação aos prazos, em outra compra a demora foi absurda."
+How can the checkout experience be improved?,7,27776,,,"Cliente super insatisfeit
+Quero informar que acho uma falta de respeito com consumir final ficar aguardando algo que já foi pago e não entregue, favor resolver essa situação urgente ou estarei acionando minha ADVOGADA."
+How can the checkout experience be improved?,8,22699,,,A qualidade da bolsa deve melhorar.
+How can the checkout experience be improved?,9,21081,,,"avaliação recomendada
+ja comprei varias vezes eu sempre fui bem atendido
+otimo atendimento, prazos de entregas dentro do
+prazo estipulado sempre chega antes da data
+prevista"
+How can the checkout experience be improved?,10,25371,,,estou testando quando obtiver resultado eu avalio melhor
+What should executives prioritize to improve customer experience?,1,42707,,consumer_behavior.pdf,"al., 2023). Specifically, the data-driven approach allows for enhanced customer relationship 
+management by providing deep insights into customer behavior, preferences, and interactions."
+What should executives prioritize to improve customer experience?,2,1817,,,Exemplo de fidelidade entre cliente e empresa
+What should executives prioritize to improve customer experience?,3,40951,,,Empresa comprometida com o atendimento ao cliente e idônea nos produtos que vendem
+What should executives prioritize to improve customer experience?,4,34644,,,Compromisso e respeito para com os clientes
+What should executives prioritize to improve customer experience?,5,22475,,,"Uma loja segura e responsável, recomendo pois são muito organizado e preocupado com a satisfação do cliente."
+What should executives prioritize to improve customer experience?,6,10460,,,Recomendaria a loja por sua rapidez e preocupação com o cliente.
+What should executives prioritize to improve customer experience?,7,10264,,,"Superou as expectativas
+Serviço excelente qualidade entrega capricho atenção cuidado vou continuar comprando com a empresa parabéns por cativar os clientes vou recomendar amei"
+What should executives prioritize to improve customer experience?,8,34937,,,"Super recomendado
+Recomendo a empresa pela celeridade, embalagem e excelente atendimento. Lhes desejo sucesso e bons negócios."
+What should executives prioritize to improve customer experience?,9,32224,,,"Talvez recomendaria
+A empresa deveria responder aos e-mail dos cliente 
+Deveria revê essa questão, porque empresa que se comunica com seus cliente passa mais credibilidade e demostra que esta atento ao seu cliente."
+What should executives prioritize to improve customer experience?,10,1993,,,"bom serviço
+Satisfatória, é a palavra que define minha experiência de compra com essa loja. obrigado pelo atendimento. Pode atuar no mercado com esse nível de compromisso."
+Which strategic initiatives will have the greatest impact?,1,27930,,,Empresa de grande responsabilidade
+Which strategic initiatives will have the greatest impact?,2,42117,,,"Atendimento das expectativas
+Recomendo"
+Which strategic initiatives will have the greatest impact?,3,17516,,,"Progresso
+Melhoria contínua"
+Which strategic initiatives will have the greatest impact?,4,6089,,,"Top
+Produto atende as necessidades"
+Which strategic initiatives will have the greatest impact?,5,17652,,,"recomendo
+Produto recebido dentro prazo estipulado."
+Which strategic initiatives will have the greatest impact?,6,5003,,,"excelente
+prouto esperado dentro do prazo"
+Which strategic initiatives will have the greatest impact?,7,4023,,,Ótima malas bem reforçadas recomendaria
+Which strategic initiatives will have the greatest impact?,8,14453,,,"recomendo
+dentro do previsto"
+Which strategic initiatives will have the greatest impact?,9,12829,,,"Tudo conforme anunciado, recomendo"
+Which strategic initiatives will have the greatest impact?,10,3193,,,"recomendo
+ESTOU MUITO SATISFEITA COM OS PRODUTOS E ATENDIMENTO."
+How can the company increase customer retention?,1,42776,,consumer_behavior.pdf,"seller, and while this does not necessarily mean reducing the incentive to return to the same 
+specific store, it helps the consumer understand how useful the platform can be. The results 
+imply that for small merchants on aggregated platforms, high ratings alone are insufficient to 
+guarantee customer retention without additional engagement strategies. 
+Seasonality and holiday consumption were also examined by looking at whether the"
+How can the company increase customer retention?,2,42930,,olist_executive_playbook.pdf,"• Revenue Growth
+• Order Volume
+• Customer Satisfaction
+• Average Review Score
+• On-Time Delivery Rate
+• Customer Retention Rate
+• Forecast Accuracy"
+How can the company increase customer retention?,3,7442,,,Rapidaentrega e boa assistencia ao cliente
+How can the company increase customer retention?,4,18449,,,sempre mantendo o compromisso com os clientes
+How can the company increase customer retention?,5,34644,,,Compromisso e respeito para com os clientes
+How can the company increase customer retention?,6,40951,,,Empresa comprometida com o atendimento ao cliente e idônea nos produtos que vendem
+How can the company increase customer retention?,7,1817,,,Exemplo de fidelidade entre cliente e empresa
+How can the company increase customer retention?,8,3069,,,"Esta pareceria entre a lannister e as demais lojas foi muito bom, pois veio a contribuir positivamente, facilitando a relação de compras entra a empresa e seus clientes."
+How can the company increase customer retention?,9,32238,,,"uma empresa que cumpre com prazo
+Espero que continuem assim,visando sempre o melhor para os clientes!"
+How can the company increase customer retention?,10,15987,,,O entregador poderia ser outra empresa pois já comprei outros produtos nessa loja e a entrega era rápida e segura pois era feita por uma empresa que dava mais atenção ao cliente
+What business risks are highlighted by customer feedback?,1,42929,,olist_executive_playbook.pdf,"Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers.
+• Launch loyalty programs.
+• Offer personalized promotions.
+• Track repeat purchase behavior.
+Scenario 5: Forecast Shows Revenue Risk
+• Review forecasting results.
+• Identify declining categories.
+• Prepare mitigation plans.
+• Monitor KPIs weekly.
+Executive KPIs"
+What business risks are highlighted by customer feedback?,2,42928,,olist_executive_playbook.pdf,"• Improve fulfillment performance.
+Scenario 2: Customer Ratings Decline
+• Analyze negative reviews using sentiment analysis.
+• Identify recurring complaint themes.
+• Audit seller performance.
+• Improve customer support processes.
+Scenario 3: Delivery Delays Increase
+• Monitor on-time delivery rate.
+• Identify logistics bottlenecks.
+• Review regional delivery performance.
+• Optimize fulfillment workflows.
+Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers."
+What business risks are highlighted by customer feedback?,3,42818,,ecommerce_analysis.pdf,"to shorter delivery times and reduced costs which lead to a higher level of consumer 
+satisfaction. Predictions obtained from analysis will definitely enable proactive risk 
+mitigation and reduces client risk. Failure risks must be considered when delay is 
+estimated. 
+The challenge is the complexity of data in today's environment and managing data ef-
+fectively at scale. High dimensionality combined with heterogeneous sources of data"
+What business risks are highlighted by customer feedback?,4,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+What business risks are highlighted by customer feedback?,5,42708,,consumer_behavior.pdf,"4 
+ 
+ 
+By leveraging this information, companies can better identify consumer demands, recognize at-
+risk clients, and personalize interactions to improve engagement and retention (Odionu et al., 
+2024). Such targeted advertising is proven to be more persuasive and effective at influencing 
+consumer attitudes and intentions than generic campaigns (Yeo et al., 2025). However, in order 
+to maximize the increase in brand awareness, not only do companies have to curate the right"
+What business risks are highlighted by customer feedback?,6,27620,,,"Totalmente responsáveis, produto entregue, informação dada ao cliente, preocupação com o cliente. Recomendo."
+What business risks are highlighted by customer feedback?,7,16773,,,"Produto errado
+Mais responsabilidade com os clientes quanto origem do produto,qualidade,certeza de que o produto entregue é de acordo com o pedido"
+What business risks are highlighted by customer feedback?,8,41939,,,Ainda aguardo o produto. Após recebimento ou posição da empresa poderia recomendar ou modificar avaliação.
+What business risks are highlighted by customer feedback?,9,32312,,,"Nota 10
+Comprometimento e dedicação com o cliente.por isso indico pra quem está com alguma dúvida referente a loja;e sobre o produto atingiu perfeitamente as minhas perspectivas."
+What business risks are highlighted by customer feedback?,10,32224,,,"Talvez recomendaria
+A empresa deveria responder aos e-mail dos cliente 
+Deveria revê essa questão, porque empresa que se comunica com seus cliente passa mais credibilidade e demostra que esta atento ao seu cliente."
+Which KPIs should executives monitor?,1,42827,,ecommerce_analysis.pdf,"based grouping using machine learning 
+More recent literature has studied operational metrics, personalization, and challenges 
+in adoption.[12] suggested rules for identifying key performance indicators (KPIs) in 
+e-commerce using Google Analytics data and machine learning models to improve KPI 
+relevance and decision-making reliability. [13] built a personalized referral service, 
+utilizing big data mining and machine learning to yield better accuracy and engagement"
+Which KPIs should executives monitor?,2,33664,,,Cadê meu monitor pago?
+Which KPIs should executives monitor?,3,42251,,,Deveriam avaliar os fornecedores
+Which KPIs should executives monitor?,4,27930,,,Empresa de grande responsabilidade
+Which KPIs should executives monitor?,5,13884,,,"recomendo
+empresa confiável e ágil"
+Which KPIs should executives monitor?,6,22941,,,Bons profissionais podem confiar
+Which KPIs should executives monitor?,7,37952,,,Empresa confiável e responsável.
+Which KPIs should executives monitor?,8,39926,,,"Empresa super responsável, que podemos confiar."
+Which KPIs should executives monitor?,9,18740,,,"Belo atendimento, Otimo profissionais e otimo suporte"
+Which KPIs should executives monitor?,10,12343,,,"Empresa de confiança, mais q indicado."
+How should executives respond to declining customer satisfaction?,1,42928,,olist_executive_playbook.pdf,"• Improve fulfillment performance.
+Scenario 2: Customer Ratings Decline
+• Analyze negative reviews using sentiment analysis.
+• Identify recurring complaint themes.
+• Audit seller performance.
+• Improve customer support processes.
+Scenario 3: Delivery Delays Increase
+• Monitor on-time delivery rate.
+• Identify logistics bottlenecks.
+• Review regional delivery performance.
+• Optimize fulfillment workflows.
+Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers."
+How should executives respond to declining customer satisfaction?,2,38275,,,Insatisfação total com essa loja vende um produto é não entrega tremenda falta de respeito
+How should executives respond to declining customer satisfaction?,3,8516,,,"Desrespeito com o cliente
+Falta de respeito com o cliente"
+How should executives respond to declining customer satisfaction?,4,1817,,,Exemplo de fidelidade entre cliente e empresa
+How should executives respond to declining customer satisfaction?,5,29983,,,Eficiencia e Comprometimento com o Consumidor.
+How should executives respond to declining customer satisfaction?,6,42091,,,"Ruim
+Falta de respeito com cliente"
+How should executives respond to declining customer satisfaction?,7,27776,,,"Cliente super insatisfeit
+Quero informar que acho uma falta de respeito com consumir final ficar aguardando algo que já foi pago e não entregue, favor resolver essa situação urgente ou estarei acionando minha ADVOGADA."
+How should executives respond to declining customer satisfaction?,8,6363,,,"Cliente assíduo poderia ter vantagem, como desconto"
+How should executives respond to declining customer satisfaction?,9,10584,,,"Entrega do produto
+Falta de atenção e respeito com cliente"
+How should executives respond to declining customer satisfaction?,10,34644,,,Compromisso e respeito para com os clientes
+What operational improvements will improve business performance?,1,42817,,ecommerce_analysis.pdf,"qualitative and quantitative insights. Companies that are reliant on analytic data bene-
+fiting a specific operation must provide real benefits. Retailers can understand cus-
+tomer demand which can avoid overstock and stock-out incidents. This indirectly re-
+sults in profits. Logistics companies will adapt operations that are more efficient due 
+to shorter delivery times and reduced costs which lead to a higher level of consumer"
+What operational improvements will improve business performance?,2,17516,,,"Progresso
+Melhoria contínua"
+What operational improvements will improve business performance?,3,2552,,,"Eficiência
+Entrega rápida e produto de qualidade!!!"
+What operational improvements will improve business performance?,4,8360,,,Produto de qualidade e dentro do prazo
+What operational improvements will improve business performance?,5,39737,,,"Ótimo produto, qualidade e eficiência."
+What operational improvements will improve business performance?,6,22699,,,A qualidade da bolsa deve melhorar.
+What operational improvements will improve business performance?,7,22791,,,"Melhorar sempre
+Melhorar o atendimento sempre"
+What operational improvements will improve business performance?,8,29829,,,Solicito melhoras no prazo de entrega dos produtos.
+What operational improvements will improve business performance?,9,31532,,,"Bom
+Dentro do prazo
+Produto bom"
+What operational improvements will improve business performance?,10,4688,,,"Satisfação com a compra
+Muito satisfeito, produto de ótima qualidade e rapidez na entrega.recomendo sim essa loja, continue assim sempre melhorando cada vez mais."
+Which investments should management prioritize?,1,42820,,ecommerce_analysis.pdf,"performance of the model must be stabilized during iterations before deployment. Dur-
+ing this process, the data analysts and scientists should conduct descriptive and infer-
+ential analysis to improve decision making. It allows a competitive advantage and sus-
+tainable growth. 
+2. Relevant work 
+An increasing volume of research in e-commerce has driven transformations around 
+business models, consumer experience, logistics, and analytics. In a more recent publi-"
+Which investments should management prioritize?,2,27930,,,Empresa de grande responsabilidade
+Which investments should management prioritize?,3,3820,,,"otimo
+o investimento não e caro pelo beneficio,"
+Which investments should management prioritize?,4,42117,,,"Atendimento das expectativas
+Recomendo"
+Which investments should management prioritize?,5,6089,,,"Top
+Produto atende as necessidades"
+Which investments should management prioritize?,6,37952,,,Empresa confiável e responsável.
+Which investments should management prioritize?,7,13884,,,"recomendo
+empresa confiável e ágil"
+Which investments should management prioritize?,8,14453,,,"recomendo
+dentro do previsto"
+Which investments should management prioritize?,9,39342,,,"Recomendamos NEGOCIAR com esta Empresa ""targaryen"""
+Which investments should management prioritize?,10,18183,,,EMPRESA RESPONSAVEL E PREOCUPADA COM SEUS CLIENTES SUPER RECOMENDO.
+What consumer behaviour trends are evident?,1,42706,,consumer_behavior.pdf,"the differences in socio-economics and culture affect consumers' behavior in shopping online in 
+a developing country. 
+Nowadays, firms can easily collate and analyze vast amounts of data to uncover trends 
+and patterns in consumer behavior, enabling the bridge between consumers and businesses, 
+which helps organizations to create more individualized and precise marketing strategies (Liu et 
+al., 2023). Specifically, the data-driven approach allows for enhanced customer relationship"
+What consumer behaviour trends are evident?,2,42704,,consumer_behavior.pdf,"understanding the nuances of consumer behavior has become even more of a challenge, as 
+businesses cannot operate without profits, which ties directly to customers, making customer 
+satisfaction the ultimate goal of all business operations. Therefore, it is not over exaggerating to 
+say that the market is transitioning into the phase ""consumers are the king of the market"" 
+(Sundareswaran et al., 2022, p. 82). Hence, the birth of companies that focus heavily on the"
+What consumer behaviour trends are evident?,3,42705,,consumer_behavior.pdf,"(Sundareswaran et al., 2022, p. 82). Hence, the birth of companies that focus heavily on the 
+research of consumers/market, such as NielsenIQ, Ipsos, Kantar, etc. This paper will go deeper 
+into analyzing consumer behavior of a Brazilian e-commerce platform, Olist, and whether or not 
+certain patterns of the customers would result in them becoming frequent buyers, and how much 
+the differences in socio-economics and culture affect consumers' behavior in shopping online in"
+What consumer behaviour trends are evident?,4,42698,,consumer_behavior.pdf,"2 
+ 
+ 
+Abstract 
+This paper investigates key drivers of consumer behavior within Brazil's emerging e-commerce 
+market by analyzing the Olist Public Dataset. As technology increasingly allows for data-driven 
+marketing strategies, understanding the nuanced behaviors of diverse consumer bases, especially 
+in an emerging market like Brazil, is critical for firm success. This study tests three hypotheses 
+regarding the relationship between positive customer reviews and e-loyalty, the fluctuation of"
+What consumer behaviour trends are evident?,5,42702,,consumer_behavior.pdf,"3 
+ 
+ 
+An Analysis of Consumer Behavior in the Brazilian E-commerce Market: An Investigation 
+of Customer Loyalty, Seasonality, and Regional Preferences 
+The evolution of technology has cemented marketing as a critical function for firm 
+success, influencing financial performance, customer relationships, and new product 
+performance (Moorman & Rust, 1999). The core value of marketing is determined by its ability"
+What consumer behaviour trends are evident?,6,42728,,consumer_behavior.pdf,"A significant factor influencing consumer preference is the distinction between hedonic 
+and utilitarian shopping motivations, which often correlates with geographic location. Utilitarian 
+consumption is driven by practical needs, where purchasing decisions prioritize functionality, 
+necessity, and economic value. Research by Sinha and Verma (2019) suggests that consumers in 
+rural areas often exhibit stronger utilitarian motivations, likely due to economic factors and a"
+What consumer behaviour trends are evident?,7,42692,,consumer_behavior.pdf,"analyzing the Olist Public Dataset. As technology increasingly allows for data-driven marketing strategies, 
+understanding the nuanced behaviors of diverse consumer bases, especially in an emerging market like 
+Brazil, is critical for firm success. This study tests three hypotheses regarding the relationship between 
+positive customer reviews and e-loyalty, the fluctuation of seasonal sales during holiday periods, and the"
+What consumer behaviour trends are evident?,8,42708,,consumer_behavior.pdf,"4 
+ 
+ 
+By leveraging this information, companies can better identify consumer demands, recognize at-
+risk clients, and personalize interactions to improve engagement and retention (Odionu et al., 
+2024). Such targeted advertising is proven to be more persuasive and effective at influencing 
+consumer attitudes and intentions than generic campaigns (Yeo et al., 2025). However, in order 
+to maximize the increase in brand awareness, not only do companies have to curate the right"
+What consumer behaviour trends are evident?,9,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+What consumer behaviour trends are evident?,10,29983,,,Eficiencia e Comprometimento com o Consumidor.
+What competitive advantages should the company strengthen?,1,42817,,ecommerce_analysis.pdf,"qualitative and quantitative insights. Companies that are reliant on analytic data bene-
+fiting a specific operation must provide real benefits. Retailers can understand cus-
+tomer demand which can avoid overstock and stock-out incidents. This indirectly re-
+sults in profits. Logistics companies will adapt operations that are more efficient due 
+to shorter delivery times and reduced costs which lead to a higher level of consumer"
+What competitive advantages should the company strengthen?,2,42703,,consumer_behavior.pdf,"performance (Moorman & Rust, 1999). The core value of marketing is determined by its ability 
+to connect the consumer to the product and build essential market knowledge. In addition, the 
+importance of marketing is further underscored by its significant correlation with company 
+growth (Urbonavičius & Dikčius, 2008). With the rise of online shopping in the digital age, 
+understanding the nuances of consumer behavior has become even more of a challenge, as"
+What competitive advantages should the company strengthen?,3,2307,,,"PRODUTO DE QUALIDADE 
+ATENDEU A NECESSIDADE
+RECOMENDO."
+What competitive advantages should the company strengthen?,4,39737,,,"Ótimo produto, qualidade e eficiência."
+What competitive advantages should the company strengthen?,5,29808,,,"Recomendável
+Gosto da empresa, produtos de qualidade."
+What competitive advantages should the company strengthen?,6,13293,,,"Preço, agilidade e qualidade do produto fizeram valer a pena. Recomendo"
+What competitive advantages should the company strengthen?,7,1817,,,Exemplo de fidelidade entre cliente e empresa
+What competitive advantages should the company strengthen?,8,21468,,,"Ótimo produto
+Melhor empresa"
+What competitive advantages should the company strengthen?,9,36460,,,satisfeita com a compra e responsabilidade da empresa
+What competitive advantages should the company strengthen?,10,23277,,,excelente produto preenche as necessidades indicativas do fabricante
+Which market opportunities are discussed in the business documents?,1,42790,,consumer_behavior.pdf,"20 
+ 
+ 
+References 
+Adenuga, D. (2025). Digital marketing strategies for emerging markets: Opportunities and 
+challenges. IOSR Journal of Business and Management (IOSR-JBM), 27(2), 13–21. 
+https://doi.org/10.9790/487X-2702021321 
+Bindah, E., & Gunnoo, L. (2024). Consumer behaviour towards sponsored-labelled targeted 
+advertisements on meta platforms in the context of Mauritius. Journal of Business 
+Economics and Management, 25(1), 175–190. https://doi.org/10.3846/jbem.2024.21109"
+Which market opportunities are discussed in the business documents?,2,42914,,olist_business_strategy.pdf,"market economies. 
+●​ Fierce Marketplace Competition: Defending merchant market share against 
+aggressive native fulfillment expansions by dominant regional giants like 
+Mercado Livre and Amazon."
+Which market opportunities are discussed in the business documents?,3,42894,,ecommerce_analysis.pdf,"grated in order to yield actionable business insights. The framework included several 
+phases like data processing, exploratory analysis, customer segmentation, spatial and 
+logistical evaluation, sentiment extraction with word cloud visualizations, and predic-
+tive modelling. The analysis indicates that the high value, loyal customers are concen-
+trated in central urban regions. Delays in the delivery vary widely according to geo-"
+Which market opportunities are discussed in the business documents?,4,42795,,consumer_behavior.pdf,"21 
+ 
+ 
+Kim, H.-S. (2006). Using hedonic and utilitarian shopping motivations to profile inner city 
+consumers. Journal of Shopping Center Research, 13, 58–77. 
+Liu, Q., Wan, H., & Yu, H. (2023). Application and influence of big data analysis in marketing 
+strategy. Frontiers in Business, Economics and Management, 9(3), 168–171. 
+https://doi.org/10.54097/fbem.v9i3.9580 
+Moorman, C., & Rust, R. T. (1999). The role of marketing. Journal of Marketing, 63(4_suppl1),"
+Which market opportunities are discussed in the business documents?,5,42817,,ecommerce_analysis.pdf,"qualitative and quantitative insights. Companies that are reliant on analytic data bene-
+fiting a specific operation must provide real benefits. Retailers can understand cus-
+tomer demand which can avoid overstock and stock-out incidents. This indirectly re-
+sults in profits. Logistics companies will adapt operations that are more efficient due 
+to shorter delivery times and reduced costs which lead to a higher level of consumer"
+Which market opportunities are discussed in the business documents?,6,42708,,consumer_behavior.pdf,"4 
+ 
+ 
+By leveraging this information, companies can better identify consumer demands, recognize at-
+risk clients, and personalize interactions to improve engagement and retention (Odionu et al., 
+2024). Such targeted advertising is proven to be more persuasive and effective at influencing 
+consumer attitudes and intentions than generic campaigns (Yeo et al., 2025). However, in order 
+to maximize the increase in brand awareness, not only do companies have to curate the right"
+Which market opportunities are discussed in the business documents?,7,42303,,,Comercialização nos padrões
+Which market opportunities are discussed in the business documents?,8,40951,,,Empresa comprometida com o atendimento ao cliente e idônea nos produtos que vendem
+Which market opportunities are discussed in the business documents?,9,16181,,,"Entrega, produto e negociação dentro do estipulado. Recomendo."
+Which market opportunities are discussed in the business documents?,10,29779,,,MUITO SATISFEITO COM QUALIDADE DE INFORMAÇÕES PASSO A PASSO ATÉ O RECEBIMENTO DO PRODUTO.
+How can customer insights improve business strategy?,1,42707,,consumer_behavior.pdf,"al., 2023). Specifically, the data-driven approach allows for enhanced customer relationship 
+management by providing deep insights into customer behavior, preferences, and interactions."
+How can customer insights improve business strategy?,2,42815,,ecommerce_analysis.pdf,"improve supply chain operations. Sentiment analysis will use natural language pro-
+cessing to improve business from customer feedback. 
+Operational aspect of the business can be optimized utilizing data analysis. We can 
+optimize routing algorithms, or include machine learning models that could predict de-
+livery times and isolate service bottlenecks in need of resolution. In addition to that, 
+analysis of geo-spatial data could provide direction on where customers reside or to"
+How can customer insights improve business strategy?,3,42894,,ecommerce_analysis.pdf,"grated in order to yield actionable business insights. The framework included several 
+phases like data processing, exploratory analysis, customer segmentation, spatial and 
+logistical evaluation, sentiment extraction with word cloud visualizations, and predic-
+tive modelling. The analysis indicates that the high value, loyal customers are concen-
+trated in central urban regions. Delays in the delivery vary widely according to geo-"
+How can customer insights improve business strategy?,4,42708,,consumer_behavior.pdf,"4 
+ 
+ 
+By leveraging this information, companies can better identify consumer demands, recognize at-
+risk clients, and personalize interactions to improve engagement and retention (Odionu et al., 
+2024). Such targeted advertising is proven to be more persuasive and effective at influencing 
+consumer attitudes and intentions than generic campaigns (Yeo et al., 2025). However, in order 
+to maximize the increase in brand awareness, not only do companies have to curate the right"
+How can customer insights improve business strategy?,5,6218,,,"Excelente atendimento ao
+Interesse em agradar o cliente e ótima mercadoria"
+How can customer insights improve business strategy?,6,40951,,,Empresa comprometida com o atendimento ao cliente e idônea nos produtos que vendem
+How can customer insights improve business strategy?,7,1817,,,Exemplo de fidelidade entre cliente e empresa
+How can customer insights improve business strategy?,8,3069,,,"Esta pareceria entre a lannister e as demais lojas foi muito bom, pois veio a contribuir positivamente, facilitando a relação de compras entra a empresa e seus clientes."
+How can customer insights improve business strategy?,9,35824,,,"Produto de qualidade!
+Compromisso com o cliente e qualidade no produto resumem essa compra."
+How can customer insights improve business strategy?,10,1993,,,"bom serviço
+Satisfatória, é a palavra que define minha experiência de compra com essa loja. obrigado pelo atendimento. Pode atuar no mercado com esse nível de compromisso."
+What factors influence purchasing decisions?,1,42728,,consumer_behavior.pdf,"A significant factor influencing consumer preference is the distinction between hedonic 
+and utilitarian shopping motivations, which often correlates with geographic location. Utilitarian 
+consumption is driven by practical needs, where purchasing decisions prioritize functionality, 
+necessity, and economic value. Research by Sinha and Verma (2019) suggests that consumers in 
+rural areas often exhibit stronger utilitarian motivations, likely due to economic factors and a"
+What factors influence purchasing decisions?,2,42693,,consumer_behavior.pdf,"influence of geographic urbanization on product preferences. Utilizing regression analyses on 100,000 
+orders from 2016 to 2018, the results showed no significant relationship between positive review scores 
+and repeat purchasing behavior, revealing an overwhelmingly transactional market where 99.4% of 
+customers are one-time buyers. Second, the study found no significant difference in the proportion of"
+What factors influence purchasing decisions?,3,36752,,,Exelente compra
+What factors influence purchasing decisions?,4,37452,,,perspectiva de nova compra
+What factors influence purchasing decisions?,5,42390,,,responsabilidade e correção com a compra
+What factors influence purchasing decisions?,6,5856,,,"Entrega
+Foi
+Poditiva a experiência de compra."
+What factors influence purchasing decisions?,7,8115,,,"Produto recebido divergente ao comprado, gerando frustração e perda de oferta de outras opções analisadas."
+What factors influence purchasing decisions?,8,19839,,,"Produto incorreto
+Preciso da devolução imediata do valor da compra"
+What factors influence purchasing decisions?,9,8803,,,Demora para entrega e também os fretes são muito alto poderia avaliar o cliente pela quantidade de compras
+What factors influence purchasing decisions?,10,42201,,,"Solicito informações sobre a compra e o estorno da compra? Se o valor for devolvido, recomendaria a loja sim"
+Which long-term business challenges are identified?,1,42787,,consumer_behavior.pdf,"the dataset in the following years would grow exponentially, thus providing better evidence for 
+future studies to base on. Overall, these findings provide actionable insights for managers 
+operating in emerging markets. Specifically, the low repurchase rate suggests that acquisition 
+costs must be kept low, as the ""lifetime value"" of a customer on this specific platform is limited 
+at the time. Moreover, this information can be provided to the sellers in order for them to better"
+Which long-term business challenges are identified?,2,24443,,,"Problems existem, porem, necessario compreende-los."
+Which long-term business challenges are identified?,3,42894,,ecommerce_analysis.pdf,"grated in order to yield actionable business insights. The framework included several 
+phases like data processing, exploratory analysis, customer segmentation, spatial and 
+logistical evaluation, sentiment extraction with word cloud visualizations, and predic-
+tive modelling. The analysis indicates that the high value, loyal customers are concen-
+trated in central urban regions. Delays in the delivery vary widely according to geo-"
+Which long-term business challenges are identified?,4,42817,,ecommerce_analysis.pdf,"qualitative and quantitative insights. Companies that are reliant on analytic data bene-
+fiting a specific operation must provide real benefits. Retailers can understand cus-
+tomer demand which can avoid overstock and stock-out incidents. This indirectly re-
+sults in profits. Logistics companies will adapt operations that are more efficient due 
+to shorter delivery times and reduced costs which lead to a higher level of consumer"
+Which long-term business challenges are identified?,5,15286,,,Rapidez é a alma do negocio
+Which long-term business challenges are identified?,6,42810,,ecommerce_analysis.pdf,"mand, RFM modelling, Cohort analysis, Time-series forecasting, Sentiment analysis, Anomaly 
+detection, Metric-driven visualization, customer segmentation, delivery logistics, Geo Analysis. 
+1. Introduction 
+In the current digital economy, data has become one of the leading assets impacting 
+strategic decision making and operational efficiencies across industries. The accelera-
+tion of e-commerce due to the pandemic has driven the increase of data even further."
+Which long-term business challenges are identified?,7,37957,,,atendeu as necessidades
+Which long-term business challenges are identified?,8,27997,,,O produto responde as necessidades
+Which long-term business challenges are identified?,9,39803,,,Entrega no prazo. Produto atende prontamente às necessidades da empresa.
+Which long-term business challenges are identified?,10,31532,,,"Bom
+Dentro do prazo
+Produto bom"
+What recommendations emerge from combining customer feedback and business research?,1,42815,,ecommerce_analysis.pdf,"improve supply chain operations. Sentiment analysis will use natural language pro-
+cessing to improve business from customer feedback. 
+Operational aspect of the business can be optimized utilizing data analysis. We can 
+optimize routing algorithms, or include machine learning models that could predict de-
+livery times and isolate service bottlenecks in need of resolution. In addition to that, 
+analysis of geo-spatial data could provide direction on where customers reside or to"
+What recommendations emerge from combining customer feedback and business research?,2,42719,,consumer_behavior.pdf,"6 
+ 
+ 
+consumers. Research indicates that items with positive reviews have a higher likelihood of being 
+purchased over those with no reviews available (Biswas et al., 2021). Recognizing this influence, 
+businesses and platforms actively encourage customers to share their experiences and thoughts 
+on products. This user-generated content is a cornerstone of modern digital marketing, building 
+trust and providing social proof to businesses. Trust, which then influences a customer's decision"
+What recommendations emerge from combining customer feedback and business research?,3,42928,,olist_executive_playbook.pdf,"• Improve fulfillment performance.
+Scenario 2: Customer Ratings Decline
+• Analyze negative reviews using sentiment analysis.
+• Identify recurring complaint themes.
+• Audit seller performance.
+• Improve customer support processes.
+Scenario 3: Delivery Delays Increase
+• Monitor on-time delivery rate.
+• Identify logistics bottlenecks.
+• Review regional delivery performance.
+• Optimize fulfillment workflows.
+Scenario 4: Customer Retention Drops
+• Use RFM analysis to identify at-risk customers."
+What recommendations emerge from combining customer feedback and business research?,4,12265,,,"Atendimento
+Muito bom desde a compra, entrega, feedback muito bom.
+Agradecido"
+What recommendations emerge from combining customer feedback and business research?,5,42930,,olist_executive_playbook.pdf,"• Revenue Growth
+• Order Volume
+• Customer Satisfaction
+• Average Review Score
+• On-Time Delivery Rate
+• Customer Retention Rate
+• Forecast Accuracy"
+What recommendations emerge from combining customer feedback and business research?,6,41939,,,Ainda aguardo o produto. Após recebimento ou posição da empresa poderia recomendar ou modificar avaliação.
+What recommendations emerge from combining customer feedback and business research?,7,10460,,,Recomendaria a loja por sua rapidez e preocupação com o cliente.
+What recommendations emerge from combining customer feedback and business research?,8,32312,,,"Nota 10
+Comprometimento e dedicação com o cliente.por isso indico pra quem está com alguma dúvida referente a loja;e sobre o produto atingiu perfeitamente as minhas perspectivas."
+What recommendations emerge from combining customer feedback and business research?,9,32224,,,"Talvez recomendaria
+A empresa deveria responder aos e-mail dos cliente 
+Deveria revê essa questão, porque empresa que se comunica com seus cliente passa mais credibilidade e demostra que esta atento ao seu cliente."
+What recommendations emerge from combining customer feedback and business research?,10,27138,,,"Super recomendo
+Parabéns pelo comprometimento com os clientes, Obrigada"

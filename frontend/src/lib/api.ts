@@ -346,6 +346,11 @@ export async function processPlatform() {
   return response.data;
 }
 
+export async function getPlatformStatus() {
+    const response = await api.get("/platform/status");
+    return response.data;
+}
+
 export async function getDashboardSummary() {
   const { data } = await api.get("/dashboard/summary");
   return data;

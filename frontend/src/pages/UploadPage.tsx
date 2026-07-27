@@ -12,6 +12,7 @@ import {
   processPlatform,
   uploadKnowledge,
   getKnowledgeDocuments,
+  getPlatformStatus,
   
 } from "../lib/api";
 import type { DatasetRecord } from '../lib/types';
@@ -65,16 +66,32 @@ export function UploadPage() {
     setLoading(true);
     getDatasets().then((d) => { setDatasets(d); setLoading(false); });
   }, []);
+
  const loadKnowledge = useCallback(() => {
-    getKnowledgeDocuments().then((docs) => {
-        setKnowledgeDocs(docs);
-    });
-}, []);
+      getKnowledgeDocuments().then((docs) => {
+          setKnowledgeDocs(docs);
+      });
+  }, []);
+
+  const loadPlatformStatus = useCallback(async () => {
+      try {
+          const status = await getPlatformStatus();
+
+          setPlatformStatus(
+              status.platform_ready
+                  ? "ready"
+                  : "needs_processing"
+          );
+      } catch (error) {
+          console.error(error);
+      }
+  }, []);
 
   useEffect(() => {
     loadDatasets();
     loadKnowledge();
-}, [loadDatasets, loadKnowledge]);
+    loadPlatformStatus();
+}, [loadDatasets, loadKnowledge, loadPlatformStatus]);
 
   function handleFiles(files: FileList | null) {
   if (!files || files.length === 0) return;
@@ -150,16 +167,14 @@ async function handleKnowledgeUpload() {
 
 async function handleProcessPlatform() {
     try {
+        setPlatformStatus("processing");
         const result = await processPlatform();
 
         setProcessResult(result);
 
-        if (result.success) {
-            setPlatformStatus("ready");
-        }
-
         await loadDatasets();
         await loadKnowledge();
+        await loadPlatformStatus();
 
     }  catch (error) {
         setPlatformStatus("needs_processing");
@@ -282,7 +297,7 @@ function getFileIcon(fileName: string) {
       </Card>
       <Card>
     <CardHeader
-        title="Knowledge Base"
+        title="Knowledge Documents"
         subtitle="Upload PDFs, DOCX or TXT files to enhance AI responses."
     />
 
@@ -387,8 +402,14 @@ function getFileIcon(fileName: string) {
                 {knowledgeDocs.length} document{knowledgeDocs.length !== 1 ? "s" : ""} uploaded
             </p>
 
-            <p className="mt-2 text-sm text-amber-600">
-                These documents will be indexed when you process the platform.
+            <p className={`mt-2 text-sm ${
+                platformStatus === "ready"
+                    ? "text-green-600"
+                    : "text-amber-600"
+            }`}>
+                {platformStatus === "ready"
+                    ? "Knowledge documents have been indexed successfully."
+                    : "These documents will be indexed when you process the platform."}
             </p>
 
         </div>
@@ -417,7 +438,11 @@ function getFileIcon(fileName: string) {
 
               </div>
 
-                <Button
+                <Button className={
+                        platformStatus === "ready"
+                            ? "bg-green-600 hover:bg-green-600"
+                            : ""
+                    }
                     onClick={handleProcessPlatform}
                     disabled={
                         !hasDataset ||
@@ -428,7 +453,7 @@ function getFileIcon(fileName: string) {
                     fullWidth
                 >
                     {platformStatus === "processing"
-                        ? "Processing..."
+                        ? "⚙️ Processing..."
                         : platformStatus === "ready"
                         ? "✓ Platform Ready"
                         : "Process Platform"}

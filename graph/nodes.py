@@ -4,7 +4,7 @@ LangGraph Nodes.
 Each node wraps a specialist agent and updates
 the shared graph state.
 """
-from tests.rag_test_setup import create_test_pipeline
+
 from graph.state import ExecuMindState
 
 from agents.customer_agent import CustomerIntelligenceAgent
@@ -12,17 +12,20 @@ from agents.data_agent import DataAgent
 from agents.forecast_agent import ForecastAgent
 from agents.executive_agent import ExecutiveAgent
 from agents.planner_agent import PlannerAgent
-
+from rag.services.pipeline_service import create_pipeline
 
 from utils.logger import logger
 
-logger.info("Initializing RAG pipeline...")
-rag_pipeline = create_test_pipeline()
+logger.info("Loading RAG pipeline...")
+
+
 # --------------------------------------------------
 # Agent instances
 # --------------------------------------------------
 
-customer_agent = CustomerIntelligenceAgent(rag_pipeline)
+def get_customer_agent():
+    rag_pipeline = create_pipeline()
+    return CustomerIntelligenceAgent(rag_pipeline)
 
 data_agent = DataAgent()
 
@@ -71,9 +74,13 @@ def executive_node(state: ExecuMindState,) -> ExecuMindState:
     context = {}
 
     if "customer" in decision.selected_agents:
+        if not get_customer_agent.rag_pipeline.is_ready():
+            raise RuntimeError(
+                "Knowledge base is not ready. Please process the platform first."
+            )
         logger.info("Executing Customer Agent")
 
-        response = customer_agent.run(
+        response = get_customer_agent().run(
             state["question"]
         )
 

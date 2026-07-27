@@ -46,12 +46,12 @@ class LLMService:
 
             if not api_key:
                 raise ValueError("GROQ_API_KEY not found")
-            groq_client = Groq(api_key=api_key)
+            self.groq_client = Groq(api_key=api_key)
 
-            self.client = instructor.from_groq(groq_client)
+            self.client = instructor.from_groq(self.groq_client)
 
-            #self.model = "llama-3.3-70b-versatile"
-            self.model ="llama-3.1-8b-instant"
+            self.model = "llama-3.3-70b-versatile"
+            #self.model ="llama-3.1-8b-instant"
 
             logger.info("Groq LLM initialised")
 
@@ -100,4 +100,50 @@ class LLMService:
         except Exception:
             logger.exception("LLM generation failed..")
             raise
-        
+
+    def generate_text(self, prompt: str) -> str:
+            """
+            Generate plain text response.
+            Used for evaluation scripts where structured output
+            is unnecessary.
+            """
+
+            try:
+
+                if self.provider == "gemini":
+
+                    response = self.client.models.generate_content(
+                        model=self.model,
+                        contents=prompt,
+                        config={
+                            "temperature": 0,
+                        },
+                    )
+
+                    logger.info("Text response generated")
+                    return response.text.strip()
+
+                elif self.provider == "groq":
+
+                    response = self.groq_client.chat.completions.create(
+                        model=self.model,
+                        temperature=0,
+                        messages=[
+                            {
+                                "role": "system",
+                                "content": "You are an executive AI assistant.",
+                            },
+                            {
+                                "role": "user",
+                                "content": prompt,
+                            },
+                        ],
+                    )
+
+                    logger.info("Text response generated")
+                    return response.choices[0].message.content.strip()
+
+            except Exception:
+                logger.exception("LLM text generation failed.")
+                raise
+            
