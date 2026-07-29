@@ -18,10 +18,15 @@ def payment_summary(mode: str = "historical"):
     """
     Retrieve overall payment statistics.
 
+    Args:
+        mode: Query execution mode.
+
     Returns:
-        - total_payments
-        - total_revenue
-        - average_payment
+        Query result containing the total number of payments,
+        total revenue, and average payment value.
+
+    Raises:
+        RuntimeError: If the database query fails.
     """
     sql = """
     SELECT
@@ -33,12 +38,32 @@ def payment_summary(mode: str = "historical"):
 
     logger.info("Executing payment summary")
 
-    return query_db(sql, mode)
+    try:
+
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Payment summary query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve payment summary."
+        ) from exc
 
 
 def payment_methods(mode: str = "historical"):
     """
     Retrieve payment method distribution.
+
+    Args:
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing payment methods,
+        transaction counts, and revenue.
+
+    Raises:
+        RuntimeError: If the database query fails.
     """
     sql = """
     SELECT
@@ -52,12 +77,31 @@ def payment_methods(mode: str = "historical"):
 
     logger.info("Executing payment methods")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Payment methods query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve payment methods."
+        ) from exc
 
 
 def installment_analysis(mode: str = "historical"):
     """
     Retrieve installment usage statistics.
+
+    Args:
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing installment counts,
+        average payment values, and total payment values.
+
+    Raises:
+        RuntimeError: If the database query fails.
     """
     sql = """
     SELECT
@@ -72,12 +116,31 @@ def installment_analysis(mode: str = "historical"):
 
     logger.info("Executing installment analysis")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Installment analysis query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve installment analysis."
+        ) from exc
 
 
 def payment_value_distribution(mode: str = "historical") :
     """
     Retrieve payment value statistics.
+
+    Args:
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing minimum, maximum,
+        and average payment values.
+
+    Raises:
+        RuntimeError: If the database query fails.
     """
     sql = """
     SELECT
@@ -89,12 +152,31 @@ def payment_value_distribution(mode: str = "historical") :
 
     logger.info("Executing payment value distribution")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "payment value distribution query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve payment value distribution."
+        ) from exc
 
 
 def top_payment_transactions(limit: int = 10,mode: str = "historical"):
     """
     Retrieve the highest-value payment transactions.
+
+    Args:
+        limit: Maximum number of transactions to return.
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing the highest-value payments.
+
+    Raises:
+        RuntimeError: If the database query fails.
     """
     limit = max(1, min(limit, 100))
 
@@ -110,4 +192,13 @@ def top_payment_transactions(limit: int = 10,mode: str = "historical"):
 
     logger.info("Executing top payment transactions")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Top payment transactions query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve top payment transactions."
+        ) from exc

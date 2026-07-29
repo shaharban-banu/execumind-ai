@@ -14,13 +14,35 @@ from utils.logger import logger
 class PDFLoader(BaseLoader):
     """
     Loader for PDF documents.
+    Loads text from PDF files and converts each page
+    into a LangChain Document.
     """
 
     def __init__(self, config: LoaderConfig):
+        """
+        Initialize the PDF loader.
+
+        Args:
+            config: Configuration describing the PDF source.
+
+        Raises:
+            ValueError:
+                If the configuration is invalid.
+        """
         self.config=config
         self._validate_config()
     
     def load(self):
+        """
+        Load documents from the configured PDF file.
+
+        Returns:
+            List of LangChain Document objects.
+
+        Raises:
+            RuntimeError:
+                If the PDF cannot be opened or processed.
+        """
         documents: list[Document] = []
         try:
 

@@ -23,126 +23,163 @@ class CanonicalBuilder:
     def build(self,dataset: DatasetMetadata,) :
         """
         Build the canonical dataset.
+
+        Transforms the scanned dataset into a canonical representation by
+        applying semantic table and column mappings, renaming mapped
+        columns, adding missing canonical fields, and preserving metadata
+        such as primary keys and relationships.
         """
 
         logger.info("Building canonical dataset...")
 
-        canonical_dataset = CanonicalDataset()
+        try:
 
-        table_lookup = {
-            table.table_name: table
-            for table in dataset.tables
-        }
+            canonical_dataset = CanonicalDataset()
 
-        mappings_by_table: dict[str, list] = {}
+            table_lookup = {
+                table.table_name: table
+                for table in dataset.tables
+            }
 
-        for mapping in dataset.column_mappings:
-            mappings_by_table.setdefault(
-                mapping.source_table,
-                []
-            ).append(mapping)
+            mappings_by_table: dict[str, list] = {}
 
-        for table_mapping in dataset.table_mappings:
-            if not table_mapping.canonical_entity:
-                continue
-            source_table = table_lookup[
-                table_mapping.source_table
-            ]
+            for mapping in dataset.column_mappings:
+                mappings_by_table.setdefault(
+                    mapping.source_table,
+                    []
+                ).append(mapping)
 
-            dataframe = source_table.dataframe.copy()
-
-            column_mappings = mappings_by_table.get(
-                table_mapping.source_table,
-                []
-            )
-
-            rename_dict = {}
-            used_canonical_columns = set()
-
-            columns = []
-
-            for mapping in column_mappings:
-
-                # Prevent multiple source columns mapping to the same canonical column
-                if mapping.canonical_column in used_canonical_columns:
-
-                    logger.warning(
-                        "Skipping duplicate mapping '%s' -> '%s'",
-                        mapping.source_column,
-                        mapping.canonical_column,
-                    )
+            for table_mapping in dataset.table_mappings:
+                if not table_mapping.canonical_entity:
                     continue
+                source_table = table_lookup[
+                    table_mapping.source_table
+                ]
 
-                rename_dict[mapping.source_column] = mapping.canonical_column
-                used_canonical_columns.add(mapping.canonical_column)
+                dataframe = source_table.dataframe.copy()
 
-
-            logger.info("Rename mapping for table '%s':", table_mapping.source_table)
-
-            for source, target in rename_dict.items():
-                logger.info("  %s -> %s", source, target)
-                
-            dataframe = dataframe.rename(columns=rename_dict)
-            if table_mapping.canonical_entity == "customers":
-                print(dataframe.head())
-            duplicates = dataframe.columns[dataframe.columns.duplicated()].tolist()
-
-            if duplicates:
-                logger.warning(
-                    "Duplicate columns in '%s': %s",
+                column_mappings = mappings_by_table.get(
                     table_mapping.source_table,
-                    duplicates,
+                    []
                 )
-            canonical_fields = ENTITY_FIELDS.get(
-                table_mapping.canonical_entity,
-                []
-            )
 
-            for field in canonical_fields:
+                rename_dict = {}
+                used_canonical_columns = set()
 
-                if field.name not in dataframe.columns:
+                columns = []
 
-                    dataframe[field.name] = None
-                reverse_lookup = {v: k for k, v in rename_dict.items()}
-                columns.append(
-                    CanonicalColumn(
-                        name=field.name,
-                        data_type=field.data_type,
-                        required=field.required,
-                        source_table=table_mapping.source_table,
-                        source_column=reverse_lookup.get(field.name),
-                        mapped=field.name in rename_dict.values(),
+                for mapping in column_mappings:
+
+                    # Prevent multiple source columns mapping to the same canonical column
+                    if mapping.canonical_column in used_canonical_columns:
+
+                        logger.warning(
+                            "Skipping duplicate mapping '%s' -> '%s'",
+                            mapping.source_column,
+                            mapping.canonical_column,
+                        )
+                        continue
+
+                    rename_dict[mapping.source_column] = mapping.canonical_column
+                    used_canonical_columns.add(mapping.canonical_column)
+
+
+                logger.info("Rename mapping for table '%s':", table_mapping.source_table)
+
+                for source, target in rename_dict.items():
+                    logger.info("  %s -> %s", source, target)
+                    
+                dataframe = dataframe.rename(columns=rename_dict)
+
+                # -------------------------------------------------------
+                # Customer canonical date
+                # # -------------------------------------------------------
+                # if table_mapping.canonical_entity == "customers":
+
+                #     if "order_date" not in dataframe.columns:
+
+                #         if "signup_date" in dataframe.columns:
+                #             dataframe["order_date"] = dataframe["signup_date"]
+
+                if table_mapping.canonical_entity == "customers":
+                    logger.debug(
+                        "Preview of canonical '%s' table:\n%s",
+                        table_mapping.canonical_entity,
+                        dataframe.head(),
                     )
-                )
-            duplicates = dataframe.columns[dataframe.columns.duplicated()].tolist()
+                duplicates = dataframe.columns[dataframe.columns.duplicated()].tolist()
 
-            if duplicates:
-                logger.warning(
-                    "Duplicate canonical columns in %s: %s",
-                    table_mapping.source_table,
-                    duplicates,
+                if duplicates:
+                    logger.warning(
+                        "Duplicate columns in '%s': %s",
+                        table_mapping.source_table,
+                        duplicates,
+                    )
+                canonical_fields = ENTITY_FIELDS.get(
+                    table_mapping.canonical_entity,
+                    []
                 )
-            canonical_table = CanonicalTable(
-                name=table_mapping.canonical_entity,
-                columns=columns,
-                dataframe=dataframe,
-                primary_keys=source_table.primary_keys,
-                relationships=[
-                    r for r in dataset.relationships 
-                    if r.source_table==source_table.table_name
-                ],
-                row_count=len(dataframe),
+
+                for field in canonical_fields:
+
+                    if field.name not in dataframe.columns:
+
+                        dataframe[field.name] = None
+                    reverse_lookup = {v: k for k, v in rename_dict.items()}
+                    columns.append(
+                        CanonicalColumn(
+                            name=field.name,
+                            data_type=field.data_type,
+                            required=field.required,
+                            source_table=table_mapping.source_table,
+                            source_column=reverse_lookup.get(field.name),
+                            mapped=field.name in rename_dict.values(),
+                        )
+                    )
+                duplicates = dataframe.columns[dataframe.columns.duplicated()].tolist()
+
+                if duplicates:
+                    logger.warning(
+                        "Duplicate canonical columns in %s: %s",
+                        table_mapping.source_table,
+                        duplicates,
+                    )
+                canonical_table = CanonicalTable(
+                    name=table_mapping.canonical_entity,
+                    columns=columns,
+                    dataframe=dataframe,
+                    primary_keys=source_table.primary_keys,
+                    relationships=[
+                        r for r in dataset.relationships 
+                        if r.source_table==source_table.table_name
+                    ],
+                    row_count=len(dataframe),
+                )
+
+                if table_mapping.canonical_entity == "order_items":
+                    logger.debug(
+                        "Canonical table '%s' columns: %s",
+                        table_mapping.canonical_entity,
+                        dataframe.columns.tolist(),
+                    )
+
+                    logger.debug(
+                        "Canonical table preview:\n%s",
+                        dataframe.head(),
+                    )
+                
+                canonical_dataset.tables.append(canonical_table)
+
+            logger.info(
+                "Canonical dataset built successfully."
             )
 
-            if table_mapping.canonical_entity == "order_items":
-                print("\n===== After Canonical Builder =====")
-                print(dataframe.columns.tolist())
-                print(dataframe.head())
-            
-            canonical_dataset.tables.append(canonical_table)
-
-        logger.info(
-            "Canonical dataset built successfully."
-        )
-
-        return canonical_dataset
+            return canonical_dataset
+        except Exception as exc:
+            logger.exception(
+                "Failed to build canonical dataset: %s",
+                exc,
+            )
+            raise RuntimeError(
+                "Canonical dataset construction failed."
+            ) from exc

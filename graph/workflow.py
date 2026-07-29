@@ -59,10 +59,9 @@ graph = build_graph()
 
 if __name__ == "__main__":
     state = {
-         "question": "How is overall sales performance?"
+         "question": "Produce a CEO-level business performance report."
     }
 
     result = graph.invoke(state)
 
-    #print(result["executive_analysis"])
     print(result)

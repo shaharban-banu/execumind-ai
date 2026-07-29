@@ -117,16 +117,16 @@ Forecast
 --------
 
 forecast_revenue
-    Forecast future revenue.
+    Predicts future revenue only. Never use for historical analysis or reporting.
 
 forecast_orders
-    Forecast future order volume.
+    Predicts future order volume only. Never use for historical order statistics.
 
 forecast_customer_growth
-    Forecast future customer growth.
+    Predicts future customer growth only.
 
 forecast_average_order_value
-    Forecast future average order value.
+    Predicts future average order value only.
 """
 
     TOOL_SELECTION_PROMPT = """
@@ -147,11 +147,39 @@ Available Tools:
 
 Rules:
 
-1. Return ONLY the required tools.
-2. Select the minimum number of tools.
-3. Multiple tools may be selected.
-4. Never invent tool names.
-5. Return valid JSON.
+1. Return ONLY the minimum number of tools required to answer the question.
+
+2. Select forecast tools ONLY if the question explicitly asks about future predictions, forecasts, projections, or expected future values.
+
+Examples of forecast questions:
+- Forecast next month's revenue
+- Predict future customer growth
+- What will sales be next quarter?
+- Expected order volume next month
+
+3. Do NOT select any forecast tool for historical or descriptive questions.
+
+Examples of historical questions:
+- Show monthly sales
+- Analyze sales trend
+- Sales by state
+- Customer summary
+- Payment statistics
+- Delivery performance
+
+4. Historical trend analysis is NOT forecasting.
+
+5. Do NOT select additional summary tools unless they are necessary to answer the question.
+
+6. Never invent tool names.
+
+7. Return only valid JSON in the format:
+
+{{
+  "tools": [
+    "tool_name"
+  ]
+}}
 """
 
     def __init__(self) -> None:

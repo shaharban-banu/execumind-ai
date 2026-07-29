@@ -12,11 +12,18 @@ from rag.preprocessors.base_preprocessor import BasePreprocessor
 
 class DocumentPreprocessor(BasePreprocessor):
     """
-    Preprocess documents before chunking.
+    Document preprocessor.
+
+    Applies text normalization and cleanup operations
+    before documents are chunked.
     """
     def process(self,documents: list[Document],) :
         """
-        Preprocess documents."""
+        Preprocess a collection of documents.
+
+        Applies Unicode normalization, whitespace cleanup,
+        boilerplate removal, and line normalization.
+        """
         processed = []
 
         for document in documents:
@@ -40,24 +47,66 @@ class DocumentPreprocessor(BasePreprocessor):
 
     @staticmethod
     def _normalize_unicode(text: str) -> str:
+        """
+        Normalize Unicode characters to NFKC form.
+
+        Args:
+            text: Input text.
+
+        Returns:
+            Normalized text.
+        """
         return unicodedata.normalize("NFKC", text)
 
     @staticmethod
     def _normalize_line_endings(text: str) -> str:
+        """
+        Normalize line endings to Unix format.
+
+        Args:
+            text: Input text.
+
+        Returns:
+            Text with normalized line endings.
+        """
         return text.replace("\r\n", "\n").replace("\r", "\n")
 
     @staticmethod
     def _remove_extra_whitespace(text: str) -> str:
+        """
+        Collapse consecutive spaces and tabs.
+
+        Args:
+            text: Input text.
+
+        Returns:
+            Cleaned text.
+        """
         return re.sub(r"[ \t]+", " ", text)
 
     @staticmethod
     def _remove_empty_lines(text: str) -> str:
+        """
+        Reduce multiple blank lines.
+
+        Args:
+            text: Input text.
+
+        Returns:
+            Text with excessive blank lines removed.
+        """
         return re.sub(r"\n{3,}", "\n\n", text)
 
     @staticmethod
     def _remove_boilerplate(text: str) -> str:
         """
-        Remove common PDF artifacts.
+        Remove common boilerplate patterns.
+
+        Args:
+            text: Input text.
+
+        Returns:
+            Cleaned text with common PDF artifacts removed.
         """
 
         patterns = [

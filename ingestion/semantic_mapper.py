@@ -16,8 +16,6 @@ from ingestion.utils.similarity import SimilarityCalculator
 from ingestion.models.unmapped import UnmappedTable
 from ingestion.mappings.synonyms import SYNONYMS
 
-
-
 class SemanticMapper:
     """
     Maps uploaded dataset tables and columns to the canonical schema.
@@ -26,124 +24,154 @@ class SemanticMapper:
     CONFIDENCE_THRESHOLD = 0.80
 
     def __init__(self) -> None:
+        """
+        Initialize the semantic mapper.
+
+        Creates the confidence scorer used to compute hybrid
+        semantic mapping confidence scores.
+        """
         self.scorer = ConfidenceScorer()
 
     def map(self,dataset: DatasetMetadata,) -> DatasetMetadata:
         """
-        Perform semantic mapping for all tables.
+         Perform semantic mapping for all tables and columns.
+
+        Maps source tables to canonical business entities and
+        source columns to canonical fields using hybrid semantic
+        similarity techniques.
+
+        Args:
+            dataset: Dataset metadata containing scanned tables.
+
+        Returns:
+            Updated dataset containing table and column mappings.
+
+        Raises:
+            RuntimeError: If semantic mapping fails.
         """
 
         logger.info("Starting semantic mapping...")
 
-        dataset.table_mappings.clear()
-        dataset.column_mappings.clear()
+        try:
 
-        # ---------------------------------------------------------
-        # Score every table first
-        # ---------------------------------------------------------
+            dataset.table_mappings.clear()
+            dataset.column_mappings.clear()
 
-        candidates = []
+            # ---------------------------------------------------------
+            # Score every table first
+            # ---------------------------------------------------------
 
-        for table in dataset.tables:
+            candidates = []
 
-            table_mapping = self._map_table(
-                table.table_name,
-            )
+            for table in dataset.tables:
 
-            if not table_mapping.canonical_entity:
-                logger.info("Keeping unsupported table '%s' for future use.",table.table_name,)
-                dataset.unmapped_tables.append(
+                table_mapping = self._map_table(
+                    table.table_name,
+                )
 
-                    UnmappedTable(
+                if not table_mapping.canonical_entity:
+                    logger.info("Keeping unsupported table '%s' for future use.",table.table_name,)
+                    dataset.unmapped_tables.append(
 
-                        table_name=table.table_name,
+                        UnmappedTable(
 
-                        confidence=table_mapping.confidence,
+                            table_name=table.table_name,
 
-                        reason="No canonical entity found",
+                            confidence=table_mapping.confidence,
 
-                        suggested_entity=(
-                            table_mapping.canonical_entity
-                            if table_mapping.canonical_entity
-                            else None
-                        ),
+                            reason="No canonical entity found",
+
+                            suggested_entity=(
+                                table_mapping.canonical_entity
+                                if table_mapping.canonical_entity
+                                else None
+                            ),
+                        )
+                    )
+                    continue
+
+                candidates.append(
+                    (
+                        table_mapping.confidence,
+                        table,
+                        table_mapping,
                     )
                 )
-                continue
 
-            candidates.append(
-                (
-                    table_mapping.confidence,
-                    table,
-                    table_mapping,
-                )
+            # Highest confidence first
+            candidates.sort(
+                key=lambda x: x[0],
+                reverse=True,
             )
 
-        # Highest confidence first
-        candidates.sort(
-            key=lambda x: x[0],
-            reverse=True,
-        )
+            used_entities = set()
 
-        used_entities = set()
+            # ---------------------------------------------------------
+            # Assign canonical entities
+            # ---------------------------------------------------------
 
-        # ---------------------------------------------------------
-        # Assign canonical entities
-        # ---------------------------------------------------------
+            for _, table, table_mapping in candidates:
 
-        for _, table, table_mapping in candidates:
+                if table_mapping.canonical_entity in used_entities:
 
-            if table_mapping.canonical_entity in used_entities:
+                    logger.warning(
+                        "Skipping '%s'. '%s' already assigned.",
+                        table.table_name,
+                        table_mapping.canonical_entity,
+                    )
 
-                logger.warning(
-                    "Skipping '%s'. '%s' already assigned.",
+                    continue
+
+                used_entities.add(
+                    table_mapping.canonical_entity
+                )
+
+                dataset.table_mappings.append(
+                    table_mapping
+                )
+
+                column_mappings = self._map_columns(
                     table.table_name,
+                    table.columns,
                     table_mapping.canonical_entity,
                 )
 
-                continue
-
-            used_entities.add(
-                table_mapping.canonical_entity
-            )
-
-            dataset.table_mappings.append(
-                table_mapping
-            )
-
-            column_mappings = self._map_columns(
-                table.table_name,
-                table.columns,
-                table_mapping.canonical_entity,
-            )
-
-            dataset.column_mappings.extend(
-                column_mappings
-            )
-
-        logger.info(
-            "Semantic mapping completed."
-        )
-
-
-
-        print("\n===== ORDER ITEM COLUMN MAPPINGS =====")
-
-        for mapping in dataset.column_mappings:
-
-            if mapping.source_table == "order_items":
-
-                print(
-                    f"{mapping.source_column} -> {mapping.canonical_column}"
+                dataset.column_mappings.extend(
+                    column_mappings
                 )
 
+            logger.info(
+                "Semantic mapping completed."
+            )
 
+            logger.debug("Order item column mappings:")
 
-        return dataset
+            for mapping in dataset.column_mappings:
+
+                if mapping.source_table == "order_items":
+
+                    print(
+                        f"{mapping.source_column} -> {mapping.canonical_column}"
+                    )
+            return dataset
+        except Exception as exc:
+            logger.exception(
+                "Semantic mapping failed: %s",
+                exc,
+            )
+            raise RuntimeError(
+                "Failed to perform semantic mapping."
+            ) from exc
 
     def _map_table(self,table_name: str,) -> TableMapping:
         """
-        Map a table to a canonical business entity.
+        Map a source table to a canonical business entity.
+
+        Args:
+            table_name: Source table name.
+
+        Returns:
+            TableMapping describing the selected canonical entity.
         """
 
         normalized = SemanticUtils.normalize_and_replace(table_name)
@@ -212,6 +240,17 @@ class SemanticMapper:
         )
 
     def _map_columns(self,table_name: str,columns,canonical_entity: str,) -> list[ColumnMapping]:
+        """
+        Map source columns to canonical fields.
+
+        Args:
+            table_name: Source table name.
+            columns: Source table columns.
+            canonical_entity: Target canonical entity.
+
+        Returns:
+            List of column mappings.
+        """
 
         mappings: list[ColumnMapping] = []
 
@@ -251,7 +290,7 @@ class SemanticMapper:
             normalized = SemanticUtils.normalize_and_replace(column.name)
 
             best_match, confidence = self._find_best_match(normalized,field_names,)
-            print(f"{column.name:25} -> {best_match:25} ({confidence:.2f})")
+        
             if not best_match:
                         continue
 
@@ -310,6 +349,17 @@ class SemanticMapper:
         return mappings
 
     def _find_best_match(self,text: str,candidates: list[str],) :
+        """
+        Find the best semantic match for a candidate string.
+
+        Args:
+            text: Source text.
+            candidates: Candidate canonical values.
+
+        Returns:
+            Tuple containing the best matching candidate and its
+            confidence score.
+        """
 
         normalized_lookup = {
             SemanticUtils.normalize_and_replace(candidate): candidate

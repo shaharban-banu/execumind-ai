@@ -11,11 +11,6 @@ from rag.vectorstores.faiss_vectorstore import FAISSStore
 from rag.loaders.loader_factory import LoaderFactory
 from rag.loaders.base_loader import BaseLoader
 from rag.rerankers.cross_encoder_reranker import (CrossEncoderReranker,)
-
-# from rag.retrievers.semantic_retriever import SemanticRetriever
-# from rag.retrievers.bm25_retriever import BM25Retriever
-# from rag.retrievers.hybrid_retriever import HybridRetriever
-# from rag.retrievers.hyde_retriever import HyDERetriever
 from rag.AdavancedRAGpipeline import AdvancedRAGPipeline
 
 
@@ -30,12 +25,22 @@ class RAGPipelineBuilder:
         loader_configs: list[LoaderConfig],
         
     ):
+        """
+        Initialize the RAG pipeline builder.
+
+        Args:
+            rag_config: RAG configuration.
+            loader_configs: Configurations for all document loaders.
+        """
         self.rag_config = rag_config
         self.loader_configs = loader_configs
        
     def build(self):
         """
         Build the complete RAG pipeline.
+
+        Returns:
+            A fully configured AdvancedRAGPipeline instance.
         """
         loaders = self._build_loaders()
         preprocessor = self._build_preprocessor()
@@ -102,18 +107,4 @@ class RAGPipelineBuilder:
         Build the reranker.
         """
         return CrossEncoderReranker(model_name=self.rag_config.reranker_model,)
-    
-    # def _build_retrievers(self,embedder,vector_store,documents,llm=None,):
-    #     """
-    #     Build all retrievers."""
-    #     semantic=SemanticRetriever(embedder=embedder,vector_store=vector_store)
-    #     bm25=BM25Retriever(documents=documents)
-    #     hybrid=HybridRetriever(semantic_retriever=semantic,bm25_retriever=bm25)
-    #     hyde=HyDERetriever(llm=llm,embedder=embedder,vector_store=vector_store)
 
-    #     return {
-    #         "semantic":semantic,
-    #         "bm25":bm25,
-    #         "hybrid":hybrid,
-    #         "hyde":hyde,
-    #     }

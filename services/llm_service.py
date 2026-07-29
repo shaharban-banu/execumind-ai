@@ -35,7 +35,7 @@ class LLMService:
                 raise ValueError("GOOGLE_API_KEY not found")
 
             self.client = genai.Client(api_key=api_key)
-            self.model = "gemini-2.5-flash"
+            self.model = "gemini-flash-latest"
 
             logger.info("Gemini LLM initialised")
 
@@ -66,6 +66,8 @@ class LLMService:
             #     return self.mock.generate(prompt,response_schema,)
             
             if self.provider == "gemini":
+                logger.info(f"Using Gemini model: {self.model}")
+                print(f"Using Gemini model: {self.model}")
                 response=self.client.models.generate_content(model=self.model,
                                                             contents=prompt,
                                                             config={

@@ -27,7 +27,10 @@ import pandas as pd
 from services.executive_recommendation_generator import ExecutiveRecommendationGenerator
 from services.executive_recommendation_service import ExecutiveRecommendationService
 from rag.config.rag_config import load_rag_config
-
+from forecast.services.training_service import ForecastTrainingService
+from services.platform_reset import  PlatformResetService
+from services.platform_status import get_platform_status
+from utils.logger import logger
 
 router = APIRouter()
 graph = build_graph()
@@ -35,6 +38,8 @@ predictor = ForecastPredictor()
 dashboard_service = DashboardService()
 pipeline = IngestionPipeline()
 index_service = IndexService()
+forecast_service = ForecastTrainingService()
+reset_service = PlatformResetService()
 
 
 @router.get("/health",tags=["System"],summary="Health Check",response_model=HealthResponse,)
@@ -70,6 +75,15 @@ def ask(request: QuestionRequest):
 
 @router.get("/forecast/{metric}",tags=["Forecast"],response_model=ForecastResponse,)
 def forecast(metric:str):
+
+    status = platform_status()
+
+    if not status["platform_ready"]:
+        raise HTTPException(
+            status_code=400,
+            detail="Platform has not been processed. Please process the platform first.",
+        )
+    
     data=predictor.predict(metric)
     return {
         "metric":metric.title(),
@@ -91,6 +105,7 @@ async def upload_dataset(files: List[UploadFile] = File(...)):
             shutil.copyfileobj(file.file, buffer)
 
         uploaded_files.append(file.filename)
+    reset_service.reset()
 
     return {
         "success": True,
@@ -155,7 +170,7 @@ def process_dataset():
 
 @router.post("/platform/process", tags=["Platform"])
 def process_platform():
-
+    logger.info("Starting ETL...")
     ingestion_result=pipeline.run("dataset")
 
     # Stop if ETL failed
@@ -166,28 +181,75 @@ def process_platform():
             "error": ingestion_result,
         }
 
-    rag_result=index_service.build_index()
+    try:
+        logger.info("Starting forecast training...")
+        forecast_result = forecast_service.train()
+    except Exception as exc:
+        return {
+            "success": False,
+            "stage": "forecast",
+            "error": str(exc),
+        }
+
+    try:
+        logger.info("Starting RAG indexing...")
+        rag_result = index_service.build_index()
+        logger.info("RAG indexing finished.")
+    except Exception as exc:
+        return {
+            "success": False,
+            "stage": "knowledge",
+            "error": str(exc),
+        }
 
     return {
         "success": True,
         "platform_status": "ready",
         "ingestion": ingestion_result,
+        "forecast":forecast_result,
         "knowledge": rag_result,
     }
 
 @router.get("/platform/status", tags=["Platform"])
 def platform_status():
+    
+    #db_ready = Path("data/execumind.db").exists()
+
+    forecast_ready = all([
+        Path("forecast/models/revenue.pkl").exists(),
+        Path("forecast/models/orders.pkl").exists(),
+        Path("forecast/models/customers.pkl").exists(),
+        Path("forecast/models/aov.pkl").exists(),
+    ])
 
     rag_config = load_rag_config()
 
-    ready = (
+    rag_ready = (
         rag_config.index_path.exists()
         and rag_config.metadata_path.exists()
     )
 
+    dataset_dir = Path("dataset")
+
+    dataset_ready = any(dataset_dir.iterdir()) if dataset_dir.exists() else False
+
+    platform_ready = (
+        dataset_ready
+        and forecast_ready
+        and rag_ready
+    )
+
+
     return {
-        "platform_ready": ready
-    }
+    "dataset_ready": dataset_ready,
+    "forecast_ready": forecast_ready,
+    "rag_ready": rag_ready,
+    "platform_ready": (
+        dataset_ready
+        and forecast_ready
+        and rag_ready
+    ),
+}
 
 @router.get("/dashboard",tags=["Dashboard"],response_model=DashboardResponse,)
 def dashboard():
@@ -424,7 +486,7 @@ def dashboard_status():
             "detail": (
                 "Forecast model available"
                 if DashboardService.forecast_ready()
-                else "Forecast not generated"
+                else "Platform not processed"
             ),
         })
 
@@ -443,7 +505,7 @@ def dashboard_status():
                 else "Waiting for report generation"
             ),
         })
-
+        
         return status
 
     finally:

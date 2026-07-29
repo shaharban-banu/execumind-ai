@@ -124,6 +124,7 @@ export function UploadPage() {
         clearInterval(interval);
 
         setPlatformStatus("needs_processing");
+        setProcessResult(null);
 
         await loadDatasets();
 
@@ -152,6 +153,7 @@ async function handleKnowledgeUpload() {
         setKnowledgeFiles([]);
 
         setPlatformStatus("needs_processing");
+        setProcessResult(null);
 
         await loadKnowledge();
 
@@ -402,15 +404,21 @@ function getFileIcon(fileName: string) {
                 {knowledgeDocs.length} document{knowledgeDocs.length !== 1 ? "s" : ""} uploaded
             </p>
 
-            <p className={`mt-2 text-sm ${
-                platformStatus === "ready"
-                    ? "text-green-600"
-                    : "text-amber-600"
-            }`}>
-                {platformStatus === "ready"
-                    ? "Knowledge documents have been indexed successfully."
-                    : "These documents will be indexed when you process the platform."}
-            </p>
+            <p
+              className={`mt-2 text-sm ${
+                  platformStatus === "ready"
+                      ? "text-green-600"
+                      : "text-amber-600"
+              }`}
+          >
+              {platformStatus === "ready"
+                  ? hasKnowledge
+                      ? "Knowledge documents have been indexed successfully."
+                      : "No knowledge documents uploaded. Customer insights will use structured business data only."
+                  : hasKnowledge
+                      ? "Knowledge documents will be indexed during platform processing."
+                      : "No knowledge documents uploaded. You can still process the platform using the dataset only."}
+          </p>
 
         </div>
 
@@ -429,7 +437,7 @@ function getFileIcon(fileName: string) {
                   </p>
 
                   <p>
-                      {hasKnowledge ? "✅" : "⬜"} Knowledge Documents Uploaded
+                      {hasKnowledge ? "✅" : "⬜"} Knowledge Documents (optional)
                   </p>
 
                   <p>
@@ -446,7 +454,7 @@ function getFileIcon(fileName: string) {
                     onClick={handleProcessPlatform}
                     disabled={
                         !hasDataset ||
-                        !hasKnowledge ||
+                      
                         platformStatus === "processing" ||
                         platformStatus === "ready"
                     }
@@ -531,9 +539,22 @@ function getFileIcon(fileName: string) {
                 {processResult.rag.message}
               </p>
 
-              <p className="mt-1 text-sm text-slate-600">
-                Indexed Documents: <strong>{processResult.rag.documents}</strong>
-              </p>
+              {processResult.rag.documents > 0 ? (
+                  <p className="mt-1 text-sm text-slate-600">
+                      Knowledge Documents Indexed:
+                      <strong> {processResult.rag.documents}</strong>
+                  </p>
+              ) : (
+                  <div className="mt-2 space-y-1 text-sm text-slate-600">
+                      <p>
+                          <strong>Business Documents:</strong> Not Uploaded
+                      </p>
+
+                      <p>
+                          <strong>Customer Reviews:</strong> Indexed Successfully
+                      </p>
+                  </div>
+              )}
             </div>
 
             <div className="mt-6">

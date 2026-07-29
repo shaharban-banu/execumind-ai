@@ -28,27 +28,59 @@ class PrimaryKeyDetector:
     def detect(self,dataset: DatasetMetadata,) -> DatasetMetadata:
         """
         Detect primary keys for every table.
+
+        Profiles each table and identifies the most likely primary key
+        columns using uniqueness, completeness, and identifier naming
+        heuristics.
+
+        Args:
+            dataset: Dataset metadata containing the scanned tables.
+
+        Returns:
+            Updated dataset metadata with detected primary keys.
+
+        Raises:
+            RuntimeError: If primary key detection fails.
         """
 
         logger.info("Detecting primary keys...")
 
-        for table in dataset.tables:
+        try:
 
-            table.primary_keys = self._detect_table_primary_keys(table)
+            for table in dataset.tables:
 
-            logger.info(
-                "%s -> %s",
-                table.table_name,
-                table.primary_keys,
+                table.primary_keys = self._detect_table_primary_keys(table)
+
+                logger.info(
+                    "%s -> %s",
+                    table.table_name,
+                    table.primary_keys,
+                )
+
+            logger.info("Primary key detection completed.")
+
+            return dataset
+        except Exception as exc:
+            logger.exception(
+                "Primary key detection failed: %s",
+                exc,
             )
-
-        logger.info("Primary key detection completed.")
-
-        return dataset
+            raise RuntimeError(
+                "Failed to detect primary keys."
+            ) from exc
 
     def _detect_table_primary_keys(self,table,) -> list[str]:
         """
-        Detect PK for one table.
+        Detect the primary key for a single table.
+
+        Attempts to identify both single-column and composite primary
+        keys using data profiling heuristics.
+
+        Args:
+            table: Table metadata containing the source DataFrame.
+
+        Returns:
+            List of detected primary key column names.
         """
 
         df = table.dataframe
@@ -101,8 +133,17 @@ class PrimaryKeyDetector:
 
     def _score_column(self,df,column: str,) -> float:
         """
-        Score how likely a column is
-        to be a primary key.
+        Calculate the likelihood that a column is a primary key.
+
+        The score is based on data completeness, uniqueness, and
+        identifier naming conventions.
+
+        Args:
+            df: Source DataFrame.
+            column: Column name to evaluate.
+
+        Returns:
+            Confidence score between 0.0 and 1.0.
         """
 
         score = 0.0
@@ -144,7 +185,15 @@ class PrimaryKeyDetector:
     @staticmethod
     def _is_unique(df,columns: list[str],) -> bool:
         """
-        Check uniqueness.
+        Determine whether one or more columns uniquely identify rows.
+
+        Args:
+            df: Source DataFrame.
+            columns: Columns to evaluate.
+
+        Returns:
+            True if the column combination uniquely identifies every row;
+            otherwise, False.
         """
 
         if df[columns].isna().any().any():

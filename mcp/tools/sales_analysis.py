@@ -26,7 +26,17 @@ def sales_summary(mode:str="historical"):
     FROM payments;
     """ 
     logger.info("Executing sales summary")
-    return query_db(sql,mode)
+
+    try:
+        return query_db(sql,mode)
+    except Exception as exc:
+        logger.exception(
+            "Sales summary query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve sales summary."
+        ) from exc
 
 def monthly_sales(mode:str="historical"):
     """
@@ -40,7 +50,17 @@ def monthly_sales(mode:str="historical"):
         on o.order_id=p.order_id
         group by month order by month;"""
     logger.info("Executing monthly sales")
-    return query_db(sql,mode)
+
+    try:
+        return query_db(sql,mode)
+    except Exception as exc:
+        logger.exception(
+            "Monthly sales query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve monthly sales."
+        ) from exc
 
 def sales_by_state(mode:str="historical"):
     sql="""select
@@ -54,7 +74,17 @@ def sales_by_state(mode:str="historical"):
         order by revenue desc;
         """
     logger.info("Executing sales by state")
-    return query_db(sql,mode)
+
+    try:
+        return query_db(sql,mode)
+    except Exception as exc:
+        logger.exception(
+            "Sales by state query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve sales by state."
+        ) from exc
 
 def sales_by_category(mode:str="historical"):
     sql="""SELECT
@@ -68,7 +98,17 @@ def sales_by_category(mode:str="historical"):
         ORDER BY revenue DESC;"""
     
     logger.info("Executing sales by category")
-    return query_db(sql,mode)
+
+    try:
+        return query_db(sql,mode)
+    except Exception as exc:
+        logger.exception(
+            "Sales by category query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve sales by category."
+        ) from exc
 
 def top_products(limit: int = 10,mode: str = "historical") :
     """
@@ -88,4 +128,13 @@ def top_products(limit: int = 10,mode: str = "historical") :
 
     logger.info("Executing top products")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Top products query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve top products."
+        ) from exc

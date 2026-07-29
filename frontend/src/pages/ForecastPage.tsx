@@ -11,10 +11,27 @@ import { cn } from '../lib/utils';
 export function ForecastPage() {
   const [forecast, setForecast] = useState<ForecastResult | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    getForecast().then((d) => { setForecast(d); setLoading(false); });
-  }, []);
+useEffect(() => {
+  const loadForecast = async () => {
+    try {
+      const data = await getForecast();
+      setForecast(data);
+    } catch (err: any) {
+      console.error(err);
+
+      setError(
+        err.response?.data?.detail ??
+        "Unable to load forecast."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadForecast();
+}, []);
   const maxForecast = forecast ? Math.max(...forecast.points.map((p) => Math.max(p.historical ?? 0, p.forecast ?? 0))) : 100;
  
 return (

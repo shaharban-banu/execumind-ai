@@ -1,6 +1,12 @@
+
 """
-Forecast evaluation metrics.
+Generic forecasting evaluation metrics.
+
+Used to compute MAE, RMSE and MAPE for any forecasting model.
+Current Prophet evaluation uses Prophet's built-in rolling
+cross-validation and performance_metrics().
 """
+
 
 from sklearn.metrics import (mean_absolute_error,mean_squared_error,)
 import numpy as np

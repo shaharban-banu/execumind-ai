@@ -17,19 +17,34 @@ class BM25Retriever(BaseRetriever):
         Initialize BM25 index.
 
         Args:
-            documents: Indexed documents.
+            documents: Documents to index for keyword retrieval.
         """
         self.documents=documents
-        self.corpus=[tokenize(document.page_content) for document in documents]
+        self.corpus=[
+            tokenize(document.page_content) 
+            for document in documents]
         self.bm25=BM25Okapi(self.corpus)
         logger.info("BM25 index create with %d documents",len(documents))
 
     def retrieve(self,query:str,top_k:int=5):
         """
-        Retrieve documents using BM25."""
-        query_token=tokenize(query)
-        scores=self.bm25.get_scores(query_token)
-        ranked=sorted(zip(self.documents,scores),key=lambda i:i[1],reverse=True)
+        Retrieve the most relevant documents using BM25.
+
+        Args:
+            query: User query.
+            top_k: Maximum number of documents to return.
+
+        Returns:
+            List of retrieved LangChain Document objects.
+        """
+        query_tokens=tokenize(query)
+
+        scores=self.bm25.get_scores(query_tokens)
+
+        ranked=sorted(
+            zip(self.documents,scores),
+            key=lambda i:i[1],
+            reverse=True)
         result=[document for document,_ in ranked[:top_k]]
         logger.info("Retrievd %d BM25 documents",len(result))
         return result

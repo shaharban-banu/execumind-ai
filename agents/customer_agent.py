@@ -31,6 +31,8 @@ class CustomerIntelligenceAgent(BaseAgent):
 
         self.rag_pipeline = rag_pipeline
 
+        logger.info("Customer Intelligence Agent initialized successfully.")
+
     def _retrieve_context(
         self,
         question: str,
@@ -44,9 +46,23 @@ class CustomerIntelligenceAgent(BaseAgent):
             "Retrieving customer context..."
         )
 
-        return self.rag_pipeline.retrieve(
-            query=question,
-        )
+        try:
+            context = self.rag_pipeline.retrieve(query=question)
+
+            logger.info(
+                "Retrieved %d documents from RAG pipeline.",
+                len(context),
+            )
+
+            return context
+        except Exception as exc:
+            logger.exception(
+                "Failed to retrieve customer context: %s",
+                exc,
+            )
+            raise RuntimeError(
+                "Unable to retrieve customer context."
+            ) from exc
 
     def _prepare_prompt(
         self,
@@ -56,27 +72,43 @@ class CustomerIntelligenceAgent(BaseAgent):
         """
         Build final prompt.
         """
-        reviews = []
-        business_docs = []
+        try:
+            reviews = []
+            business_docs = []
 
-        for doc in context:
+            for doc in context:
 
-            if doc.metadata.get("source") == "reviews":
-                reviews.append(doc)
+                if doc.metadata.get("source") == "reviews":
+                    reviews.append(doc)
 
-            elif doc.metadata.get("source") == "business_document":
-                business_docs.append(doc)
-        # reviews = reviews[:5]
-        # business_docs = business_docs[:5]
+                elif doc.metadata.get("source") == "business_document":
+                    business_docs.append(doc)
+            # reviews = reviews[:5]
+            # business_docs = business_docs[:5]
 
-        prompt = self.load_prompt()
+            prompt = self.load_prompt()
 
-        formatted_context = format_context(
-            reviews=reviews,
-            business_docs=business_docs,
-        )
+            formatted_context = format_context(
+                reviews=reviews,
+                business_docs=business_docs,
+            )
 
-        return prompt.format(
-            question=question,
-            context=formatted_context,
-        )
+            logger.debug(
+                    "Prompt prepared with %d reviews and %d business documents.",
+                    len(reviews),
+                    len(business_docs),
+                )
+
+            return prompt.format(
+                question=question,
+                context=formatted_context,
+            )
+
+        except Exception as exc:
+            logger.exception(
+                "Failed to prepare customer prompt: %s",
+                exc,
+            )
+            raise RuntimeError(
+                "Customer prompt preparation failed."
+            ) from exc

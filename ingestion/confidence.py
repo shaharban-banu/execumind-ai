@@ -28,6 +28,13 @@ class ConfidenceScorer:
         self,
         weights: ConfidenceWeights | None = None,
     ):
+        """
+        Initialize the confidence scorer.
+
+        Args:
+            weights: Optional confidence weight configuration. If not
+                provided, the default weights are used.
+        """
         self.weights = weights or ConfidenceWeights()
 
     def score(
@@ -38,7 +45,19 @@ class ConfidenceScorer:
         ontology_score: float = 1.0,
     ) -> float:
         """
-        Compute final confidence score.
+        Compute final semantic mapping confidence score.
+
+        Combines similarity scores using a weighted average and limits the
+        final confidence score to a maximum value of ``1.0``.
+
+        Args:
+            rapidfuzz_score: Lexical similarity score.
+            embedding_score: Semantic embedding similarity score.
+            datatype_score: Data type compatibility score.
+            ontology_score: Ontology compatibility score.
+
+        Returns:
+            Weighted confidence score rounded to two decimal places.
         """
 
         confidence = (

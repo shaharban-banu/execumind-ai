@@ -12,6 +12,22 @@ from mcp.tools.query_db import query_db
 from utils.logger import logger
 
 def delivery_summary(mode:str="historical"):
+    """
+    Retrieve an overall summary of delivery performance.
+
+    Calculates the total number of orders, delivered orders,
+    average delivery time, and number of late deliveries.
+
+    Args:
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing delivery summary metrics.
+
+    Raises:
+        RuntimeError: If the database query fails.
+    """
+
     sql="""select count(*) as total_orders,
         sum(
             case 
@@ -29,9 +45,31 @@ def delivery_summary(mode:str="historical"):
         from orders
         where delivered_date is not null;"""
     logger.info("Executing delivery summary")
-    return query_db(sql,mode)
+    try:
+        return query_db(sql,mode)
+    except Exception as exc:
+        logger.exception(
+            "Delivery summary query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve delivery summary."
+        ) from exc
 
 def late_delivery_rate(mode:str="historical"):
+    """
+    Retrieve the percentage of late deliveries.
+
+    Args:
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing the late delivery rate.
+
+    Raises:
+        RuntimeError: If the database query fails.
+    """
+
     sql="""select 
     round(
         100.0*
@@ -47,9 +85,31 @@ def late_delivery_rate(mode:str="historical"):
     where delivered_date is not null;"""
 
     logger.info("Executing late delivery rate")
-    return query_db(sql,mode)
+    try:
+        return query_db(sql,mode)
+    except Exception as exc:
+        logger.exception(
+            "late delivery rate query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve late delivery rate."
+        ) from exc
 
 def delivery_by_state(mode:str="historical"):
+    """
+    Retrieve delivery performance grouped by customer state.
+
+    Args:
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing delivery metrics for each state.
+
+    Raises:
+        RuntimeError: If the database query fails.
+    """
+
     sql="""select c.customer_state,
         count(*) as total_orders,
         round(avg(julianday(delivered_date)-
@@ -68,11 +128,30 @@ def delivery_by_state(mode:str="historical"):
         order by late_deliveries desc;
         """
     logger.info("Executing delivery by state ")
-    return query_db(sql,mode)
+    try:
+        return query_db(sql,mode)
+    except Exception as exc:
+        logger.exception(
+            "Delivery by state query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve delivery by state."
+        ) from exc
 
 def delayed_orders(limit: int = 20,mode: str = "historical") :
     """
     Retrieve the most delayed customer orders.
+
+    Args:
+        limit: Maximum number of delayed orders to return.
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing the most delayed orders.
+
+    Raises:
+        RuntimeError: If the database query fails.
     """
 
     limit = max(1, min(limit, 100))
@@ -107,12 +186,31 @@ def delayed_orders(limit: int = 20,mode: str = "historical") :
 
     logger.info("Executing delayed orders")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Delayed orders query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve delayed orders."
+        ) from exc
 
 
 def order_status_distribution(mode: str = "historical"):
     """
-    Retrieve order status distribution.
+    Retrieve the distribution of customer order statuses.
+
+    Args:
+        mode: Query execution mode.
+
+    Returns:
+        Query result containing the number of orders in each
+        status category.
+
+    Raises:
+        RuntimeError: If the database query fails.
     """
 
     sql = """
@@ -126,4 +224,13 @@ def order_status_distribution(mode: str = "historical"):
 
     logger.info("Executing order status distribution")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "order status distribution query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve order status distribution."
+        ) from exc

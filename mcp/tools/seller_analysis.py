@@ -28,7 +28,16 @@ def seller_summary(mode: str = "historical"):
 
     logger.info("Executing seller summary")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Seller summary query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve seller summary."
+        ) from exc
 
 
 def top_sellers(limit: int = 10,mode: str = "historical"):
@@ -50,7 +59,16 @@ def top_sellers(limit: int = 10,mode: str = "historical"):
 
     logger.info("Executing top sellers")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Top sellers query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve top sellers."
+        ) from exc
 
 
 def seller_revenue(mode: str = "historical"):
@@ -68,7 +86,16 @@ def seller_revenue(mode: str = "historical"):
 
     logger.info("Executing seller revenue")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Seller revenue query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve seller revenue."
+        ) from exc
 
 
 def seller_delivery_performance(mode: str = "historical"):
@@ -112,7 +139,16 @@ def seller_delivery_performance(mode: str = "historical"):
 
     logger.info("Executing seller delivery performance")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "seller delivery performance query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve seller delivery performance."
+        ) from exc
 
 
 def sellers_by_state(mode: str = "historical"):
@@ -130,4 +166,13 @@ def sellers_by_state(mode: str = "historical"):
 
     logger.info("Executing sellers by state")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "sellers by state query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve sellers by state."
+        ) from exc

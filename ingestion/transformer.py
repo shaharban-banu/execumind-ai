@@ -17,51 +17,92 @@ class Transformer:
 
     def transform(self,canonical_dataset: CanonicalDataset,) -> CanonicalDataset:
         """
-        Transform every canonical table.
+        Transform all canonical tables.
+
+        Applies data cleaning, type conversion, feature engineering,
+        duplicate removal, missing value handling, and dataset-specific
+        transformations to each canonical table.
+
+        Args:
+            canonical_dataset: Canonical dataset to transform.
+
+        Returns:
+            Updated canonical dataset.
+
+        Raises:
+            RuntimeError: If the transformation process fails.
         """
 
         logger.info("Starting data transformation...")
 
-        for table in canonical_dataset.tables:
+        try:
 
-            logger.info("Transforming table: %s",table.name,)
+            for table in canonical_dataset.tables:
 
-            df = table.dataframe.copy()
+                logger.info("Transforming table: %s",table.name,)
 
-            df = self._trim_strings(df)
+                df = table.dataframe.copy()
 
-            df = self._convert_datatypes(df,table.columns,)
+                df = self._trim_strings(df)
 
-            df = self._normalize_quantity(table.name, df)
+                df = self._convert_datatypes(df,table.columns,)
 
-            df = self._generate_derived_fields(table.name, df)
+                df = self._normalize_quantity(table.name, df)
+
+                df = self._generate_derived_fields(table.name, df)
+                
+                df = self._generate_missing_ids(table.name,df,)
+
+                df = self._fill_missing_customer_master_id(table.name, df)
+
+                df = self._normalize_booleans(df)
+
+                df = self._replace_empty_strings(df)
+
+                df = self._replace_nan_with_none(df)
+
+                logger.info(
+                    " primary keys: %s",
+                    table.primary_keys,
+                )
+
+                logger.info(
+                    "Rows before dedup: %d",
+                    len(df),
+                )
+                if table.name == "customers":
+                    logger.info(df["customer_id"].head(10))
+                    logger.info("Unique customer_id: %d", df["customer_id"].nunique())
+
+                df = self._remove_duplicates(df,table.primary_keys,)
+
+                logger.info(
+                    "Rows after dedup: %d",
+                    len(df),
+                )
+
+                df = self._handle_missing_values(df,table.columns,)
+
+                df = self._create_features(df,)
+
+                if table.name=="reviews":
+                    df=self._create_review_text(df)
+
+                table.dataframe = df
+                table.row_count=len(df)
+
+            logger.info("Data transformation completed.")
+
+            return canonical_dataset
+        except Exception as exc:
+            logger.exception(
+                "Data transformation failed: %s",
+                exc,
+            )
+            raise RuntimeError(
+                "Failed to transform canonical dataset."
+            ) from exc
             
-            df = self._generate_missing_ids(table.name,df,)
-
-            df = self._fill_missing_customer_master_id(table.name, df)
-
-            df = self._normalize_booleans(df)
-
-            df = self._replace_empty_strings(df)
-
-            df = self._replace_nan_with_none(df)
-
-            df = self._remove_duplicates(df,table.primary_keys,)
-
-            df = self._handle_missing_values(df,table.columns,)
-
-            df = self._create_features(df,)
-
-            if table.name=="reviews":
-                df=self._create_review_text(df)
-
-            table.dataframe = df
-            table.row_count=len(df)
-
-        logger.info("Data transformation completed.")
-
-        return canonical_dataset
-    
     @staticmethod
     def _trim_strings(df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -72,15 +113,13 @@ class Transformer:
 
         for column in object_columns:
 
-            #print(f"\nProcessing column: {column}")
-
             value = df[column]
 
-            #print("Type:", type(value))
-
             if isinstance(value, pd.DataFrame):
-                print("Duplicate column detected!")
-                print(value.columns.tolist())
+                logger.error(
+                    "Duplicate column detected: %s",
+                    value.columns.tolist(),
+                )
                 raise ValueError(f"Duplicate column name: {column}")
 
             df[column] = value.astype(str).str.strip()
@@ -90,13 +129,17 @@ class Transformer:
     @staticmethod
     def _convert_datatypes(df: pd.DataFrame,columns: list[CanonicalColumn],) :
         """
-        Convert dataframe columns using canonical metadata.
+        Convert DataFrame columns to canonical data types.
+
+        Args:
+            df: Source DataFrame.
+            columns: Canonical column metadata.
+
+        Returns:
+            Updated DataFrame with converted data types.
         """
-        #print("\nColumn metadata")
 
         for column in columns:
-
-            #print(column.name, "->", column.data_type)
 
             if column.name not in df.columns:
                 continue
@@ -406,6 +449,11 @@ class Transformer:
             df["customer_master_id"] = (
                 df["customer_master_id"]
                 .fillna(df["customer_id"])
+            )
+
+            df["customer_id"] = (
+                df["customer_id"]
+                .fillna(df["customer_master_id"])
             )
 
         return df

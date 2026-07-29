@@ -20,6 +20,18 @@ class CSVLoader(BaseLoader):
     """
 
     def __init__(self,config: LoaderConfig) :
+        """
+        Initialize the CSV loader.
+
+        Args:
+            config: Configuration describing the CSV source
+                and table metadata.
+
+        Raises:
+            ValueError:
+                If the configuration is invalid or the table
+                is not registered for RAG.
+        """
 
         self.config = config
 
@@ -37,7 +49,13 @@ class CSVLoader(BaseLoader):
 
     def load(self) :
         """
-        Load documents from CSV.
+        Load documents from a CSV file.
+
+        Reads the configured CSV file and converts each row
+        into a LangChain Document.
+
+        Returns:
+            List of loaded documents.
         """
 
         df = self._read_csv()
@@ -49,6 +67,13 @@ class CSVLoader(BaseLoader):
         return documents
 
     def _validate_config(self) -> None:
+        """
+        Validate the loader configuration.
+
+        Raises:
+            ValueError:
+                If the file path or table name is missing.
+        """
 
         if self.config.file_path is None:
             raise ValueError("CSV file path is required.")
@@ -58,7 +83,14 @@ class CSVLoader(BaseLoader):
 
     def _read_csv(self):
         """
-        Read CSV file.
+        Read the configured CSV file.
+
+        Returns:
+            DataFrame containing the CSV contents.
+
+        Raises:
+            RuntimeError:
+                If the CSV file cannot be loaded.
         """
 
         try:
@@ -72,6 +104,16 @@ class CSVLoader(BaseLoader):
             raise RuntimeError("CSV loading failed.") from exc
 
     def _row_to_document(self,row: dict[str, Any],) :
+        """
+        Convert a CSV row into a LangChain Document.
+
+        Args:
+            row: Dictionary representing a CSV record.
+
+        Returns:
+            LangChain Document containing the row content
+            and metadata.
+        """
 
         metadata = {column: row.get(column) for column in self.metadata_columns}
 

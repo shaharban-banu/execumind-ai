@@ -13,6 +13,7 @@ from database.models import (
     Payment,
 )
 from pathlib import Path
+from services.platform_status import get_platform_status
 
 class DashboardService:
     """Dashboard KPI Service."""
@@ -84,10 +85,6 @@ class DashboardService:
             db.close()
     @staticmethod
     def forecast_ready() -> bool:
+        return get_platform_status()["platform_ready"]
 
-        model_dir = Path("forecast/models")
-
-        return (
-            model_dir.exists()
-            and any(model_dir.glob("*.pkl"))
-        )
+    

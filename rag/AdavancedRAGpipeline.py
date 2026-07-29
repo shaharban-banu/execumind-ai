@@ -39,6 +39,19 @@ class AdvancedRAGPipeline:
         reranker: BaseReranker | None = None,
         
     ):
+        """
+        Initialize the Advanced RAG pipeline.
+
+        Args:
+            loaders: Document loaders.
+            preprocessor: Document preprocessor.
+            chunker: Document chunker.
+            embedder: Embedding model.
+            vector_store: Vector store implementation.
+            retriever: Retrieval strategy.
+            rag_config: RAG configuration.
+            reranker: Optional reranker.
+        """
         self.loaders = loaders
         self.preprocessor = preprocessor
         self.chunker = chunker
@@ -69,69 +82,99 @@ class AdvancedRAGPipeline:
     def build_index(self):
         """
         Build vector index.
+
+        Loads documents, preprocesses them, creates chunks,
+        generates embeddings, and stores the resulting index.
+
+        Raises:
+            RuntimeError:
+                If index creation fails.
         """
 
         logger.info("Starting index build...")
 
         documents = []
 
-        for loader in self.loaders:
+        try:
 
-            loaded = loader.load()
+            for loader in self.loaders:
+
+                loaded = loader.load()
+
+                logger.info(
+                    "Loaded %d documents from %s",
+                    len(loaded),
+                    loader.__class__.__name__,
+                )
+
+                documents.extend(loaded)
+
+            documents = self.preprocessor.process(documents)
+
+            chunks = self.chunker.chunk(documents)
+
+            for i, chunk in enumerate(chunks):
+                #source = chunk.metadata.get("source_name", "unknown")
+                chunk.metadata["chunk_id"] = i
 
             logger.info(
-                "Loaded %d documents from %s",
-                len(loaded),
-                loader.__class__.__name__,
+                "Generated %d chunks.",
+                len(chunks),
             )
 
-            documents.extend(loaded)
+            texts = [
+                chunk.page_content
+                for chunk in chunks
+            ]
 
-        documents = self.preprocessor.process(documents)
+            embeddings = self.embedder.embed(texts)
 
-        chunks = self.chunker.chunk(documents)
+            logger.info(
+                "Generated %d embeddings.",
+                len(embeddings),
+            )
 
-        for i, chunk in enumerate(chunks):
-            #source = chunk.metadata.get("source_name", "unknown")
-            chunk.metadata["chunk_id"] = i
+            self.vector_store.build(
+                documents=chunks,
+                embeddings=embeddings,
+            )
 
-        logger.info(
-            "Generated %d chunks.",
-            len(chunks),
-        )
+            self.vector_store.save()
 
-        texts = [
-            chunk.page_content
-            for chunk in chunks
-        ]
+            logger.info("Index build completed.")
 
-        embeddings = self.embedder.embed(texts)
-
-        logger.info(
-            "Generated %d embeddings.",
-            len(embeddings),
-        )
-
-        self.vector_store.build(
-            documents=chunks,
-            embeddings=embeddings,
-        )
-
-        self.vector_store.save()
-
-        logger.info("Index build completed.")
+        except Exception as exc:
+            logger.exception(
+                "Failed to build vector index."
+            )
+            raise RuntimeError(
+                "Vector index build failed."
+            ) from exc
 
     def load_index(self):
         """
-        Load FAISS index.
+        Load the vector index and prepare retrievers.
+
+        Raises:
+            RuntimeError:
+                If the vector store cannot be loaded.
         """
 
         logger.info("Loading vector index...")
 
-        self.vector_store.load()
-        self.prepare_for_querying()
+        try:
+            self.vector_store.load()
+            self.prepare_for_querying()
 
-        logger.info("Vector index loaded.")
+            logger.info("Vector index loaded.")
+            
+        except Exception as exc:
+            logger.exception(
+                "Failed loading vector index."
+            )
+            raise RuntimeError(
+                "Unable to load vector index."
+            ) from exc
 
     def retrieve(
         self,
@@ -140,7 +183,15 @@ class AdvancedRAGPipeline:
         rerank_top_k: int | None = None,
     ):
         """
-        Retrieve relevant documents.
+        Retrieve documents relevant to a query.
+
+        Args:
+            query: User query.
+            retrieval_top_k: Number of documents to retrieve.
+            rerank_top_k: Number of reranked documents.
+
+        Returns:
+            List of retrieved documents.
         """
 
         logger.info(
@@ -150,18 +201,24 @@ class AdvancedRAGPipeline:
         retrieval_top_k = (retrieval_top_k or self.rag_config.retrieval_top_k)
         rerank_top_k = (rerank_top_k or self.rag_config.rerank_top_k)
 
+        if self.retriever is None:
+            raise RuntimeError(
+                "Knowledge base is not available. Please process the platform first."
+            )
         documents = self.retriever.retrieve(
             query=query,
             top_k=retrieval_top_k,
         )
         logger.info("Retrieved Documents:")
 
-        for i, doc in enumerate(documents):
+        for index, document in enumerate(documents, start=1):
             logger.info(
-                f"{i+1}. Source={doc.metadata.get('source_name')} "
-                f"File={doc.metadata.get('file_name')} "
-                f"Page={doc.metadata.get('page')} "
-                f"Table={doc.metadata.get('table_name')}"
+                "%d. Source=%s File=%s Page=%s Table=%s",
+                index,
+                document.metadata.get("source"),
+                document.metadata.get("file_name"),
+                document.metadata.get("page"),
+                document.metadata.get("table"),
             )
 
         logger.info(
@@ -186,7 +243,14 @@ class AdvancedRAGPipeline:
     
     def prepare_for_querying(self) -> None:
         """
-        Prepare the pipeline for retrieval.
+        Prepare retrieval components.
+
+        Creates semantic, BM25, and hybrid retrievers
+        using the loaded vector store.
+
+        Raises:
+            RuntimeError:
+                If the vector store has not been loaded.
         """
 
         if not hasattr(self.vector_store, "documents"):
@@ -212,6 +276,9 @@ class AdvancedRAGPipeline:
 
     def is_ready(self) -> bool:
         """
-        Returns True if the knowledge index is loaded.
+        Check whether the vector store is loaded.
+
+        Returns:
+            True if the pipeline is ready for querying.
         """
         return hasattr(self.vector_store, "documents")

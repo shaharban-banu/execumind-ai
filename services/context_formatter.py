@@ -1,10 +1,23 @@
+"""
+Formatting utilities.
+
+Provides helper functions to format retrieved documents,
+SQL results, and forecast outputs for LLM prompts.
+"""
 from langchain_core.documents import Document
 import json
 
 def format_context(reviews: list[Document],
     business_docs: list[Document],) :
     """
-    Format customer reviews and business documents separately.
+    Format retrieved documents for LLM prompts.
+
+    Args:
+        reviews: Retrieved customer review documents.
+        business_docs: Retrieved business documents.
+
+    Returns:
+        Formatted context string.
     """
 
     sections = []

@@ -39,11 +39,26 @@ MODEL_MAPPING = {
 class Loader:
     """
     Loads the canonical dataset into the database.
+
     """
 
     def load(self,canonical_dataset: CanonicalDataset,) :
         """
         Persist the canonical dataset.
+
+        Iterates through each canonical table, maps it to the
+            corresponding SQLAlchemy ORM model, and persists the records
+            within a single database transaction.
+        
+            Args:
+                canonical_dataset: Canonical dataset containing the
+                    transformed tables to be loaded.
+        
+            Returns:
+                None.
+        
+            Raises:
+                RuntimeError: If loading the dataset into the database fails.
         """
 
         logger.info("Loading canonical dataset into database...")
@@ -80,13 +95,17 @@ class Loader:
 
             logger.info("Database loading completed.")
 
-        except Exception:
-
+        except Exception as exc:
             session.rollback()
 
-            logger.exception("Failed to load dataset.")
+            logger.exception(
+                "Failed to load canonical dataset: %s",
+                exc,
+            )
 
-            raise
+            raise RuntimeError(
+                "Database loading failed."
+            ) from exc
 
         finally:
 
@@ -95,12 +114,21 @@ class Loader:
     @staticmethod
     def _load_table(session: Session,dataframe,model,) -> None:
 
-        # print("\n==============================")
-        # print(model.__tablename__)
-        # print(dataframe.dtypes)
-        # if "order_date" in dataframe.columns:
-        #     print(dataframe[["order_date"]].head())
-        # print("==============================")
+        """
+        Persist a single canonical table.
+
+        Converts each row in the DataFrame into an ORM model instance,
+        filters unsupported columns, replaces missing values with
+        ``None``, and performs a bulk insert.
+
+        Args:
+            session: Active SQLAlchemy database session.
+            dataframe: Canonical table data.
+            model: SQLAlchemy ORM model associated with the table.
+
+        Returns:
+            None.
+        """
 
         records = dataframe.to_dict(orient="records")
 
@@ -125,3 +153,9 @@ class Loader:
             objects.append(model(**cleaned))
 
         session.bulk_save_objects(objects)
+
+        logger.info(
+            "Inserted %d records into '%s'.",
+            len(objects),
+            model.__tablename__,
+        )

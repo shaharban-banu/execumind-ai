@@ -28,7 +28,16 @@ def product_summary(mode: str = "historical"):
 
     logger.info("Executing product summary")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Payment summary query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve payment summary."
+        ) from exc
 
 
 def category_performance(mode: str = "historical"):
@@ -53,7 +62,16 @@ def category_performance(mode: str = "historical"):
 
     logger.info("Executing category performance")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Category performance query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve Category performance."
+        ) from exc
 
 
 def top_products(limit: int = 10,mode: str = "historical") :
@@ -79,7 +97,16 @@ def top_products(limit: int = 10,mode: str = "historical") :
 
     logger.info("Executing top products")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "Top products query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve top products."
+        ) from exc
 
 
 def product_price_statistics(mode: str = "historical") :
@@ -96,7 +123,16 @@ def product_price_statistics(mode: str = "historical") :
 
     logger.info("Executing product price statistics")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "product price statistics query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve product price statistics."
+        ) from exc
 
 
 def category_distribution(mode: str = "historical"):
@@ -117,4 +153,13 @@ def category_distribution(mode: str = "historical"):
 
     logger.info("Executing category distribution")
 
-    return query_db(sql, mode)
+    try:
+        return query_db(sql, mode)
+    except Exception as exc:
+        logger.exception(
+            "category distribution query failed: %s",
+            exc,
+        )
+        raise RuntimeError(
+            "Failed to retrieve category distribution."
+        ) from exc

@@ -10,6 +10,10 @@ from rag.retrievers.base_retriever import BaseRetriever
 class HybridRetriever(BaseRetriever):
     """
     Hybrid retriever combining semantic and BM25 retrieval.
+
+    Args:
+    semantic_retriever: Retriever used for semantic search.
+    bm25_retriever: Retriever used for keyword search.
     """
     def __init__(self,semantic_retriever: BaseRetriever,bm25_retriever: BaseRetriever,) :
         """
@@ -20,7 +24,18 @@ class HybridRetriever(BaseRetriever):
 
     def retrieve(self,query:str,top_k:int=20,):
         """
-        Retrieve documents using hybrid search."""
+        Retrieve documents using semantic and BM25 retrieval.
+
+        Results from both retrievers are merged, duplicate
+        documents are removed, and the top results are returned.
+
+        Args:
+            query: User query.
+            top_k: Maximum number of documents to return.
+
+        Returns:
+            List of unique LangChain Document objects.
+        """
 
         semantic_results=self.semantic_retriever.retrieve(query=query,top_k=top_k,)
         bms5_results=self.bm25_retriever.retrieve(query=query,top_k=top_k,)

@@ -15,15 +15,14 @@ class LoaderFactory:
     @staticmethod
     def create_loader(config: LoaderConfig) :
         """
-        Create the appropriate loader."""
+        Create the appropriate loader.
+        """
         source_type = config.source_type.lower()
 
         if source_type == "database":
-            
             return DatabaseLoader(config)
         
-        if source_type == "csv":
-            
+        if source_type == "csv":            
             return CSVLoader(config)
         
         if source_type == "pdf":
@@ -32,4 +31,4 @@ class LoaderFactory:
         if source_type == "markdown":
             return MarkdownLoader(config)
         
-        raise ValueError(f"unsupported sorce type {config.source_type}")
+        raise ValueError(f"unsupported source type {config.source_type}")

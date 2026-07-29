@@ -4,12 +4,18 @@ RAG configuration loader.
 
 from dataclasses import dataclass
 from pathlib import Path
-
+from utils.logger import logger
 import yaml
 
 
 @dataclass(slots=True)
 class RAGConfig:
+    """
+    Configuration settings for the RAG pipeline.
+
+    Stores embedding, chunking, retrieval, reranking,
+    and vector store configuration.
+    """
     embedding_model: str
 
     chunk_size: int
@@ -32,10 +38,37 @@ def load_rag_config(
 ) -> RAGConfig:
     """
     Load RAG configuration from YAML.
-    """
 
-    with open(config_path, encoding="utf-8") as file:
-        config = yaml.safe_load(file)
+    Args:
+    config_path: Path to the RAG configuration file.
+
+    Returns:
+        A populated RAGConfig instance.
+
+    Raises:
+        FileNotFoundError:
+            If the configuration file does not exist.
+        RuntimeError:
+            If the configuration file cannot be parsed.
+    """
+    logger.info("Loading RAG configuration from '%s'.",config_path,)
+
+    try:
+        with open(config_path, encoding="utf-8") as file:
+            config = yaml.safe_load(file)
+    except FileNotFoundError:
+        logger.exception(
+            "Configuration file '%s' not found.",
+            config_path,
+        )
+        raise
+    except yaml.YAMLError as exc:
+        logger.exception(
+            "Invalid YAML configuration."
+        )
+        raise RuntimeError(
+            "Failed to parse RAG configuration."
+        ) from exc
 
     return RAGConfig(
 

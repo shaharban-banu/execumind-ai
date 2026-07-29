@@ -10,16 +10,30 @@ class SentenceTransformerEmbedder(BaseEmbedder):
     SentenceTransformer embedding model.
     """
     def __init__(self,model_name:str,batch_size:int=64,):
-        """initialize embedding model"""
+        """
+        Initialize the SentenceTransformer embedding model.
 
-        self.model=SentenceTransformer(model_name)
-        self.batch_size=batch_size
-        logger.info("Loaded mbedding model %s",model_name)
+        Args:
+            model_name: Name or path of the embedding model.
+            batch_size: Number of texts to encode per batch.
+        """
+
+        self.model = SentenceTransformer(model_name)
+        self.batch_size = batch_size
+        logger.info("Loaded embedding model %s",model_name)
 
     def embed(self, texts):
-        """generate embeddings"""
+        """
+        Generate embeddings for the given texts.
 
-        embeddings=self.model.encode(texts,
+        Args:
+            texts: Collection of text strings to encode.
+
+        Returns:
+            List of embedding vectors.
+        """
+
+        embeddings = self.model.encode(texts,
                                      batch_size=self.batch_size,
                                      show_progress_bar=True,
                                      convert_to_numpy=True,

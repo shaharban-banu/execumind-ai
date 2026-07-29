@@ -16,9 +16,23 @@ from utils.logger import logger
 
 class DatabaseLoader(BaseLoader):
     """
-    Loads review data from supported sources.
+    Database document loader.
+
+    Loads records from a configured database table and
+    converts them into LangChain Document objects.
     """
     def __init__(self,config:LoaderConfig):
+        """
+        Initialize the database loader.
+
+        Args:
+            config: Configuration describing the database
+                connection and table.
+
+        Raises:
+            ValueError:
+                If the loader configuration is invalid.
+        """
         self.config=config
 
         self._validate_config()
@@ -28,12 +42,26 @@ class DatabaseLoader(BaseLoader):
         self.metadata_columns = table_config.metadata_columns
 
     def load(self):
+        """
+        Load documents from the configured database table.
+
+        Returns:
+            List of LangChain Document objects.
+        """
         rows=self._fetch_rows()
         document=[self._row_to_documents(row) for row in rows]
         logger.info("Loaded %d documents from %s ",len(document),self.config.table_name)
 
         return document
     def _validate_config(self):
+        """
+        Validate the loader configuration.
+
+        Raises:
+            ValueError:
+                If the database session or table name
+                is missing or unsupported.
+        """
         if self.config.session is None:
             raise ValueError("Database session is required.")
 
@@ -44,6 +72,16 @@ class DatabaseLoader(BaseLoader):
             raise ValueError(f"Unsupported RAG table: {self.config.table_name}")
         
     def _fetch_rows(self):
+        """
+        Retrieve rows from the configured database table.
+
+        Returns:
+            List of database records.
+
+        Raises:
+            RuntimeError:
+                If the database query fails.
+        """
         columns=[self.text_column,*self.metadata_columns,]
 
         query=text(f"""
@@ -60,13 +98,29 @@ class DatabaseLoader(BaseLoader):
         
     def _row_to_documents(self,row:dict[str,Any]):
         """
-        Convert one database row into a Document."""
-    
+        Convert a database row into a LangChain Document.
+
+        Args:
+            row: Database record.
+
+        Returns:
+            LangChain Document containing page content
+            and metadata.
+        """
+            
         return Document(page_content=row.get(self.text_column,"") or "",
                         metadata=self._build_metadata(row))
     
     def _build_metadata(self,row:dict[str,Any]):
-        """build document metadata"""
+        """
+        Build document metadata.
+
+        Args:
+            row: Database record.
+
+        Returns:
+            Metadata dictionary for the document.
+        """
         metadata = {column: row.get(column) for column in self.metadata_columns}
 
         metadata.update(

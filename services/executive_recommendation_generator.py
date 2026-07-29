@@ -1,3 +1,10 @@
+"""
+Executive recommendation generator.
+
+Coordinates customer, data, forecast, and executive
+agents to generate executive recommendations.
+"""
+from utils.logger import logger
 from graph.nodes import (
     get_customer_agent,
     data_agent,
@@ -15,6 +22,7 @@ from config.executive_questions import (
 from services.executive_recommendation_service import (
     ExecutiveRecommendationService,
 )
+from services.platform_status import get_platform_status
 
 
 class ExecutiveRecommendationGenerator:
@@ -24,49 +32,78 @@ class ExecutiveRecommendationGenerator:
     """
 
     def __init__(self):
+        """
+        Initialize the executive recommendation generator.
+        """
         self.recommendation_service = ExecutiveRecommendationService()
 
     def generate(self):
         """
         Generate executive recommendations
         from the current dataset.
+        Runs the customer, data, and forecast agents,
+        combines their outputs using the executive agent,
+        and persists the generated recommendations.
+
+        Returns:
+            Executive agent response.
+
+        Raises:
+            RuntimeError:
+                If recommendation generation fails.
         """
+        logger.info("Starting executive recommendation generation.")
+        if not get_platform_status():
+            return {
+                "success": False,
+                "message": "Platform has not been processed. Please process the platform before generating executive recommendations."
+            }
 
-        # Customer Analysis
-        customer_response = get_customer_agent().run(
-            CUSTOMER_EXECUTIVE_QUESTION
-        )
+        try:
+            # Customer Analysis
+            customer_response = get_customer_agent().run(
+                CUSTOMER_EXECUTIVE_QUESTION
+            )
 
-        # Data Analysis
-        data_response = data_agent.run(
-            DATA_EXECUTIVE_QUESTION,mode="executive",
-        )
+            # Data Analysis
+            data_response = data_agent.run(
+                DATA_EXECUTIVE_QUESTION,mode="executive",
+            )
 
-        # Forecast Analysis
-        forecast_response = forecast_agent.run(
-            FORECAST_EXECUTIVE_QUESTION
-        )
+            # Forecast Analysis
+            forecast_response = forecast_agent.run(
+                FORECAST_EXECUTIVE_QUESTION
+            )
 
-        context = {
-            "customer_analysis": customer_response.result.model_dump(
-                exclude={"evidence"}
-            ),
-            "data_analysis": data_response.result.model_dump(
-                exclude={"evidence"}
-            ),
-            "forecast_analysis": forecast_response.result.model_dump(
-                exclude={"evidence"}
-            ),
-        }
-        #print(context)
+            context = {
+                "customer_analysis": customer_response.result.model_dump(
+                    exclude={"evidence"}
+                ),
+                "data_analysis": data_response.result.model_dump(
+                    exclude={"evidence"}
+                ),
+                "forecast_analysis": forecast_response.result.model_dump(
+                    exclude={"evidence"}
+                ),
+            }
+            #print(context)
+            logger.info("Generating executive synthesis.")
 
-        executive_analysis = executive_agent.run(
-            EXECUTIVE_SYNTHESIS_QUESTION,
-            context=context,
-        )
+            executive_analysis = executive_agent.run(
+                EXECUTIVE_SYNTHESIS_QUESTION,
+                context=context,
+            )
 
-        self.recommendation_service.delete_all()
-        self.recommendation_service.save_recommendations(executive_analysis.result)
+            self.recommendation_service.delete_all()
+            self.recommendation_service.save_recommendations(executive_analysis.result)
 
-        return executive_analysis
+            logger.info("Executive recommendations generated successfully.")
+            return executive_analysis
+        except Exception as exc:
+            logger.exception(
+                "Failed to generate executive recommendations."
+            )
+            raise RuntimeError(
+                "Executive recommendation generation failed."
+            ) from exc
 

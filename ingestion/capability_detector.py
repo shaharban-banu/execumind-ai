@@ -7,7 +7,7 @@ canonical dataset.
 
 from __future__ import annotations
 
-import logging
+from utils.logger import logger
 
 from ingestion.mappings.field_types import ENTITY_FIELDS
 from ingestion.models.canonical import (
@@ -15,7 +15,6 @@ from ingestion.models.canonical import (
     DatasetCapabilities,
 )
 
-logger = logging.getLogger(__name__)
 
 
 ENTITY_CAPABILITIES = {
@@ -57,64 +56,99 @@ class CapabilityDetector:
         canonical_dataset: CanonicalDataset,
     ) -> DatasetCapabilities:
         """
-        Detect supported capabilities.
+        Detect business capabilities supported by the canonical dataset.
+
+        Evaluates the canonical dataset against the required entity schema
+        and determines which business capabilities can be supported based
+        on the availability of mandatory entities and fields.
+
+        Args:
+            canonical_dataset: Canonical dataset to evaluate.
+
+        Returns:
+            DatasetCapabilities containing the supported capabilities,
+            supported entities, missing entities, and overall coverage.
+
+        Raises:
+            RuntimeError: If capability detection fails.
         """
 
         logger.info("Detecting dataset capabilities...")
 
-        capabilities = DatasetCapabilities()
+        try:
+            capabilities = DatasetCapabilities()
 
-        supported_entities: list[str] = []
-        missing_entities: list[str] = []
+            supported_entities: list[str] = []
+            missing_entities: list[str] = []
 
-        total_entities = len(ENTITY_FIELDS)
+            total_entities = len(ENTITY_FIELDS)
 
-        for entity_name, fields in ENTITY_FIELDS.items():
+            for entity_name, fields in ENTITY_FIELDS.items():
+                logger.debug(
+                    "Evaluating entity '%s'.",
+                    entity_name,
+                )
+                table = next(
+                    (
+                        table
+                        for table in canonical_dataset.tables
+                        if table.name == entity_name
+                    ),
+                    None,
+                )
 
-            table = next(
-                (
-                    table
-                    for table in canonical_dataset.tables
-                    if table.name == entity_name
-                ),
-                None,
+                if table is None:
+                    missing_entities.append(entity_name)
+                    continue
+
+                table_columns = {
+                    column.name
+                    for column in table.columns
+                }
+
+                required_fields = {
+                    field.name
+                    for field in fields
+                    if field.required
+                }
+
+                if not required_fields.issubset(table_columns):
+                    missing_entities.append(entity_name)
+                    continue
+
+                supported_entities.append(entity_name)
+
+                for capability in ENTITY_CAPABILITIES.get(entity_name, []):
+                    capabilities.capabilities[capability] = True
+
+            capabilities.supported_entities = supported_entities
+            capabilities.missing_entities = missing_entities
+
+            capabilities.coverage = round(
+                len(supported_entities) / total_entities,
+                2,
             )
 
-            if table is None:
-                missing_entities.append(entity_name)
-                continue
+            logger.info(
+                "Detected %d capabilities.",
+                len(capabilities.capabilities),
+            )
+            logger.debug(
+                "Supported entities: %s",
+                supported_entities,
+            )
 
-            table_columns = {
-                column.name
-                for column in table.columns
-            }
+            logger.debug(
+                "Missing entities: %s",
+                missing_entities,
+            )
 
-            required_fields = {
-                field.name
-                for field in fields
-                if field.required
-            }
-
-            if not required_fields.issubset(table_columns):
-                missing_entities.append(entity_name)
-                continue
-
-            supported_entities.append(entity_name)
-
-            for capability in ENTITY_CAPABILITIES.get(entity_name, []):
-                capabilities.capabilities[capability] = True
-
-        capabilities.supported_entities = supported_entities
-        capabilities.missing_entities = missing_entities
-
-        capabilities.coverage = round(
-            len(supported_entities) / total_entities,
-            2,
-        )
-
-        logger.info(
-            "Detected %d capabilities.",
-            len(capabilities.capabilities),
-        )
-
-        return capabilities
+            return capabilities
+        except Exception as exc:
+            logger.exception(
+                "Capability detection failed: %s",
+                exc,
+            )
+            raise RuntimeError(
+                "Failed to detect dataset capabilities."
+            ) from exc

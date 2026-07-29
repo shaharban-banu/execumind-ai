@@ -15,6 +15,13 @@ class FAISSStore(BaseVectorStore):
     """
 
     def __init__(self,index_path: Path,metadata_path: Path,) :
+        """
+        Initialize the FAISS vector store.
+
+        Args:
+            index_path: Path to the FAISS index file.
+            metadata_path: Path to the metadata file.
+        """
 
         self.index_path = index_path
         self.metadata_path = metadata_path
@@ -22,7 +29,16 @@ class FAISSStore(BaseVectorStore):
         self.documents = []
 
     def build(self, documents, embeddings):
-        """build FAISS index"""
+        """
+        Build a FAISS vector index.
+
+        Args:
+            documents: Documents associated with the embeddings.
+            embeddings: Embedding vectors.
+
+        Returns:
+            None
+        """
         vectors=np.array(embeddings,dtype=np.float32,)
         dimensions=vectors.shape[1]
         self.index=faiss.IndexFlatIP(dimensions)
@@ -32,45 +48,85 @@ class FAISSStore(BaseVectorStore):
         logger.info("created FAISS index with %d vectors",len(documents),)
 
     def save(self):
-        """save FAISS index"""
-        self.index_path.parent.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
+        """
+        Save the FAISS index and document metadata.
 
-        self.metadata_path.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        faiss.write_index(
-            self.index,
-            str(self.index_path),
-        )
-
-        with open(
-            self.metadata_path,
-            "wb",
-        ) as file:
-
-            pickle.dump(
-                self.documents,
-                file,
+        Raises:
+            RuntimeError:
+                If the index cannot be written.
+        """
+        try:
+            self.index_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
             )
 
-        logger.info("Saved vector store")
+            self.metadata_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            faiss.write_index(
+                self.index,
+                str(self.index_path),
+            )
+
+            with open(
+                self.metadata_path,
+                "wb",
+            ) as file:
+
+                pickle.dump(
+                    self.documents,
+                    file,
+                )
+
+            logger.info("Saved vector store")
+        except Exception as exc:
+            logger.exception(
+                "Failed to save vector store."
+            )
+            raise RuntimeError(
+                "Unable to save vector store."
+            ) from exc
 
     def load(self):
-        """load FAISS index"""
+        """
+        Load the FAISS index and metadata.
 
-        self.index=faiss.read_index(str(self.index_path))
-        with open(self.metadata_path,"rb")as f:
-            self.documents=pickle.load(f)
+        Raises:
+            RuntimeError:
+                If the index or metadata cannot be loaded.
+        """
+        try:
+            self.index=faiss.read_index(str(self.index_path))
+            with open(self.metadata_path,"rb")as f:
+                self.documents=pickle.load(f)
 
-        logger.info("Loaded vector store")
+            logger.info("Loaded vector store")
+        except Exception as exc:
+            logger.exception(
+                "Failed to load vector store."
+            )
+            raise RuntimeError(
+                "Unable to load vector store."
+            ) from exc
 
     def search(self, query_embedding, top_k = 5):
-        """search the FAISS index"""
+        """
+        Search the vector store.
+
+        Args:
+            query_embedding: Query embedding vector.
+            top_k: Maximum number of documents to return.
+
+        Returns:
+            List of retrieved documents.
+
+        Raises:
+            RuntimeError:
+                If the vector store has not been loaded.
+        """
 
         if self.index is None:
             raise RuntimeError("Vector store is not loaded")

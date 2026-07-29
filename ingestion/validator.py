@@ -6,11 +6,9 @@ Validates the canonical dataset before loading.
 
 from __future__ import annotations
 
-import logging
+from utils.logger import logger
 
 from ingestion.models.canonical import CanonicalDataset
-
-logger = logging.getLogger(__name__)
 
 
 class Validator:
@@ -25,36 +23,56 @@ class Validator:
         """
         Validate the canonical dataset.
 
-        Returns
-        -------
-        tuple
-            (is_valid, validation_errors)
+        Verifies that all canonical tables contain the required
+        columns, valid primary keys, and no duplicate primary key
+        values before loading into the application database.
+
+        Args:
+            canonical_dataset: Canonical dataset to validate.
+
+        Returns:
+            A tuple containing:
+                - True if validation succeeds, otherwise False.
+                - List of validation error messages.
+
+        Raises:
+            RuntimeError: If dataset validation fails unexpectedly.
         """
 
         logger.info("Starting dataset validation...")
 
-        errors: list[str] = []
+        try:
 
-        for table in canonical_dataset.tables:
+            errors: list[str] = []
 
-            errors.extend(
-                self._validate_table(table)
+            for table in canonical_dataset.tables:
+
+                errors.extend(
+                    self._validate_table(table)
+                )
+
+            is_valid = len(errors) == 0
+
+            if is_valid:
+
+                logger.info("Validation successful.")
+
+            else:
+
+                logger.warning(
+                    "Validation failed with %d error(s).",
+                    len(errors),
+                )
+
+            return is_valid, errors
+        except Exception as exc:
+            logger.exception(
+                "Dataset validation failed: %s",
+                exc,
             )
-
-        is_valid = len(errors) == 0
-
-        if is_valid:
-
-            logger.info("Validation successful.")
-
-        else:
-
-            logger.warning(
-                "Validation failed with %d error(s).",
-                len(errors),
-            )
-
-        return is_valid, errors
+            raise RuntimeError(
+                "Canonical dataset validation failed."
+            ) from exc
 
     def _validate_table(
         self,
@@ -62,6 +80,15 @@ class Validator:
     ) -> list[str]:
         """
         Validate a single canonical table.
+
+        Checks required columns, primary key existence,
+        NULL primary key values, and duplicate primary keys.
+
+        Args:
+            table: Canonical table to validate.
+
+        Returns:
+            List of validation error messages.
         """
 
         errors: list[str] = []

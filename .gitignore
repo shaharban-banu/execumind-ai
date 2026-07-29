@@ -111,6 +111,7 @@ rag/docs/raw_docs
 # Evaluation Outputs
 # ==========================================
 evaluation/results/*.csv
+evaluation/*.csv
 evaluation/results/rag_evaluation_report.csv
 !evaluation/results/.gitkeep
 
@@ -167,11 +168,13 @@ golden_data_creation.py
 data_check.py
 evaluation/chunk_level_evaluation_dataset_fixed.csv
 evaluation/chunk_level_evaluation_dataset.csv
+evaluation/*.csv
 test_gemini.py
 services/mock_llm.py
 dataset
 forecast/reports
 forecast/models
+ragas_env
 
 # Vector Store
 data/vectorstore/

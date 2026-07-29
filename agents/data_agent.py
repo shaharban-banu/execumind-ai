@@ -65,7 +65,8 @@ class DataAgent(BaseAgent):
 
 if __name__=="__main__":
     agent=DataAgent()
-    response=agent.run(  "Predict next month's revenue."
-    )
+    response=agent.run(
+       "Generate a complete executive business report."
+        )
 
     print(response.model_dump_json(indent=4))

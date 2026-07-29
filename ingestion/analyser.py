@@ -23,6 +23,8 @@ class SchemaAnalyzer:
     def analyze(self, dataset: DatasetMetadata) -> DatasetMetadata:
         """
         Analyze every table in a dataset.
+        Extracts column-level metadata for each table and enriches the
+        dataset metadata with schema information.
 
         Args:
             dataset: Scanned dataset metadata.
@@ -33,17 +35,30 @@ class SchemaAnalyzer:
 
         logger.info("Starting schema analysis.")
 
-        for table in dataset.tables:
-            self._analyze_table(table)
+        try:
+            for table in dataset.tables:
+                self._analyze_table(table)
 
-        logger.info("Schema analysis completed.")
+            logger.info("Schema analysis completed.")
 
-        return dataset
+            return dataset
+        except Exception as exc:
+            logger.exception(
+                "Schema analysis failed: %s",
+                exc,
+            )
+            raise RuntimeError(
+                "Failed to analyze dataset schema."
+            ) from exc
 
     def _analyze_table(self, table: TableMetadata) -> None:
         """
-        Analyze one table.
+        Analyze a single table.
+
+        Extracts metadata for every column in the provided table.
+
         """
+        logger.debug("Analyzing table '%s'.", table.table_name)
 
         dataframe = table.dataframe
 
@@ -62,9 +77,17 @@ class SchemaAnalyzer:
 
         table.columns = columns
 
-    def _analyze_column(self,dataframe: pd.DataFrame,column_name: str,):
+    def _analyze_column(
+            self,
+            dataframe: pd.DataFrame,
+            column_name: str,
+            )-> ColumnMetadata:
         """
         Analyze a single column.
+
+        Extracts metadata including data type, null percentage,
+        unique value count, and representative sample values.
+
         """
 
         series = dataframe[column_name]
@@ -77,9 +100,16 @@ class SchemaAnalyzer:
             sample_values=self._sample_values(series),
         )
 
-    def _sample_values(self,series: pd.Series,) :
+    def _sample_values(
+            self,
+            series: pd.Series,
+            ) :
         """
         Return representative non-null sample values.
+
+        Extracts up to ``SAMPLE_SIZE`` distinct non-null values from the
+        column to assist with downstream schema mapping.
+
         """
 
         values = (

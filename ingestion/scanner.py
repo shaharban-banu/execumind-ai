@@ -25,13 +25,22 @@ class DatasetScanner:
 
     def scan(self, path: str) -> DatasetMetadata:
         """
-        Scan a dataset path.
+        Scan a dataset file or directory.
+
+        Loads all supported dataset files into memory and constructs
+        a DatasetMetadata object containing the discovered tables.
 
         Args:
-            path: File or directory path.
+            path: Path to a dataset file or directory.
 
         Returns:
-            DatasetMetadata object.
+            DatasetMetadata representing the scanned dataset.
+
+        Raises:
+            FileNotFoundError: If the supplied path does not exist.
+            ValueError: If no supported files are found or an
+                unsupported file type is encountered.
+            RuntimeError: If dataset scanning fails.
         """
         dataset_path = Path(path)
 
@@ -40,30 +49,49 @@ class DatasetScanner:
 
         logger.info("Starting dataset scan: %s", dataset_path)
 
-        if dataset_path.is_dir():
-            tables = self._scan_directory(dataset_path)
-            file_type = "directory"
-        else:
-            tables = [self._scan_file(dataset_path)]
-            file_type = dataset_path.suffix.lower().replace(".", "")
+        try:
 
-        dataset = DatasetMetadata(
-            dataset_name=dataset_path.stem,
-            source_path=str(dataset_path),
-            file_type=file_type,
-            tables=tables,
-        )
+            if dataset_path.is_dir():
+                tables = self._scan_directory(dataset_path)
+                file_type = "directory"
+            else:
+                tables = [self._scan_file(dataset_path)]
+                file_type = dataset_path.suffix.lower().replace(".", "")
 
-        logger.info(
-            "Dataset scan completed. Loaded %d table(s).",
-            len(dataset.tables),
-        )
+            dataset = DatasetMetadata(
+                dataset_name=dataset_path.stem,
+                source_path=str(dataset_path),
+                file_type=file_type,
+                tables=tables,
+            )
 
-        return dataset
+            logger.info(
+                "Dataset scan completed. Loaded %d table(s).",
+                len(dataset.tables),
+            )
+
+            return dataset
+        except Exception as exc:
+            logger.exception(
+                "Dataset scan failed: %s",
+                exc,
+            )
+            raise RuntimeError(
+                "Failed to scan dataset."
+            ) from exc
 
     def _scan_directory(self, directory: Path) -> list[TableMetadata]:
         """
-        Scan all supported files inside a directory.
+        Scan all supported dataset files in a directory.
+
+        Args:
+            directory: Directory containing dataset files.
+
+        Returns:
+            List of discovered table metadata objects.
+
+        Raises:
+            ValueError: If the directory contains no supported files.
         """
         tables = []
 
@@ -80,6 +108,18 @@ class DatasetScanner:
     def _scan_file(self, file_path: Path) -> TableMetadata:
         """
         Scan a single dataset file.
+
+        Reads the file into a DataFrame and creates the initial
+        table metadata.
+
+        Args:
+            file_path: Dataset file to load.
+
+        Returns:
+            Table metadata containing the loaded DataFrame.
+
+        Raises:
+            ValueError: If the file type is unsupported.
         """
         suffix = file_path.suffix.lower()
 
@@ -127,7 +167,14 @@ class DatasetScanner:
         dataframe: pd.DataFrame,
     ) -> TableMetadata:
         """
-        Create initial TableMetadata from a DataFrame.
+        Create initial table metadata from a DataFrame.
+
+        Args:
+            table_name: Name of the dataset table.
+            dataframe: Loaded dataset.
+
+        Returns:
+            TableMetadata instance.
         """
         return TableMetadata(
             table_name=table_name,
