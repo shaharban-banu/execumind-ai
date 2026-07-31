@@ -111,7 +111,8 @@ rag/docs/raw_docs
 # Evaluation Outputs
 # ==========================================
 evaluation/results/*.csv
-evaluation/*.csv
+evaluation/
+agent_evaluation/
 evaluation/results/rag_evaluation_report.csv
 !evaluation/results/.gitkeep
 
