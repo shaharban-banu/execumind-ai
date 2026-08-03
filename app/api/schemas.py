@@ -2,11 +2,16 @@
 API request/response schemas.
 """
 from datetime import datetime
+from typing import List, Optional
 from pydantic import BaseModel
 
+class ChatTurn(BaseModel):
+    role: str
+    content: str
 
 class QuestionRequest(BaseModel):
     question: str
+    history: Optional[List[ChatTurn]] = []
 
 
 class HealthResponse(BaseModel):
@@ -17,9 +22,13 @@ class PlannerResponse(BaseModel):
 
 
 class MetadataResponse(BaseModel):
-    execution_time_ms: int
+    execution_time_ms: int |None=None
     generated_at: datetime
 
+class OutOfContextResponse(BaseModel):
+    status: str
+    message: str
+    metadata: MetadataResponse
 
 class AskResponse(BaseModel):
     question: str

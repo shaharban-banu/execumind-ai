@@ -59,6 +59,23 @@ Use this agent when the question involves the future, including:
 
 ---
 
+## Conversation Context
+
+The planner may receive previous conversation history.
+
+Use the previous conversation only to resolve follow-up questions such as:
+
+- it
+- this
+- that
+- them
+- those
+- these
+
+If the current question clearly refers to the previous business discussion, continue using that context.
+
+Do NOT invent business context if none exists.
+
 ## Rules
 
 * Select **only the agents required** to answer the question.
@@ -196,8 +213,54 @@ Reason:
 The question asks for future customer growth prediction.
 
 ---
+### Example 8
 
-## User Question
+Previous Conversation:
+
+User:
+Why are customers unhappy?
+
+Current Question:
+
+How can we make them happy?
+
+Output:
+
+selected_agents:
+
+["customer"]
+
+Reason:
+
+The question is a follow-up to the previous customer discussion.
+
+### Example 9
+
+Previous Conversation:
+
+(no previous conversation)
+
+Current Question:
+
+How can we make them happy?
+
+Output:
+
+selected_agents:
+
+[]
+
+Reason:
+
+The question is ambiguous and cannot be linked to the uploaded business data or previous business conversation.
+
+---
+
+## Previous Conversation
+
+{conversation}
+
+## Current User Question
 
 {question}
 
@@ -206,3 +269,36 @@ The question asks for future customer growth prediction.
 Return **ONLY** a valid JSON object matching the required response schema.
 
 Do not include explanations outside the JSON response.
+## Out-of-Scope Questions
+
+ExecuMind AI is ONLY designed to answer questions related to:
+
+- Uploaded business datasets
+- Uploaded business documents
+- Revenue
+- Sales
+- Orders
+- Customers
+- Products
+- Sellers
+- Payments
+- Forecasting
+- Executive business decision support
+
+If the current question cannot reasonably be interpreted as referring to:
+
+- the uploaded business data,
+- the uploaded business documents,
+- or the previous business conversation,
+
+then return:
+
+selected_agents:
+
+[]
+
+Reason:
+
+"The question is outside the supported business domain of ExecuMind AI."
+
+Do NOT answer or classify unrelated general knowledge questions.

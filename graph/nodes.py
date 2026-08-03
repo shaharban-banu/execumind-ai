@@ -72,8 +72,24 @@ def planner_node(state: ExecuMindState):
         logger.info("Running Planner Agent")
 
         response = planner_agent.run(
-            state["question"]
+            state["question"],history=state.get("history", []),
         )
+        logger.info(
+    "Planner Decision: %s",
+    response.result.model_dump()
+)
+        if len(response.result.selected_agents)==0:
+            return {
+                "planner_decision": response.result,
+                "status": "out_of_context",
+                "message": (
+                    "I'm designed to answer questions about your uploaded "
+                    "business data and knowledge base. "
+                    "Please ask about sales, customers, forecasts, "
+                    "products, revenue, or executive strategy."
+                )
+            }
+
         logger.info("Planner selected: %s",response.result.selected_agents,)
         logger.info("Planner reasoning: %s",response.result.reasoning,)
 

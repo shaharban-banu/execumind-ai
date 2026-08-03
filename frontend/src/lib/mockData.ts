@@ -337,7 +337,15 @@ export const mockChat: ChatMessage[] = [
     id: 'm1',
     role: 'assistant',
     content:
-      'Good morning. I’ve synthesized overnight signals. Three items need your attention: a competitor pricing shift, an APAC supply chain disruption, and the narrowing EU AI Act compliance window. Would you like a briefing on any of these?',
+      `Hello! I'm ExecuMind AI.
+
+        Ask me about:
+
+        • Revenue
+        • Sales
+        • Customers
+        • Forecasts
+        • Executive strategy`,
     timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
   },
 ];

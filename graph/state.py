@@ -5,7 +5,7 @@ Defines the shared state exchanged between
 all specialist agents.
 """
 
-from typing import TypedDict
+from typing import TypedDict,Optional,List
 
 from schemas.customer import CustomerAnalysis
 from schemas.data import DataAnalysis
@@ -23,6 +23,8 @@ class ExecuMindState(TypedDict, total=False):
     # User question
     question: str
 
+    history:List[dict]
+
     planner_decision: PlannerDecision
     
     # Agent outputs
@@ -33,3 +35,7 @@ class ExecuMindState(TypedDict, total=False):
     forecast_analysis: ForecastAnalysis
 
     executive_analysis: ExecutiveAnalysis
+
+    status:Optional[str]
+
+    message:Optional[str]

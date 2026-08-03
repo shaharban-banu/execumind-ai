@@ -53,6 +53,44 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// ------------------------------------------------------
+// Request Interceptor
+// Automatically attach JWT to every request
+// ------------------------------------------------------
+
+api.interceptors.request.use(
+  (config) => {
+
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+
+  (error) => {
+    if (error.response?.status === 401) {
+
+      localStorage.removeItem("access_token");
+
+      window.location.href = "/";
+
+      return;
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default api;
 
 const LATENCY = 420;
@@ -171,10 +209,26 @@ export async function getChatHistory(): Promise<ChatMessage[]> {
   return mockChat;
 }
 
-export async function sendChatMessage(message: string): Promise<ChatMessage> {
+export async function sendChatMessage(message: string,history:ChatMessage[]): Promise<ChatMessage> {
+  const chatHistory = history.map((m) => ({
+    role: m.role,
+    content: m.content,
+  }));
   const { data } = await api.post("/ask", {
     question: message,
+    history
   });
+
+  // Handle out-of-context questions
+  if (data.status === "out_of_context") {
+    return {
+      id: `m-${Date.now()}`,
+      role: "assistant",
+      content: data.message,
+      timestamp: data.metadata.generated_at,
+      citations: [],
+    };
+  }
   const analysis = data.executive_analysis;
 
   const content = `

@@ -22,7 +22,7 @@ class PlannerAgent(BaseAgent):
         )
         return {}
 
-    def _prepare_prompt(self, question: str, context):
+    def _prepare_prompt(self, question: str, context,history=None):
 
         """
         Prepare the planner prompt.
@@ -34,9 +34,20 @@ class PlannerAgent(BaseAgent):
         try:
             prompt = self.load_prompt()
 
+            history=history or []
+
+            conversation=""
+
+            for turn in history:
+                conversation += (
+                    f"{turn.role.capitalize()}: "
+                    f"{turn.content}\n"
+                )
+
             logger.info("Planner prompt prepared successfully.")
 
             return prompt.format(
+                conversation=conversation,
                 question=question,
             )
         except Exception as exc:

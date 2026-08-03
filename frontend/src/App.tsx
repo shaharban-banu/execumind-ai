@@ -7,12 +7,15 @@ import { UploadPage } from './pages/UploadPage';
 import { AdvisorPage } from './pages/AdvisorPage';
 import { ForecastPage } from './pages/ForecastPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { useAuth } from "./auth/AuthContext";
+import { LoginPage } from "./pages/LoginPage";
 
 export default function App() {
   const [page, setPage] = useState<PageId>('dashboard');
   const [collapsed, setCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   // Keyboard shortcut: Cmd/Ctrl + K opens assistant
   useEffect(() => {
@@ -28,6 +31,10 @@ export default function App() {
 
   function handleNavigate(p: PageId) {
     setPage(p);
+  }
+
+  if (!isAuthenticated) {
+      return <LoginPage />;
   }
 
   return (

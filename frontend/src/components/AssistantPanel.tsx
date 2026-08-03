@@ -59,7 +59,7 @@ export function AssistantPanel({
     setLoading(true);
     setThinking(true);
     try {
-      const reply = await sendChatMessage(trimmed);
+      const reply = await sendChatMessage(trimmed,messages);
       setMessages((m) => [...m, reply]);
     } catch {
       setMessages((m) => [
@@ -199,7 +199,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
           isUser ? 'bg-slate-200 text-slate-600' : 'bg-gradient-to-br from-brand-500 to-brand-700 text-white'
         )}
       >
-        {isUser ? 'AK' : (
+        {isUser ? 'AR' : (
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l3.5 9L13 21M11 3l-3.5 9L11 21" />
           </svg>
@@ -210,44 +210,66 @@ function MessageBubble({ message }: { message: ChatMessage }) {
           className={cn(
             "rounded-2xl px-4 py-3",
             isUser
-              ? "bg-brand-600 text-white"
+              ? "bg-gradient-to-r from-brand-600 to-brand-700 text-white shadow-md"
               : "bg-slate-100 text-slate-800"
           )}
         >
           <article className="prose prose-sm max-w-none prose-slate">
             <ReactMarkdown
-              components={{
-                h2: ({ children }) => (
-                  <h2 className="mt-5 mb-3 text-base font-semibold text-slate-900 border-b border-slate-200 pb-2">
-                    {children}
-                  </h2>
-                ),
+                components={{
+                  h2: ({ children }) => (
+                    <h2
+                      className={cn(
+                        "mt-5 mb-3 border-b pb-2 text-base font-semibold",
+                        isUser
+                          ? "border-white/20 text-white"
+                          : "border-slate-200 text-slate-900"
+                      )}
+                    >
+                      {children}
+                    </h2>
+                  ),
 
-                p: ({ children }) => (
-                  <p className="mb-3 leading-7 text-slate-700">
-                    {children}
-                  </p>
-                ),
+                  p: ({ children }) => (
+                    <p
+                      className={cn(
+                        "mb-3 leading-7",
+                        isUser ? "text-white" : "text-slate-700"
+                      )}
+                    >
+                      {children}
+                    </p>
+                  ),
 
-                ul: ({ children }) => (
-                  <ul className="mb-4 list-disc pl-5 space-y-2">
-                    {children}
-                  </ul>
-                ),
+                  ul: ({ children }) => (
+                    <ul
+                      className={cn(
+                        "mb-4 list-disc pl-5 space-y-2",
+                        isUser ? "text-white" : "text-slate-700"
+                      )}
+                    >
+                      {children}
+                    </ul>
+                  ),
 
-                ol: ({ children }) => (
-                  <ol className="mb-4 list-decimal pl-5 space-y-2">
-                    {children}
-                  </ol>
-                ),
+                  ol: ({ children }) => (
+                    <ol
+                      className={cn(
+                        "mb-4 list-decimal pl-5 space-y-2",
+                        isUser ? "text-white" : "text-slate-700"
+                      )}
+                    >
+                      {children}
+                    </ol>
+                  ),
 
-                li: ({ children }) => (
-                  <li className="text-slate-700">
-                    {children}
-                  </li>
-                ),
-              }}
-            >
+                  li: ({ children }) => (
+                    <li className={isUser ? "text-white" : "text-slate-700"}>
+                      {children}
+                    </li>
+                  ),
+                }}
+              >
               {message.content}
             </ReactMarkdown>
           </article>

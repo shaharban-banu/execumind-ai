@@ -1,4 +1,5 @@
 import { cn } from '../../lib/utils';
+import { useAuth } from "../../auth/AuthContext";
 
 export type PageId =
   | 'dashboard'
@@ -110,6 +111,14 @@ export function Sidebar({
   mobileOpen: boolean;
   onCloseMobile: () => void;
 }) {
+  const { user } = useAuth();
+  const { logout } = useAuth();
+
+  const initials =
+      user?.username
+          ?.substring(0, 2)
+          .toUpperCase() || "AD";
+
   return (
     <>
       {mobileOpen && (
@@ -194,17 +203,45 @@ export function Sidebar({
         {/* User card */}
         <div className={cn('border-t border-slate-200 p-3', collapsed && 'px-2')}>
           <div className={cn('flex items-center gap-3 rounded-xl p-2', !collapsed && 'hover:bg-slate-50')}>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-900 text-xs font-semibold text-white">
-              AK
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-900 text-xs font-semibold text-white">
+                {initials}
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-slate-800">Shaharban</p>
-                <p className="truncate text-xs text-slate-400">Chief of Staff</p>
+                <p className="truncate text-sm font-semibold text-slate-800">
+                    {user?.username}
+                </p>
+
+                <p className="truncate text-xs text-slate-400">
+                    Administrator
+                </p>
               </div>
             )}
           </div>
         </div>
+        <button
+          onClick={logout}
+          className="
+              mt-3
+              flex
+              w-full
+              items-center
+              justify-center
+              rounded-xl
+              border
+              border-slate-200
+              px-3
+              py-2
+              text-sm
+              font-medium
+              text-slate-600
+              transition
+              hover:bg-red-50
+              hover:text-red-600
+          "
+      >
+          Logout
+      </button>
       </aside>
     </>
   );

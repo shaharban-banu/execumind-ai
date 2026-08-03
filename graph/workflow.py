@@ -9,6 +9,21 @@ from langgraph.graph import (StateGraph,START,END,)
 
 from graph.state import ExecuMindState
 from graph.nodes import (planner_node,executive_node)
+from utils.logger import logger
+
+def planner_router(state: ExecuMindState) -> str:
+    """
+    Route execution after the planner.
+
+    Returns:
+        "end" if the question is out of context.
+        "executive" otherwise.
+    """
+    logger.info("Router state: %s", state)
+    if state.get("status") == "out_of_context":
+        return "end"
+
+    return "executive"
 
 def build_graph():
     """
@@ -41,10 +56,14 @@ def build_graph():
         "planner_agent",
     )
 
-    workflow.add_edge(
-        "planner_agent",
-        "executive_agent",
-    )
+    workflow.add_conditional_edges(
+    "planner_agent",
+    planner_router,
+    {
+        "executive": "executive_agent",
+        "end": END,
+    },
+)
 
     workflow.add_edge(
         "executive_agent",

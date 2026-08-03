@@ -9,15 +9,15 @@ import json
 from database.models import ExecutiveRecommendation
 from app.api.schemas import (
     QuestionRequest,
-    HealthResponse,AskResponse,ForecastResponse,DashboardResponse
+    HealthResponse,AskResponse,ForecastResponse,DashboardResponse,OutOfContextResponse
 )
 from forecast.predict import ForecastPredictor
 from app.services.dashboard_service import DashboardService
 from graph.workflow import build_graph
-from fastapi import UploadFile, File, HTTPException
+from fastapi import UploadFile, File, HTTPException,Depends
 import os
 import shutil
-from typing import List
+from typing import List,Union
 from pathlib import Path
 from datetime import datetime
 from ingestion.pipeline import IngestionPipeline
@@ -30,6 +30,7 @@ from rag.config.rag_config import load_rag_config
 from forecast.services.training_service import ForecastTrainingService
 from services.platform_reset import  PlatformResetService
 from services.platform_status import get_platform_status
+from app.auth.dependencies import get_current_user
 from utils.logger import logger
 
 router = APIRouter()
@@ -52,14 +53,23 @@ def health():
     }
 
 
-@router.post("/ask",tags=["Executive Intelligence"],summary="Ask a business question",response_model=AskResponse)
-def ask(request: QuestionRequest):
+@router.post("/ask",tags=["Executive Intelligence"],summary="Ask a business question",response_model=Union[AskResponse,OutOfContextResponse],)
+def ask(request: QuestionRequest,user=Depends(get_current_user),):
     """
     Execute the ExecuMind workflow.
     """
     start = time.perf_counter()
-    state = {"question": request.question,}
+    state = {"question": request.question,
+             "history":request.history or [],}
     result = graph.invoke(state)
+    if result.get("status") == "out_of_context":
+        return {
+            "status": "out_of_context",
+            "message": result["message"],
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+            },
+        }
     elapsed_ms = int((time.perf_counter() - start) * 1000)
     planner = result["planner_decision"]
     
@@ -74,7 +84,7 @@ def ask(request: QuestionRequest):
     }
 
 @router.get("/forecast/{metric}",tags=["Forecast"],response_model=ForecastResponse,)
-def forecast(metric:str):
+def forecast(metric:str,user=Depends(get_current_user),):
 
     status = platform_status()
 
@@ -92,7 +102,7 @@ def forecast(metric:str):
     }
 
 @router.post("/datasets/upload", tags=["Dataset"])
-async def upload_dataset(files: List[UploadFile] = File(...)):
+async def upload_dataset(files: List[UploadFile] = File(...),user=Depends(get_current_user),):
     upload_dir = "dataset"
     os.makedirs(upload_dir, exist_ok=True)
 
@@ -115,7 +125,7 @@ async def upload_dataset(files: List[UploadFile] = File(...)):
     }
 
 @router.get("/datasets", tags=["Dataset"])
-def get_datasets():
+def get_datasets(user=Depends(get_current_user),):
     dataset_dir = Path("dataset")
 
     if not dataset_dir.exists():
@@ -162,14 +172,14 @@ def get_datasets():
     return datasets
 
 @router.post("/datasets/process", tags=["Dataset"])
-def process_dataset():
+def process_dataset(user=Depends(get_current_user),):
 
     result = pipeline.run("dataset")
 
     return result
 
 @router.post("/platform/process", tags=["Platform"])
-def process_platform():
+def process_platform(user=Depends(get_current_user),):
     logger.info("Starting ETL...")
     ingestion_result=pipeline.run("dataset")
 
@@ -211,7 +221,7 @@ def process_platform():
     }
 
 @router.get("/platform/status", tags=["Platform"])
-def platform_status():
+def platform_status(user=Depends(get_current_user),):
     
     #db_ready = Path("data/execumind.db").exists()
 
@@ -252,7 +262,7 @@ def platform_status():
 }
 
 @router.get("/dashboard",tags=["Dashboard"],response_model=DashboardResponse,)
-def dashboard():
+def dashboard(user=Depends(get_current_user),):
 
     kpis = dashboard_service.get_dashboard()
 
@@ -266,7 +276,7 @@ def dashboard():
     }
 
 @router.get("/dashboard/summary",tags=["Dashboard"],summary="Executive dashboard summary")
-def dashboard_summary():
+def dashboard_summary(user=Depends(get_current_user),):
 
     db = SessionLocal()
 
@@ -329,7 +339,7 @@ def dashboard_summary():
     tags=["Dashboard"],
     summary="Monthly revenue history"
 )
-def revenue_history():
+def revenue_history(user=Depends(get_current_user),):
 
     history = DashboardService.get_revenue_history()
 
@@ -338,13 +348,13 @@ def revenue_history():
     }
 
 @router.post("/executive/generate",tags=["Executive Advisor"],)
-def generate_recommendations():
+def generate_recommendations(user=Depends(get_current_user),):
     generator=ExecutiveRecommendationGenerator()
     response=generator.generate()
     return response
 
 @router.get("/executive/recommendations",tags=["Executive Advisor"],)
-def get_recommendations():
+def get_recommendations(user=Depends(get_current_user),):
 
     service = ExecutiveRecommendationService()
 
@@ -355,7 +365,7 @@ def get_recommendations():
     tags=["Dashboard"],
     summary="Recent executive activity",
 )
-def dashboard_activity():
+def dashboard_activity(user=Depends(get_current_user),):
 
     db = SessionLocal()
 
@@ -429,7 +439,7 @@ def dashboard_activity():
     tags=["Dashboard"],
     summary="Current platform status",
 )
-def dashboard_status():
+def dashboard_status(user=Depends(get_current_user),):
 
     db = SessionLocal()
 
@@ -516,7 +526,7 @@ def dashboard_status():
     tags=["Dashboard"],
     summary="Executive briefing preview",
 )
-def executive_briefing():
+def executive_briefing(user=Depends(get_current_user),):
     db = SessionLocal()
 
     try:

@@ -121,3 +121,109 @@ pandas
 scikit-learn
 pydantic
 joblib
+fastapi
+uvicorn
+
+
+# ==========================
+# Web Framework
+# ==========================
+fastapi
+uvicorn
+
+# ==========================
+# Database
+# ==========================
+sqlalchemy
+pandas
+openpyxl
+
+# ==========================
+# Data Validation
+# ==========================
+pydantic
+
+# ==========================
+# Forecasting
+# ==========================
+prophet
+joblib
+
+# ==========================
+# Machine Learning
+# ==========================
+scikit-learn
+numpy
+scipy
+
+# ==========================
+# LLM & AI
+# ==========================
+langchain
+langchain-core
+langchain-community
+langgraph
+langsmith
+
+# ==========================
+# Google Gemini
+# ==========================
+langchain-google-genai
+google-generativeai
+
+# ==========================
+# Groq
+# ==========================
+langchain-groq
+groq
+
+# ==========================
+# Vector Database
+# ==========================
+faiss-cpu
+
+# ==========================
+# Embeddings
+# ==========================
+sentence-transformers
+transformers
+torch
+
+# ==========================
+# Reranking
+# ==========================
+rank-bm25
+
+# ==========================
+# Document Processing
+# ==========================
+pymupdf
+pypdf
+
+# ==========================
+# API / HTTP
+# ==========================
+requests
+httpx
+
+# ==========================
+# Environment Variables
+# ==========================
+python-dotenv
+
+# ==========================
+# Authentication (for login)
+# ==========================
+python-jose[cryptography]
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+
+# ==========================
+# YAML
+# ==========================
+pyyaml
+
+# ==========================
+# Logging / Utilities
+# ==========================
+tqdm

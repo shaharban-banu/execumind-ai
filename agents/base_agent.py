@@ -80,8 +80,20 @@ class BaseAgent(ABC):
             context = kwargs.pop("context", None)
             if context is None:
                 context = self._retrieve_context(question, **kwargs)
-                
-            prompt=self._prepare_prompt(question,context)
+
+            history = kwargs.pop("history", [])
+
+            if self.__class__.__name__ == "PlannerAgent":
+                prompt = self._prepare_prompt(
+                    question=question,
+                    context=context,
+                    history=history,
+                )
+            else:
+                prompt = self._prepare_prompt(
+                    question=question,
+                    context=context,
+                )
             result=self._generate(prompt)
             execution_time=round(time.perf_counter()-start_time,2)
             #confidence = self._calculate_confidence(context)

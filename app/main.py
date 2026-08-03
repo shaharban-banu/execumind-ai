@@ -12,6 +12,7 @@ from database.models import Base
 
 
 from app.api.knowledge import router as knowledge_router
+from app.auth.router import router as auth_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -67,6 +68,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router)
 app.include_router(router)
 
 app.include_router(knowledge_router)
