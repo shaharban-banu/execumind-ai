@@ -6,7 +6,7 @@ from utils.logger import logger
 
 class PlatformResetService:
 
-    DATABASE = Path("data/sqlite/execumind.db")
+   # DATABASE = Path("data/sqlite/execumind.db")
 
     MODEL_DIR = Path("forecast/models")
     REPORT_DIR = Path("forecast/reports")
