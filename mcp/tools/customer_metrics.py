@@ -29,8 +29,10 @@ def customer_summary(mode: str = "historical") :
         COUNT(DISTINCT c.customer_master_id) AS unique_customers,
         COUNT(o.order_id) AS total_orders,
         ROUND(
-            CAST(COUNT(o.order_id) AS REAL) /
-            NULLIF(COUNT(DISTINCT c.customer_master_id),0),
+            (
+                COUNT(o.order_id)::numeric /
+                NULLIF(COUNT(DISTINCT c.customer_master_id), 0)
+            ),
             2
         ) AS average_orders_per_customer
     FROM customers c
@@ -50,7 +52,7 @@ def customer_growth(mode: str = "historical") :
 
     sql = """
     SELECT
-        strftime('%Y-%m', order_date) AS month,
+        to_char(order_date, 'YYYY-MM') AS month,
         COUNT(DISTINCT c.customer_master_id) AS new_customers
     FROM orders o JOIN customers c
     ON o.customer_id = c.customer_id
@@ -71,8 +73,10 @@ def repeat_customer_rate(mode: str = "historical") :
     sql = """
         SELECT
         ROUND(
-            100.0 * COUNT(*) /
-            (SELECT COUNT(DISTINCT customer_master_id) FROM customers),
+            (
+                100.0 * COUNT(*) /
+                (SELECT COUNT(DISTINCT customer_master_id) FROM customers)
+            )::numeric,
             2
         ) AS repeat_customer_rate
     FROM (
@@ -125,7 +129,7 @@ def customer_order_frequency(mode: str = "historical") :
         COUNT(*) AS total_orders
         FROM orders
         GROUP BY customer_id
-        )
+        ) order_counts
         GROUP BY total_orders
         ORDER BY total_orders;
     """
@@ -142,8 +146,10 @@ def customer_retention(mode: str = "historical") :
     sql = """
         SELECT
         ROUND(
-            100.0 * COUNT(*) /
-            (SELECT COUNT(DISTINCT customer_master_id) FROM customers),
+            (
+                100.0 * COUNT(*) /
+                (SELECT COUNT(DISTINCT customer_master_id) FROM customers)
+            )::numeric,
             2
         ) AS customer_retention_rate
     FROM
@@ -155,7 +161,7 @@ def customer_retention(mode: str = "historical") :
             ON o.customer_id = c.customer_id
         GROUP BY c.customer_master_id
         HAVING COUNT(*) > 1
-    );
+    ) retained_customers;
     """
 
     logger.info("Executing customer retention")

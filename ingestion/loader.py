@@ -35,6 +35,17 @@ MODEL_MAPPING = {
  
 }
 
+LOAD_ORDER = [
+    "customers",
+    "products",
+    "sellers",
+    "orders",
+    "payments",
+    "order_items",
+    "reviews",
+    "deliveries",
+]
+
 
 class Loader:
     """
@@ -67,22 +78,32 @@ class Loader:
 
         try:
 
-            for table in canonical_dataset.tables:
+            table_lookup = {
+                table.name: table
+                for table in canonical_dataset.tables
+            }
 
-                model = MODEL_MAPPING.get(table.name)
+            for table_name in LOAD_ORDER:
+
+                table = table_lookup.get(table_name)
+
+                if table is None:
+                    continue
+
+                model = MODEL_MAPPING.get(table_name)
 
                 if model is None:
 
                     logger.warning(
                         "No ORM model found for '%s'. Skipping.",
-                        table.name,
+                        table_name,
                     )
 
                     continue
 
                 logger.info(
                     "Loading table '%s'...",
-                    table.name,
+                    table_name,
                 )
 
                 self._load_table(

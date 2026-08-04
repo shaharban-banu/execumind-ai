@@ -20,10 +20,16 @@ def sales_summary(mode:str="historical"):
             - average_order_value
     """
     sql="""SELECT
-        COUNT(DISTINCT order_id) AS total_orders,
-        ROUND(SUM(payment_value),2) AS total_revenue,
-        ROUND(SUM(payment_value) / COUNT(DISTINCT order_id),2) AS average_order_value
-    FROM payments;
+            COUNT(DISTINCT order_id) AS total_orders,
+            ROUND(SUM(payment_value)::numeric, 2) AS total_revenue,
+            ROUND(
+                (
+                    SUM(payment_value) /
+                    COUNT(DISTINCT order_id)
+                )::numeric,
+                2
+            ) AS average_order_value
+        FROM payments;
     """ 
     logger.info("Executing sales summary")
 
@@ -43,8 +49,8 @@ def monthly_sales(mode:str="historical"):
     Retrieve monthly revenue trend.
     """
     sql="""select 
-        strftime('%Y-%m',o.order_date) as month,
-        round(sum(p.payment_value),2) as revenue,
+        to_char(o.order_date, 'YYYY-MM') AS month,
+        ROUND(SUM(p.payment_value)::numeric, 2) AS revenue,
         count(distinct o.order_id) as orders
         from orders o join payments p
         on o.order_id=p.order_id
@@ -65,7 +71,7 @@ def monthly_sales(mode:str="historical"):
 def sales_by_state(mode:str="historical"):
     sql="""select
         c.customer_state,
-        round(sum(p.payment_value),2) as revenue,
+        ROUND(SUM(p.payment_value)::numeric, 2) AS revenue,
         count(distinct o.order_id) as total_orders
         from orders o join customers c
         on o.customer_id=c.customer_id
@@ -89,7 +95,7 @@ def sales_by_state(mode:str="historical"):
 def sales_by_category(mode:str="historical"):
     sql="""SELECT
             p.product_category,
-            ROUND(SUM(oi.order_item_value),2) AS revenue,
+            ROUND(SUM(oi.order_item_value)::numeric, 2) AS revenue,
             SUM(oi.quantity) AS items_sold
         FROM order_items oi
         JOIN products p
@@ -119,7 +125,7 @@ def top_products(limit: int = 10,mode: str = "historical") :
     SELECT
         product_id,
         SUM(quantity) AS units_sold,
-        ROUND(SUM(order_item_value),2) AS revenue
+        ROUND(SUM(order_item_value)::numeric, 2) AS revenue
     FROM order_items
     GROUP BY product_id
     ORDER BY revenue DESC

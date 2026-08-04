@@ -22,7 +22,7 @@ def product_summary(mode: str = "historical"):
     SELECT
         COUNT(DISTINCT product_id) AS total_products,
         COUNT(DISTINCT product_category) AS total_categories,
-        ROUND(AVG(weight), 2) AS average_weight
+        ROUND(AVG(weight)::numeric, 2) AS average_weight
     FROM products;
     """
 
@@ -48,7 +48,7 @@ def category_performance(mode: str = "historical"):
     SELECT
         p.product_category,
         COUNT(*) AS items_sold,
-        ROUND(SUM(oi.order_item_value), 2) AS revenue
+        ROUND(SUM(oi.order_item_value)::numeric, 2) AS revenue
 
     FROM order_items oi
 
@@ -84,7 +84,7 @@ def top_products(limit: int = 10,mode: str = "historical") :
     SELECT
         product_id,
         SUM(quantity) AS units_sold,
-        ROUND(SUM(order_item_value), 2) AS revenue
+        ROUND(SUM(order_item_value)::numeric, 2) AS revenue
 
     FROM order_items
 
@@ -115,9 +115,9 @@ def product_price_statistics(mode: str = "historical") :
     """
     sql = """
     SELECT
-        ROUND(MIN(unit_price), 2) AS minimum_price,
-        ROUND(MAX(unit_price), 2) AS maximum_price,
-        ROUND(AVG(unit_price), 2) AS average_price
+        ROUND(MIN(unit_price)::numeric, 2) AS minimum_price,
+        ROUND(MAX(unit_price)::numeric, 2) AS maximum_price,
+        ROUND(AVG(unit_price)::numeric, 2) AS average_price
     FROM order_items;
     """
 

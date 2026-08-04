@@ -99,6 +99,10 @@ class ExecutiveRecommendationService:
 
         db = SessionLocal()
         logger.info("Saving executive recommendations.")
+        logger.info(
+    "Saving %d recommendations",
+    len(analysis.strategic_recommendations)
+)
 
         try:
 
@@ -110,7 +114,10 @@ class ExecutiveRecommendationService:
             evidence = json.dumps([item.model_dump() for item in analysis.evidence])
 
             for recommendation in analysis.strategic_recommendations:
-
+                logger.info(
+        "Saving recommendation: %s",
+        recommendation.action
+    )
                 record = ExecutiveRecommendation(
                     priority=recommendation.priority,
                     action=recommendation.action,
@@ -124,6 +131,7 @@ class ExecutiveRecommendationService:
                 db.add(record)
 
             db.commit()
+            logger.info("Commit completed.")
             logger.info(
                 "Saved %d strategic recommendations.",
                 len(analysis.strategic_recommendations),

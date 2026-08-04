@@ -10,6 +10,8 @@ Loads:
 - Capability definitions
 """
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
 
 #project paths
@@ -17,13 +19,17 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATA_DIR = BASE_DIR / "data"
+load_dotenv(BASE_DIR / ".env")
 
-SQLITE_DIR = DATA_DIR / "sqlite"
+# DATA_DIR = BASE_DIR / "data"
 
-SQLITE_DIR.mkdir(parents=True, exist_ok=True)
+# SQLITE_DIR = DATA_DIR / "sqlite"
 
-DATABASE_URL = f"sqlite:///{SQLITE_DIR}/execumind.db"
+# SQLITE_DIR.mkdir(parents=True, exist_ok=True)
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+#DATABASE_URL = f"sqlite:///{SQLITE_DIR}/execumind.db"
 
 # --------------------------------------------------
 # Table name mapping: historical → live mirror

@@ -22,7 +22,7 @@ def seller_summary(mode: str = "historical"):
     SELECT
         COUNT(DISTINCT seller_id) AS total_sellers,
         SUM(quantity) AS total_items_sold,
-        ROUND(SUM(order_item_value), 2) AS total_revenue
+        ROUND(SUM(order_item_value)::numeric, 2) AS total_revenue
     FROM order_items;
     """
 
@@ -50,7 +50,7 @@ def top_sellers(limit: int = 10,mode: str = "historical"):
     SELECT
         seller_id,
         SUM(quantity) AS items_sold,
-        ROUND(SUM(order_item_value), 2) AS revenue
+        ROUND(SUM(order_item_value)::numeric, 2) AS revenue
     FROM order_items
     GROUP BY seller_id
     ORDER BY revenue DESC
@@ -78,7 +78,7 @@ def seller_revenue(mode: str = "historical"):
     sql = """
     SELECT
         seller_id,
-        ROUND(SUM(order_item_value), 2) AS revenue
+        ROUND(SUM(order_item_value)::numeric, 2) AS revenue
     FROM order_items
     GROUP BY seller_id
     ORDER BY revenue DESC;
@@ -110,9 +110,12 @@ def seller_delivery_performance(mode: str = "historical"):
 
         ROUND(
             AVG(
-                julianday(o.delivered_date) -
-                julianday(o.order_date)
-            ),
+                EXTRACT(
+                    EPOCH FROM (
+                        o.delivered_date - o.order_date
+                    )
+                ) / 86400
+            )::numeric,
             2
         ) AS average_delivery_days,
 

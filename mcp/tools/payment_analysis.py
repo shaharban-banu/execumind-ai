@@ -31,8 +31,8 @@ def payment_summary(mode: str = "historical"):
     sql = """
     SELECT
         COUNT(*) AS total_payments,
-        ROUND(SUM(payment_value), 2) AS total_revenue,
-        ROUND(AVG(payment_value), 2) AS average_payment
+        ROUND(SUM(payment_value)::numeric, 2) AS total_revenue,
+        ROUND(AVG(payment_value)::numeric, 2) AS average_payment
     FROM payments;
     """
 
@@ -69,7 +69,7 @@ def payment_methods(mode: str = "historical"):
     SELECT
         payment_method,
         COUNT(*) AS total_transactions,
-        ROUND(SUM(payment_value), 2) AS revenue
+        ROUND(SUM(payment_value)::numeric, 2) AS revenue
     FROM payments
     GROUP BY payment_method
     ORDER BY revenue DESC;
@@ -107,8 +107,8 @@ def installment_analysis(mode: str = "historical"):
     SELECT
         payment_installments,
         COUNT(*) AS transactions,
-        ROUND(AVG(payment_value), 2) AS average_payment,
-        ROUND(SUM(payment_value), 2) AS total_value
+        ROUND(AVG(payment_value)::numeric, 2) AS average_payment,
+        ROUND(SUM(payment_value)::numeric, 2) AS total_value
     FROM payments
     GROUP BY payment_installments
     ORDER BY payment_installments;
@@ -144,9 +144,9 @@ def payment_value_distribution(mode: str = "historical") :
     """
     sql = """
     SELECT
-        ROUND(MIN(payment_value), 2) AS minimum_payment,
-        ROUND(MAX(payment_value), 2) AS maximum_payment,
-        ROUND(AVG(payment_value), 2) AS average_payment
+        ROUND(MIN(payment_value)::numeric, 2) AS minimum_payment,
+        ROUND(MAX(payment_value)::numeric, 2) AS maximum_payment,
+        ROUND(AVG(payment_value)::numeric, 2) AS average_payment
     FROM payments;
     """
 

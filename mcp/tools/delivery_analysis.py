@@ -33,9 +33,12 @@ def delivery_summary(mode:str="historical"):
             case 
                 when order_status='delivered' then 1 else 0
             end) as delivered_orders,
-        round(avg(julianday(delivered_date)-
-                julianday(order_date)),2)
-                as average_delivery_days,
+        ROUND(
+            AVG(
+                EXTRACT(EPOCH FROM (delivered_date - order_date)) / 86400
+            )::numeric,
+            2
+        ) AS average_delivery_days,
         sum(
             case
                 when delivered_date >
@@ -71,16 +74,18 @@ def late_delivery_rate(mode:str="historical"):
     """
 
     sql="""select 
-    round(
-        100.0*
-        sum(
-            case
-                when delivered_date>
-                estimated_delivery_date
-                then 1 else 0
-            end
-        ) / count(*)
-    ,2) as late_delivery_rate
+    ROUND(
+        (
+            100.0 *
+            SUM(
+                CASE
+                    WHEN delivered_date > estimated_delivery_date
+                    THEN 1 ELSE 0
+                END
+            ) / COUNT(*)
+        )::numeric,
+        2
+    ) AS late_delivery_rate
     from orders 
     where delivered_date is not null;"""
 
@@ -112,9 +117,12 @@ def delivery_by_state(mode:str="historical"):
 
     sql="""select c.customer_state,
         count(*) as total_orders,
-        round(avg(julianday(delivered_date)-
-                julianday(order_date)),2)
-                as average_delivery_days,
+        ROUND(
+            AVG(
+                EXTRACT(EPOCH FROM (delivered_date - order_date)) / 86400
+            )::numeric,
+            2
+        ) AS average_delivery_days,
         sum(
             case
                 when delivered_date >
@@ -168,8 +176,13 @@ def delayed_orders(limit: int = 20,mode: str = "historical") :
         delivered_date,
 
         ROUND(
-            julianday(delivered_date) -
-            julianday(estimated_delivery_date),
+            (
+                EXTRACT(
+                    EPOCH FROM (
+                        delivered_date - estimated_delivery_date
+                    )
+                ) / 86400
+            )::numeric,
             2
         ) AS delay_days
 
