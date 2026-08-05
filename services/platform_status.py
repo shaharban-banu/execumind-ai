@@ -4,15 +4,15 @@ from rag.config.rag_config import load_rag_config
 def get_platform_status():
 
     dataset_ready = (
-        Path("dataset").exists()
-        and any(Path("dataset").iterdir())
+        Path("data/dataset").exists()
+        and any(Path("data/dataset").iterdir())
     )
 
     forecast_ready = all([
-        Path("forecast/models/revenue.pkl").exists(),
-        Path("forecast/models/orders.pkl").exists(),
-        Path("forecast/models/customers.pkl").exists(),
-        Path("forecast/models/aov.pkl").exists(),
+        Path("data/models/revenue.pkl").exists(),
+        Path("data/models/orders.pkl").exists(),
+        Path("data/models/customers.pkl").exists(),
+        Path("data/models/aov.pkl").exists(),
     ])
 
     rag_config = load_rag_config()

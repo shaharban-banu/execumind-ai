@@ -1,0 +1,77 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+ragas_env/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/
+
+# Tests (optional)
+tests/
+agent_evaluation/
+evaluation/
+
+# Documentation
+docs/
+
+# Runtime data
+data/uploads/*
+data/vectorstore/*
+data/dataset/*
+data/forecast_reports/*
+
+# Keep folder structure
+!data/uploads/.gitkeep
+!data/vectorstore/.gitkeep
+!data/dataset/.gitkeep
+!data/forecast_reports/.gitkeep
+
+# Runtime generated models
+data/models/*
+!data/models/.gitkeep
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Frontend build artifacts
+frontend/node_modules/
+frontend/dist/
+
+venv/
+ragas_env/
+.git/
+__pycache__/
+.pytest_cache/
+
+notebooks/
+docs/
+tests/
+agent_evaluation/
+evaluation/
+
+data/uploads/
+data/vectorstore/
+data/models/
+data/forecast_reports/

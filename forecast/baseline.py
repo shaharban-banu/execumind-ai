@@ -16,7 +16,7 @@ from sklearn.metrics import (
 from forecast.forecasting import load_time_series
 
 
-REPORT_DIR = Path("forecast/reports")
+REPORT_DIR = Path("data/forecast_reports")
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 

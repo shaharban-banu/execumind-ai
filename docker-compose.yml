@@ -1,0 +1,101 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: execumind-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - execumind-network
+
+
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: execumind-backend
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    env_file:
+      - .env
+
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./data/uploads:/app/data/uploads
+      - ./data/vectorstore:/app/data/vectorstore
+      - ./data/dataset:/app/data/dataset
+      - ./data/models:/app/data/models
+      - ./data/forecast_reports:/app/data/forecast_reports
+      - ./logs:/app/logs
+
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8000
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+    networks:
+      - execumind-network
+
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    container_name: execumind-frontend
+
+    restart: unless-stopped
+
+    depends_on:
+      - backend
+
+    ports:
+      - "80:80"
+
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+
+    networks:
+      - execumind-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  execumind-network:
+    driver: bridge

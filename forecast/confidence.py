@@ -1,7 +1,7 @@
 from pathlib import Path
 import json
 
-REPORT_DIR = Path("forecast/reports")
+REPORT_DIR = Path("data/forecast_reports")
 
 
 class ForecastConfidence:

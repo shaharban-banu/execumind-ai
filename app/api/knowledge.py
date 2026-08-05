@@ -16,7 +16,7 @@ router = APIRouter(
     tags=["Knowledge"]
 )
 
-UPLOAD_DIR = Path("rag/docs/uploads")
+UPLOAD_DIR = Path("data/uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 @router.post("/upload")

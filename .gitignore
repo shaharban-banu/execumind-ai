@@ -90,12 +90,13 @@ temp/
 # ==========================================
 data/raw/*
 data/sqlite/*
-# data/vectorstore/*
+data/vectorstore/*
+data/uploads/*
 
 # Keep folder structure
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-!data/embeddings/.gitkeep
+!data/dataset/.gitkeep
+!data/uploads/.gitkeep
+!data/vectorstore/.gitkeep
 !data/exports/.gitkeep
 
 # ==========================================
@@ -177,8 +178,22 @@ forecast/reports
 forecast/models
 ragas_env
 
-# Vector Store
-data/vectorstore/
+# Runtime data
+data/uploads/*
+data/vectorstore/*
+data/dataset/*
+data/forecast_reports/*
+
+# Keep folder structure
+!data/uploads/.gitkeep
+!data/vectorstore/.gitkeep
+!data/dataset/.gitkeep
+!data/forecast_reports/.gitkeep
+
+# Runtime generated models
+data/models/*
+!data/models/.gitkeep
+
 
 # Dependencies
 node_modules/

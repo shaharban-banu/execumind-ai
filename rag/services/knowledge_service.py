@@ -13,7 +13,7 @@ class KnowledgeService:
     Service for managing uploaded knowledge documents.
     """
 
-    UPLOAD_DIR = Path("rag/docs/uploads")
+    UPLOAD_DIR = Path("data/uploads")
 
     def list_documents(self):
 

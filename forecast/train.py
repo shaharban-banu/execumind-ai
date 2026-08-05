@@ -11,7 +11,7 @@ from pathlib import Path
 from prophet import Prophet
 from forecast.forecasting import load_time_series
 
-MODEL_DIR=Path("forecast/models")
+MODEL_DIR=Path("data/models")
 MODEL_DIR.mkdir(parents=True,exist_ok=True)
 
 

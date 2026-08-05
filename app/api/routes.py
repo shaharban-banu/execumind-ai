@@ -23,6 +23,7 @@ from datetime import datetime
 from ingestion.pipeline import IngestionPipeline
 from rag.services.index_service import IndexService
 import pandas as pd
+from pandas.errors import EmptyDataError
 
 from services.executive_recommendation_generator import ExecutiveRecommendationGenerator
 from services.executive_recommendation_service import ExecutiveRecommendationService
@@ -103,7 +104,7 @@ def forecast(metric:str,user=Depends(get_current_user),):
 
 @router.post("/datasets/upload", tags=["Dataset"])
 async def upload_dataset(files: List[UploadFile] = File(...),user=Depends(get_current_user),):
-    upload_dir = "dataset"
+    upload_dir = "data/dataset"
     os.makedirs(upload_dir, exist_ok=True)
 
     uploaded_files = []
@@ -125,27 +126,97 @@ async def upload_dataset(files: List[UploadFile] = File(...),user=Depends(get_cu
     }
 
 @router.get("/datasets", tags=["Dataset"])
-def get_datasets(user=Depends(get_current_user),):
-    dataset_dir = Path("dataset")
+def get_datasets(user=Depends(get_current_user)):
+    """
+    Return metadata for all uploaded datasets.
+    """
+
+    dataset_dir = Path("data/dataset")
 
     if not dataset_dir.exists():
         return []
 
     datasets = []
-    
-    for file in dataset_dir.glob("*"):
-        if file.is_file():
-            df = pd.read_csv(file)
-            total_cells = df.shape[0] * df.shape[1]
 
-            missing_cells = df.isna().sum().sum()
+    SUPPORTED_EXTENSIONS = {
+        ".csv",
+        ".xlsx",
+        ".xls",
+        ".json",
+    }
 
-            quality = (
-                round((1 - missing_cells / total_cells) * 100, 2)
-                if total_cells > 0
-                else 100
+    for file in dataset_dir.iterdir():
+
+        # Skip directories
+        if not file.is_file():
+            continue
+
+        # Skip .gitkeep and unsupported files
+        if file.suffix.lower() not in SUPPORTED_EXTENSIONS:
+            continue
+
+        # Skip empty files
+        if file.stat().st_size == 0:
+            logger.warning("Skipping empty dataset: %s", file.name)
+            continue
+
+        try:
+
+            # Load dataset
+            if file.suffix.lower() == ".csv":
+                df = pd.read_csv(file)
+
+            elif file.suffix.lower() in [".xlsx", ".xls"]:
+                df = pd.read_excel(file)
+
+            elif file.suffix.lower() == ".json":
+                df = pd.read_json(file)
+
+            else:
+                continue
+
+        except EmptyDataError:
+            logger.warning("Skipping empty dataset: %s", file.name)
+            continue
+
+        except Exception as e:
+            logger.exception(
+                "Failed to read dataset %s: %s",
+                file.name,
+                str(e),
             )
-            datasets.append({
+            continue
+
+        total_cells = df.shape[0] * df.shape[1]
+
+        missing_cells = int(df.isna().sum().sum())
+
+        quality = (
+            round((1 - missing_cells / total_cells) * 100, 2)
+            if total_cells > 0
+            else 100
+        )
+
+        preview = []
+
+        for column in df.columns:
+
+            non_null = df[column].dropna()
+
+            preview.append(
+                {
+                    "column": column,
+                    "type": str(df[column].dtype),
+                    "sample": (
+                        str(non_null.iloc[0])
+                        if not non_null.empty
+                        else ""
+                    ),
+                }
+            )
+
+        datasets.append(
+            {
                 "id": file.stem,
                 "name": file.name,
                 "type": file.suffix.replace(".", "").upper(),
@@ -153,35 +224,27 @@ def get_datasets(user=Depends(get_current_user),):
                 "columns": len(df.columns),
                 "quality": quality,
                 "status": "ready",
-                "uploadedAt": datetime.fromtimestamp(file.stat().st_mtime).isoformat(),
-                "size": f"{file.stat().st_size / 1024 / 1024:.2f} MB",
-                "preview": [
-                {
-                    "column": column,
-                    "type": str(df[column].dtype),
-                    "sample": (
-                        str(df[column].dropna().iloc[0])
-                        if not df[column].dropna().empty
-                        else ""
-                    ),
-                }
-                for column in df.columns
-                            ]
-            })
+                "uploadedAt": datetime.fromtimestamp(
+                    file.stat().st_mtime
+                ).isoformat(),
+                "size": f"{file.stat().st_size / (1024 * 1024):.2f} MB",
+                "preview": preview,
+            }
+        )
 
     return datasets
 
 @router.post("/datasets/process", tags=["Dataset"])
 def process_dataset(user=Depends(get_current_user),):
 
-    result = pipeline.run("dataset")
+    result = pipeline.run("data/dataset")
 
     return result
 
 @router.post("/platform/process", tags=["Platform"])
 def process_platform(user=Depends(get_current_user),):
     logger.info("Starting ETL...")
-    ingestion_result=pipeline.run("dataset")
+    ingestion_result=pipeline.run("data/dataset")
 
     # Stop if ETL failed
     if not ingestion_result["success"]:
@@ -226,10 +289,10 @@ def platform_status(user=Depends(get_current_user),):
     #db_ready = Path("data/execumind.db").exists()
 
     forecast_ready = all([
-        Path("forecast/models/revenue.pkl").exists(),
-        Path("forecast/models/orders.pkl").exists(),
-        Path("forecast/models/customers.pkl").exists(),
-        Path("forecast/models/aov.pkl").exists(),
+        Path("data/models/revenue.pkl").exists(),
+        Path("data/models/orders.pkl").exists(),
+        Path("data/models/customers.pkl").exists(),
+        Path("data/models/aov.pkl").exists(),
     ])
 
     rag_config = load_rag_config()
@@ -239,7 +302,7 @@ def platform_status(user=Depends(get_current_user),):
         and rag_config.metadata_path.exists()
     )
 
-    dataset_dir = Path("dataset")
+    dataset_dir = Path("data/dataset")
 
     dataset_ready = any(dataset_dir.iterdir()) if dataset_dir.exists() else False
 

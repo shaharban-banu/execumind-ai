@@ -46,7 +46,7 @@ def create_pipeline() -> AdvancedRAGPipeline:
         )
 
         # Business documents
-        docs_dir = Path("rag/docs/uploads")
+        docs_dir = Path("data/uploads")
 
         for pdf in docs_dir.glob("*.pdf"):
             loader_configs.append(

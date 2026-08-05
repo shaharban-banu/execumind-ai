@@ -8,8 +8,8 @@ class PlatformResetService:
 
    # DATABASE = Path("data/sqlite/execumind.db")
 
-    MODEL_DIR = Path("forecast/models")
-    REPORT_DIR = Path("forecast/reports")
+    MODEL_DIR = Path("data/models")
+    REPORT_DIR = Path("data/forecast_reports")
 
     VECTOR_DIR = Path("data/vectorstore")
 
@@ -35,7 +35,10 @@ class PlatformResetService:
 
         # Vector store
         if self.VECTOR_DIR.exists():
-            logger.info("Removing vector store...")
-            shutil.rmtree(self.VECTOR_DIR)
+            for item in self.VECTOR_DIR.iterdir():
+                if item.is_dir():
+                    shutil.rmtree(item)
+                else:
+                    item.unlink()
 
         logger.info("Platform reset completed.")

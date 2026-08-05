@@ -25,8 +25,8 @@ class ForecastTrainingService:
         "aov",
     ]
 
-    MODEL_DIR = Path("forecast/models")
-    REPORT_DIR = Path("forecast/reports")
+    MODEL_DIR = Path("data/models")
+    REPORT_DIR = Path("data/forecast_reports")
 
     def train_metric(self,metric):
         """

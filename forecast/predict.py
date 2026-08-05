@@ -19,8 +19,8 @@ class ForecastPredictor:
     Loads trained Prophet models, generates future forecasts, retrieves
     validation metrics, and produces executive forecasting insights.
     """
-    MODEL_DIR=Path("forecast/models")
-    REPORT_DIR = Path("forecast/reports")
+    MODEL_DIR=Path("data/models")
+    REPORT_DIR = Path("data/forecast_reports")
 
     def __init__(self):
         """

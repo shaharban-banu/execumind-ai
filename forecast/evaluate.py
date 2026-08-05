@@ -10,8 +10,8 @@ from prophet.diagnostics import (cross_validation,performance_metrics,)
 from utils.logger import logger
 
 
-MODEL_DIR = Path("forecast/models")
-REPORT_DIR = Path("forecast/reports")
+MODEL_DIR = Path("data/models")
+REPORT_DIR = Path("data/forecast_reports")
 
 REPORT_DIR.mkdir(parents=True,exist_ok=True,)
 
