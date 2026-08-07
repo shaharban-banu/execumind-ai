@@ -70,28 +70,6 @@ services:
     networks:
       - execumind-network
 
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-
-    container_name: execumind-frontend
-
-    restart: unless-stopped
-
-    depends_on:
-      - backend
-
-    ports:
-      - "80:80"
-
-    environment:
-      VITE_API_URL: ${VITE_API_URL}
-
-    networks:
-      - execumind-network
-
 volumes:
   postgres_data:
     driver: local
