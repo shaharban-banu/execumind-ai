@@ -58,6 +58,7 @@ Thumbs.db
 # Frontend build artifacts
 frontend/node_modules/
 frontend/dist/
+frontend/
 
 venv/
 ragas_env/
