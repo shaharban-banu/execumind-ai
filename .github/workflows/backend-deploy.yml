@@ -23,7 +23,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t shaharban123/execumind-backend:latest ./backend
+          docker build -t shaharban123/execumind-backend:latest .
 
       - name: Push image
         run: |
