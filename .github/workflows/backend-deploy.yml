@@ -23,11 +23,11 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t shahbanu/execumind-backend:latest ./backend
+          docker build -t shaharban123/execumind-backend:latest ./backend
 
       - name: Push image
         run: |
-          docker push shahbanu/execumind-backend:latest
+          docker push shaharban123/execumind-backend:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
