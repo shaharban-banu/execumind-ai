@@ -61,16 +61,15 @@ Executive Intelligence Report
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost",
-        "http://127.0.0.1",
-        "http://localhost:5173",  # Keep for local development
-        "http://15.206.180.237",
-        "https://execumind.vercel.app"
+        "https://execumind.online",
+        "https://www.execumind.online",
+        "http://localhost:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.include_router(auth_router)
 app.include_router(router)
 
