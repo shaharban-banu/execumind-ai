@@ -64,7 +64,8 @@ app.add_middleware(
         "http://localhost",
         "http://127.0.0.1",
         "http://localhost:5173",  # Keep for local development
-        "http://execumind.vercel.app",
+        "http://15.206.180.237",
+        "https://execumind.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],

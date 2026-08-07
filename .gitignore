@@ -164,7 +164,7 @@ notebooks/chunks.csv
 bm25_evaluation.py
 test_hybrid.py
 rag/docs/extracted
-*.json
+
 filter_noise_chunks.py
 golden_data_creation.py
 data_check.py
