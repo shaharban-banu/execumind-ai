@@ -106,7 +106,7 @@ def forecast(metric:str,user=Depends(get_current_user),):
 async def upload_dataset(files: List[UploadFile] = File(...),user=Depends(get_current_user),):
     upload_dir = "data/dataset"
     os.makedirs(upload_dir, exist_ok=True)
-
+    logger.info("ExecuMind CI/CD deployment test - v1")
     uploaded_files = []
 
     for file in files:
