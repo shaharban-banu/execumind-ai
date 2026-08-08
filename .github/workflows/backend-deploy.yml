@@ -37,6 +37,11 @@ jobs:
         run: |
           docker build -t shaharban123/execumind-backend:latest .
 
+      - name: Verify Docker image contents
+        run: |
+          docker run --rm shaharban123/execumind-backend:latest \
+            ls -la /app/ingestion/models
+
       - name: Push image
         run: |
           docker push shaharban123/execumind-backend:latest
