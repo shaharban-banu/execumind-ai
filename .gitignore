@@ -150,10 +150,6 @@ __pypackages__/
 *.backup
 *.orig
 
-
-
-__init__.py
-pytest.ini
 structure.txt
 tests/test_*
 tests/validate_load.py
