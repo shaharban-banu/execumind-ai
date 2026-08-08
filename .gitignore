@@ -120,7 +120,7 @@ evaluation/results/rag_evaluation_report.csv
 # ==========================================
 # Model Artifacts
 # ==========================================
-models/
+
 checkpoints/
 *.ckpt
 *.pt
