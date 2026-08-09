@@ -8,6 +8,7 @@ const pageMeta: Record<PageId, { title: string; subtitle: string }> = {
   upload: { title: 'Upload Dataset', subtitle: 'Ingest data for AI-driven analysis' },
   advisor: { title: 'Executive Advisor', subtitle: 'AI-powered strategic recommendations' },
   forecast: { title: 'Forecast Center', subtitle: 'Predictive modeling ' },
+  platform_management: {title: 'Platform Management',subtitle: 'Manage platform data, processing, and reset operations'},
   settings: { title: 'Settings', subtitle: 'Platform configuration and preferences' },
 };
 

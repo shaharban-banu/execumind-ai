@@ -324,6 +324,153 @@ def platform_status(user=Depends(get_current_user),):
     ),
 }
 
+@router.post("/platform/reprocess", tags=["Platform"])
+def reprocess_platform(user=Depends(get_current_user)):
+    """
+    Rebuild the platform from the currently uploaded datasets
+    and knowledge documents.
+
+    Clears:
+    - PostgreSQL processed data
+    - Forecast models
+    - Forecast reports
+    - FAISS vector store
+
+    Keeps:
+    - Uploaded datasets
+    - Knowledge documents
+    """
+
+    logger.info("Starting platform reprocess...")
+
+    # --------------------------------------------------
+    # 1. Clear existing processed platform data
+    # --------------------------------------------------
+
+    try:
+        reset_service.reset_for_reprocess()
+    except Exception as exc:
+        logger.exception("Platform reset failed.")
+
+        return {
+            "success": False,
+            "stage": "reset",
+            "error": str(exc),
+        }
+
+    # --------------------------------------------------
+    # 2. Run ETL
+    # --------------------------------------------------
+
+    try:
+        logger.info("Starting ETL after reprocess...")
+
+        ingestion_result = pipeline.run("data/dataset")
+
+        if not ingestion_result.get("success"):
+            return {
+                "success": False,
+                "stage": "ingestion",
+                "error": ingestion_result,
+            }
+
+    except Exception as exc:
+        logger.exception("ETL failed during reprocess.")
+
+        return {
+            "success": False,
+            "stage": "ingestion",
+            "error": str(exc),
+        }
+
+    # --------------------------------------------------
+    # 3. Train forecasting models
+    # --------------------------------------------------
+
+    try:
+        logger.info("Starting forecast training...")
+
+        forecast_result = forecast_service.train()
+
+    except Exception as exc:
+        logger.exception(
+            "Forecast training failed during reprocess."
+        )
+
+        return {
+            "success": False,
+            "stage": "forecast",
+            "error": str(exc),
+        }
+
+    # --------------------------------------------------
+    # 4. Build RAG index
+    # --------------------------------------------------
+
+    try:
+        logger.info("Starting RAG indexing...")
+
+        rag_result = index_service.build_index()
+
+        logger.info("RAG indexing finished.")
+
+    except Exception as exc:
+        logger.exception(
+            "RAG indexing failed during reprocess."
+        )
+
+        return {
+            "success": False,
+            "stage": "knowledge",
+            "error": str(exc),
+        }
+
+    # --------------------------------------------------
+    # 5. Success
+    # --------------------------------------------------
+
+    logger.info("Platform reprocess completed successfully.")
+
+    return {
+        "success": True,
+        "platform_status": "ready",
+        "message": "Platform reprocessed successfully.",
+        "ingestion": ingestion_result,
+        "forecast": forecast_result,
+        "knowledge": rag_result,
+    }
+
+@router.post("/platform/factory-reset", tags=["Platform"])
+def factory_reset(user=Depends(get_current_user)):
+    """
+    Completely reset platform data.
+
+    Deletes uploaded datasets, knowledge documents,
+    processed PostgreSQL data and generated intelligence artifacts.
+
+    Authentication data is preserved.
+    """
+
+    logger.info("Starting factory reset request.")
+
+    try:
+        reset_service.factory_reset()
+
+        return {
+            "success": True,
+            "platform_status": "reset",
+            "message": "Factory reset completed successfully.",
+        }
+
+    except Exception as exc:
+        logger.exception("Factory reset failed.")
+
+        return {
+            "success": False,
+            "stage": "factory_reset",
+            "error": str(exc),
+        }
+
 @router.get("/dashboard",tags=["Dashboard"],response_model=DashboardResponse,)
 def dashboard(user=Depends(get_current_user),):
 

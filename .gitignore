@@ -97,7 +97,7 @@ data/uploads/*
 !data/dataset/.gitkeep
 !data/uploads/.gitkeep
 !data/vectorstore/.gitkeep
-!data/exports/.gitkeep
+!data/forecast_reports/.gitkeep
 
 # ==========================================
 # RAG Generated Files

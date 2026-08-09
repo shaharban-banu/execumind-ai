@@ -7,6 +7,7 @@ import { UploadPage } from './pages/UploadPage';
 import { AdvisorPage } from './pages/AdvisorPage';
 import { ForecastPage } from './pages/ForecastPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { PlatformManagement } from "./pages/PlatformManagement";
 import { useAuth } from "./auth/AuthContext";
 import { LoginPage } from "./pages/LoginPage";
 
@@ -61,6 +62,7 @@ export default function App() {
             {page === 'upload' && <UploadPage />}
             {page === 'advisor' && <AdvisorPage />}
             {page === 'forecast' && <ForecastPage />}
+            {page === 'platform_management' && <PlatformManagement />}
             {page === 'settings' && <SettingsPage />}
           </div>
         </main>

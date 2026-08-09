@@ -6,6 +6,7 @@ export type PageId =
   | 'upload'
   | 'advisor'
   | 'forecast'
+  | 'platform_management'
   | 'settings';
 
 export interface NavItem {
@@ -20,8 +21,32 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'upload', label: 'Upload Dataset', icon: <UploadIcon /> },
   { id: 'advisor', label: 'Executive Advisor', icon: <BotIcon />, badge: 'AI' },
   { id: 'forecast', label: 'Forecast Center', icon: <TrendingUpIcon /> },
-  { id: 'settings', label: 'Settings', icon: <SettingsIcon /> },
+  {
+    id: 'platform_management',
+    label: 'Platform Management',
+    icon: <DatabaseIcon />,
+  },
+  // { id: 'settings', label: 'Settings', icon: <SettingsIcon /> },
 ];
+
+function DatabaseIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <ellipse cx="12" cy="5" rx="8" ry="3" />
+      <path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5" />
+      <path d="M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" />
+    </svg>
+  );
+}
 
 function LayoutDashboardIcon() {
   return (
