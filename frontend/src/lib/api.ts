@@ -46,7 +46,7 @@ import type {
   ExecutiveActivity,
   SystemStatusItem,
 } from './types';
-
+console.log("VITE_API_URL =", import.meta.env.VITE_API_URL);
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
@@ -397,6 +397,11 @@ export async function processDataset() {
 
 export async function processPlatform() {
   const response = await api.post("/platform/process");
+  return response.data;
+}
+
+export async function reprocessPlatform() {
+  const response = await api.post("/platform/reprocess");
   return response.data;
 }
 
