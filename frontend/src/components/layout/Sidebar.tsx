@@ -26,7 +26,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Platform Management',
     icon: <DatabaseIcon />,
   },
-  { id: 'settings', label: 'Settings', icon: <SettingsIcon /> },
+  // { id: 'settings', label: 'Settings', icon: <SettingsIcon /> },
 ];
 
 function DatabaseIcon() {

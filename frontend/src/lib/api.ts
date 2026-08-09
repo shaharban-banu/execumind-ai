@@ -405,6 +405,11 @@ export async function reprocessPlatform() {
   return response.data;
 }
 
+export async function factoryReset() {
+  const response = await api.post("/platform/factory-reset");
+  return response.data;
+}
+
 export async function getPlatformStatus() {
     const response = await api.get("/platform/status");
     return response.data;

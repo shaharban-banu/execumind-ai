@@ -440,6 +440,37 @@ def reprocess_platform(user=Depends(get_current_user)):
         "knowledge": rag_result,
     }
 
+@router.post("/platform/factory-reset", tags=["Platform"])
+def factory_reset(user=Depends(get_current_user)):
+    """
+    Completely reset platform data.
+
+    Deletes uploaded datasets, knowledge documents,
+    processed PostgreSQL data and generated intelligence artifacts.
+
+    Authentication data is preserved.
+    """
+
+    logger.info("Starting factory reset request.")
+
+    try:
+        reset_service.factory_reset()
+
+        return {
+            "success": True,
+            "platform_status": "reset",
+            "message": "Factory reset completed successfully.",
+        }
+
+    except Exception as exc:
+        logger.exception("Factory reset failed.")
+
+        return {
+            "success": False,
+            "stage": "factory_reset",
+            "error": str(exc),
+        }
+
 @router.get("/dashboard",tags=["Dashboard"],response_model=DashboardResponse,)
 def dashboard(user=Depends(get_current_user),):
 

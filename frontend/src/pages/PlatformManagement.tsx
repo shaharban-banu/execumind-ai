@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { reprocessPlatform } from '../lib/api';
+import { reprocessPlatform,factoryReset} from '../lib/api';
 
 export function PlatformManagement() {
   const [showReprocessModal, setShowReprocessModal] = useState(false);
   const [isReprocessing, setIsReprocessing] = useState(false);
   const [reprocessError, setReprocessError] = useState<string | null>(null);
   const [reprocessSuccess, setReprocessSuccess] = useState(false);
+  const [showFactoryResetModal, setShowFactoryResetModal] =useState(false);
+  const [isFactoryResetting, setIsFactoryResetting] =useState(false);
+  const [factoryResetError, setFactoryResetError] =useState<string | null>(null);
+  const [factoryResetSuccess, setFactoryResetSuccess] =useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -39,6 +43,40 @@ export function PlatformManagement() {
 
     } finally {
       setIsReprocessing(false);
+    }
+  };
+
+  const handleFactoryReset = async () => {
+    setIsFactoryResetting(true);
+    setFactoryResetError(null);
+    setFactoryResetSuccess(false);
+
+    try {
+      const result = await factoryReset();
+
+      if (!result.success) {
+        throw new Error(
+          typeof result.error === 'string'
+            ? result.error
+            : result.error?.error ||
+              'Factory reset failed.'
+        );
+      }
+
+      setShowFactoryResetModal(false);
+      setFactoryResetSuccess(true);
+
+    } catch (error) {
+      console.error('Factory reset failed:', error);
+
+      setFactoryResetError(
+        error instanceof Error
+          ? error.message
+          : 'Factory reset failed.'
+      );
+
+    } finally {
+      setIsFactoryResetting(false);
     }
   };
 
@@ -252,6 +290,11 @@ export function PlatformManagement() {
             <div className="mt-6 flex justify-end">
               <button
                 type="button"
+                onClick={() => {
+                  setFactoryResetError(null);
+                  setFactoryResetSuccess(false);
+                  setShowFactoryResetModal(true);
+                }}
                 className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
               >
                 Factory Reset
@@ -395,6 +438,127 @@ export function PlatformManagement() {
                 className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isReprocessing ? 'Reprocessing...' : 'Reprocess Platform'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFactoryResetModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4"
+          onClick={() => {
+            if (!isFactoryResetting) {
+              setShowFactoryResetModal(false);
+            }
+          }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 3v10" />
+                  <path d="M8 7a8 8 0 1 0 8 0" />
+                  <path d="M12 21h.01" />
+                </svg>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">
+                  Factory Reset?
+                </h3>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  This will permanently remove all platform data.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-xl bg-red-50 p-4">
+              <p className="text-sm font-semibold text-red-700">
+                Everything will be deleted:
+              </p>
+
+              <ul className="mt-3 space-y-2 text-sm text-red-700">
+                <li>⚠ Uploaded datasets</li>
+                <li>⚠ Knowledge documents</li>
+                <li>⚠ PostgreSQL processed data</li>
+                <li>⚠ FAISS vector index</li>
+                <li>⚠ Forecast models</li>
+                <li>⚠ Forecast reports</li>
+              </ul>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <p className="text-sm font-semibold text-amber-700">
+                This action cannot be undone.
+              </p>
+
+              <p className="mt-1 text-xs text-amber-600">
+                Your administrator authentication account will not be
+                deleted.
+              </p>
+            </div>
+
+            {isFactoryResetting && (
+              <div className="mt-4 rounded-xl bg-blue-50 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600" />
+
+                  <p className="text-sm font-medium text-blue-700">
+                    Resetting platform...
+                  </p>
+                </div>
+
+                <p className="mt-1 pl-7 text-xs text-blue-600">
+                  Please keep this page open.
+                </p>
+              </div>
+            )}
+
+            {factoryResetError && (
+              <div className="mt-4 rounded-xl bg-red-50 px-4 py-3">
+                <p className="text-sm font-semibold text-red-700">
+                  Factory reset failed
+                </p>
+
+                <p className="mt-1 text-sm text-red-600">
+                  {factoryResetError}
+                </p>
+              </div>
+            )}
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                disabled={isFactoryResetting}
+                onClick={() => setShowFactoryResetModal(false)}
+                className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                disabled={isFactoryResetting}
+                onClick={handleFactoryReset}
+                className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isFactoryResetting
+                  ? 'Resetting...'
+                  : 'Yes, Factory Reset'}
               </button>
             </div>
           </div>

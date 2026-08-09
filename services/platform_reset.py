@@ -56,6 +56,43 @@ class PlatformResetService:
             "Datasets and knowledge documents were preserved."
         )
 
+    def factory_reset(self):
+        """
+        Completely reset platform data and generated artifacts.
+
+        Deletes:
+        - PostgreSQL processed data
+        - Uploaded datasets
+        - Knowledge documents
+        - FAISS vector store
+        - Forecast models
+        - Forecast reports
+
+        Authentication/user data is preserved.
+        """
+
+        logger.info("Starting factory reset...")
+
+        # 1. Clear PostgreSQL processed data
+        self._clear_postgres_data()
+
+        # 2. Delete uploaded datasets
+        self._clear_directory(Path("data/dataset"))
+
+        # 3. Delete knowledge documents
+        self._clear_knowledge_documents()
+
+        # 4. Delete forecast models
+        self._clear_forecast_models()
+
+        # 5. Delete forecast reports
+        self._clear_forecast_reports()
+
+        # 6. Delete FAISS vector store
+        self._clear_vector_store()
+
+        logger.info("Factory reset completed successfully.")
+
     def _clear_postgres_data(self):
         """
         Clear only processed/business tables.
@@ -132,3 +169,33 @@ class PlatformResetService:
             else:
                 logger.info("Removing vector store file: %s", item.name)
                 item.unlink()
+
+    def _clear_directory(self, directory: Path):
+        """
+        Delete all files and subdirectories inside a directory,
+        while keeping the directory itself.
+        """
+
+        if not directory.exists():
+            return
+
+        for item in directory.iterdir():
+            if item.is_dir():
+                shutil.rmtree(item)
+            else:
+                logger.info("Removing file: %s", item)
+                item.unlink()
+
+
+    def _clear_knowledge_documents(self):
+        """
+        Delete uploaded knowledge documents.
+
+        Adjust the directory if your knowledge upload service
+        uses a different storage location.
+        """
+
+        knowledge_dir = Path("data/uploads")
+
+        if knowledge_dir.exists():
+            self._clear_directory(knowledge_dir)
