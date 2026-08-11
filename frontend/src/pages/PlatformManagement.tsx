@@ -11,7 +11,7 @@ export function PlatformManagement() {
   const [factoryResetError, setFactoryResetError] =useState<string | null>(null);
   const [factoryResetSuccess, setFactoryResetSuccess] =useState(false);
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  // const API_URL = import.meta.env.VITE_API_URL;
 
   const handleReprocess = async () => {
     setIsReprocessing(true);
