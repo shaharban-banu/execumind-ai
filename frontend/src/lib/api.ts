@@ -190,20 +190,40 @@ export async function getSystemStatus(): Promise<SystemStatusItem[]> {
 export async function getDatasets(): Promise<DatasetRecord[]> {
   const { data } = await api.get("/datasets");
 
-  return data.map((file: any) => ({
-    id: file.id,
-    name: file.name,
-    type: file.type,
-    rows: file.rows,
-    columns: file.columns,
-    quality: file.quality,
-    status: file.status,
-    uploadedAt: file.uploadedAt,
-    size: file.size,
-    preview: file.preview,
+  return data.map((dataset: any) => ({
+    id: dataset.id,
+    name: dataset.name,
+    created_at: dataset.created_at,
+
+    versions: dataset.versions.map((version: any) => ({
+      id: version.id,
+      version: version.version,
+      is_active: version.is_active,
+      created_at: version.created_at,
+
+      files: version.files.map((file: any) => ({
+        id: file.id,
+        name: file.name,
+        type: file.type,
+        rows: file.rows,
+        columns: file.columns,
+        quality: file.quality,
+        size: file.size,
+      })),
+    })),
   }));
 }
 
+export async function activateDatasetVersion(
+  datasetId: number,
+  versionId: number,
+) {
+  const { data } = await api.post(
+    `/datasets/${datasetId}/versions/${versionId}/activate`
+  );
+
+  return data;
+}
 export async function getChatHistory(): Promise<ChatMessage[]> {
   await delay(LATENCY);
   return mockChat;
@@ -349,17 +369,37 @@ export async function uploadDataset(files: File[]) {
   const formData = new FormData();
 
   files.forEach((file) => {
-    formData.append("files", file);
+    formData.append("files", file, file.name);
   });
 
-  const { data } = await api.post("/datasets/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const { data } = await api.post(
+    "/datasets/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
   return data;
 }
+
+// export async function uploadDataset(files: File[]) {
+//   const formData = new FormData();
+
+//   files.forEach((file) => {
+//     formData.append("files", file);
+//   });
+
+//   const { data } = await api.post("/datasets/upload", formData, {
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//     },
+//   });
+
+//   return data;
+// }
 export async function uploadKnowledge(files: File[]) {
   const formData = new FormData();
 

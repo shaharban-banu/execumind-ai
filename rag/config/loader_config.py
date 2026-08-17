@@ -18,6 +18,8 @@ class LoaderConfig:
     session: Optional[Session] = None
     table_name: Optional[str] = None
 
+    user_id:int |None=None
+
     # Files
     file_path: Optional[Path] = None
 

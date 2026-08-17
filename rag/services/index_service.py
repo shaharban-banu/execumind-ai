@@ -11,12 +11,13 @@ from rag.builder import RAGPipelineBuilder
 from rag.config.loader_config import LoaderConfig
 from rag.config.rag_config import load_rag_config
 from rag.services.pipeline_service import create_pipeline
+from rag.services.user_paths import get_user_vectorstore_paths
 
 class IndexService:
     """
     Service for building and reloading the RAG index.
     """
-    def build_index(self):
+    def build_index(self,user_id:int):
         """
         Build the RAG knowledge index.
 
@@ -37,6 +38,11 @@ class IndexService:
         logger.info("Starting knowledge index build.")
 
         rag_config=load_rag_config()
+
+        index_path, metadata_path = get_user_vectorstore_paths(user_id)
+
+        rag_config.index_path = index_path
+        rag_config.metadata_path = metadata_path
         # Remove existing index files
         if rag_config.index_path.exists():
             rag_config.index_path.unlink()
@@ -57,11 +63,12 @@ class IndexService:
                     source_name="reviews",
                     session=session,
                     table_name="reviews",
+                    user_id=user_id,
                 )
             )
 
             # Business documents
-            docs_dir = Path("data/uploads")
+            docs_dir = Path(f"data/users/{user_id}/uploads")
 
             for pdf in docs_dir.glob("*.pdf"):
                 loader_configs.append(
@@ -110,7 +117,7 @@ class IndexService:
                 business_document_count,
             )
 
-            pipeline.build_index()
+            pipeline.build_index(user_id)
             logger.info(
                 "Knowledge index built successfully."
             )
@@ -118,7 +125,7 @@ class IndexService:
             logger.info(
                 "Reloading RAG pipeline."
             )
-            self.reload_pipeline()
+            self.reload_pipeline(user_id)
 
             return {
                 "success": True,
@@ -140,11 +147,11 @@ class IndexService:
         finally:
             session.close()
 
-    def reload_pipeline(self):
+    def reload_pipeline(self,user_id:int):
         """
         Reload the active RAG pipeline.
 
         Creates a new pipeline instance using the latest
         vector index.
         """
-        self.pipeline = create_pipeline()
+        self.pipeline = create_pipeline(user_id)

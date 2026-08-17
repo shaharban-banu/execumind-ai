@@ -144,7 +144,8 @@ def executive_node(state: ExecuMindState,) -> ExecuMindState:
             logger.info("Executing Customer Agent")
 
             response = get_customer_agent().run(
-                state["question"]
+                question=state["question"],
+                user_id=state["user_id"]
             )
 
             customer = response.result
@@ -156,7 +157,8 @@ def executive_node(state: ExecuMindState,) -> ExecuMindState:
             logger.info("Executing Data Agent")
 
             response = data_agent.run(
-                state["question"]
+                question=state["question"],
+                user_id=state["user_id"]
             )
 
             data = response.result
@@ -167,7 +169,8 @@ def executive_node(state: ExecuMindState,) -> ExecuMindState:
             logger.info("Executing Forecast Agent")
 
             response = forecast_agent.run(
-                state["question"]
+                question=state["question"],
+                user_id=state["user_id"],
             )
 
             forecast = response.result

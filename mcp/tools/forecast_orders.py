@@ -12,7 +12,7 @@ from utils.logger import logger
 
 _predictor=ForecastPredictor()
 
-def forecast_orders(periods:int=6):
+def forecast_orders(user_id:int,periods:int=6):
     """
     Forecast future order volume.
 
@@ -31,7 +31,7 @@ def forecast_orders(periods:int=6):
     logger.info("Forecasting orders")
 
     try:
-        return _predictor.predict(metric='orders',periods=periods)
+        return _predictor.predict(user_id=user_id,metric='orders',periods=periods)
     except Exception as exc:
         logger.exception(
             "Order forecast failed: %s",

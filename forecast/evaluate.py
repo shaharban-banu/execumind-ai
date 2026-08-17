@@ -9,20 +9,24 @@ import joblib
 from prophet.diagnostics import (cross_validation,performance_metrics,)
 from utils.logger import logger
 
-
-MODEL_DIR = Path("data/models")
-REPORT_DIR = Path("data/forecast_reports")
-
-REPORT_DIR.mkdir(parents=True,exist_ok=True,)
-
 SUPPORTED_METRICS = [
     "revenue",
     "orders",
     "customers",
     "aov",
 ]
+def _get_model_dir(user_id: int) -> Path:
+    model_dir = Path(f"data/users/{user_id}/models")
+    model_dir.mkdir(parents=True, exist_ok=True)
+    return model_dir
 
-def evaluate_model(metric: str):
+
+def _get_report_dir(user_id: int) -> Path:
+    report_dir = Path(f"data/users/{user_id}/forecast_reports")
+    report_dir.mkdir(parents=True, exist_ok=True)
+    return report_dir
+
+def evaluate_model(user_id:int,metric: str):
 
     logger.info(
         "Evaluating %s model",
@@ -30,7 +34,7 @@ def evaluate_model(metric: str):
     )
 
     model = joblib.load(
-        MODEL_DIR / f"{metric}.pkl"
+        _get_model_dir(user_id) / f"{metric}.pkl"
     )
 
     df_cv = cross_validation(
@@ -49,7 +53,7 @@ def evaluate_model(metric: str):
 }
 
     with open(
-        REPORT_DIR / f"{metric}_metrics.json",
+        _get_report_dir(user_id) / f"{metric}_metrics.json",
         "w",
     ) as f:
 
@@ -66,14 +70,14 @@ def evaluate_model(metric: str):
 
     return report
 
-def evaluate_all():
+def evaluate_all(user_id:int):
 
     reports = {}
 
     for metric in SUPPORTED_METRICS:
 
         reports[metric] = evaluate_model(
-            metric
+            user_id,metric
         )
 
     return reports

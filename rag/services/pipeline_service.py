@@ -11,8 +11,9 @@ from rag.AdavancedRAGpipeline import AdvancedRAGPipeline
 from rag.builder import RAGPipelineBuilder
 from rag.config.loader_config import LoaderConfig
 from rag.config.rag_config import load_rag_config
+from rag.services.user_paths import get_user_vectorstore_paths
 
-def create_pipeline() -> AdvancedRAGPipeline:
+def create_pipeline(user_id:int) -> AdvancedRAGPipeline:
     """
     Create and initialize the RAG pipeline.
 
@@ -42,11 +43,12 @@ def create_pipeline() -> AdvancedRAGPipeline:
                 source_name="reviews",
                 session=session,
                 table_name="reviews",
+                user_id=user_id,
             )
         )
 
         # Business documents
-        docs_dir = Path("data/uploads")
+        docs_dir = Path(f"data/users/{user_id}/uploads")
 
         for pdf in docs_dir.glob("*.pdf"):
             loader_configs.append(
@@ -54,6 +56,7 @@ def create_pipeline() -> AdvancedRAGPipeline:
                     source_type="pdf",
                     source_name="business_document",
                     file_path=pdf,
+                    
                 )
             )
 
@@ -70,10 +73,16 @@ def create_pipeline() -> AdvancedRAGPipeline:
             len(loader_configs),
         )
 
-        builder = RAGPipelineBuilder(
-            rag_config=load_rag_config(),
-            loader_configs=loader_configs,
+        rag_config = load_rag_config()
 
+        index_path, metadata_path = get_user_vectorstore_paths(user_id)
+
+        rag_config.index_path = index_path
+        rag_config.metadata_path = metadata_path
+
+        builder = RAGPipelineBuilder(
+            rag_config=rag_config,
+            loader_configs=loader_configs,
         )
 
         pipeline = builder.build()

@@ -16,14 +16,42 @@ export function Sparkline({
   fill?: boolean;
 }) {
   const id = useId();
+
+  const values = data.filter((v) => Number.isFinite(v));
+
   const w = 100;
   const h = 32;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
+
+  if (values.length === 0) {
+    return (
+      <svg viewBox={`0 0 ${w} ${h}`} className={cn('overflow-visible', className)}>
+        <line x1="0" y1={h / 2} x2={w} y2={h / 2} stroke="#E2E8F0" strokeDasharray="3 3" />
+      </svg>
+    );
+  }
+
+  if (values.length === 1) {
+    return (
+      <svg viewBox={`0 0 ${w} ${h}`} className={cn('overflow-visible', className)}>
+        <circle cx={w / 2} cy={h / 2} r="3" fill={color} />
+      </svg>
+    );
+  }
+
+  const min = Math.min(...values);
+  const max = Math.max(...values);
   const range = max - min || 1;
-  const step = w / (data.length - 1);
-  const pts = data.map((v, i) => [i * step, h - ((v - min) / range) * (h - 4) - 2]);
-  const line = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`).join(' ');
+  const step = w / (values.length - 1);
+
+  const pts = values.map((v, i) => [
+    i * step,
+    h - ((v - min) / range) * (h - 4) - 2,
+  ]);
+
+  const line = pts
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`)
+    .join(' ');
+
   const area = `${line} L ${w} ${h} L 0 ${h} Z`;
 
   return (

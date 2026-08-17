@@ -9,7 +9,7 @@ from typing import Any
 from mcp.tools.query_db import query_db
 from utils.logger import logger
 
-def sales_summary(mode:str="historical"):
+def sales_summary(user_id:int,mode:str="historical"):
     """
     Retrieve overall sales summary.
 
@@ -29,12 +29,13 @@ def sales_summary(mode:str="historical"):
                 )::numeric,
                 2
             ) AS average_order_value
-        FROM payments;
+        FROM payments
+        WHERE user_id = :user_id;
     """ 
     logger.info("Executing sales summary")
 
     try:
-        return query_db(sql,mode)
+        return query_db(sql,{"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Sales summary query failed: %s",
@@ -44,7 +45,7 @@ def sales_summary(mode:str="historical"):
             "Failed to retrieve sales summary."
         ) from exc
 
-def monthly_sales(mode:str="historical"):
+def monthly_sales(user_id:int,mode:str="historical"):
     """
     Retrieve monthly revenue trend.
     """
@@ -54,11 +55,12 @@ def monthly_sales(mode:str="historical"):
         count(distinct o.order_id) as orders
         from orders o join payments p
         on o.order_id=p.order_id
+        WHERE o.user_id = :user_id
         group by month order by month;"""
     logger.info("Executing monthly sales")
 
     try:
-        return query_db(sql,mode)
+        return query_db(sql,{"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Monthly sales query failed: %s",
@@ -68,7 +70,7 @@ def monthly_sales(mode:str="historical"):
             "Failed to retrieve monthly sales."
         ) from exc
 
-def sales_by_state(mode:str="historical"):
+def sales_by_state(user_id:int,mode:str="historical"):
     sql="""select
         c.customer_state,
         ROUND(SUM(p.payment_value)::numeric, 2) AS revenue,
@@ -76,13 +78,14 @@ def sales_by_state(mode:str="historical"):
         from orders o join customers c
         on o.customer_id=c.customer_id
         join payments p on o.order_id=p.order_id
+        WHERE o.user_id = :user_id
         group by c.customer_state
         order by revenue desc;
         """
     logger.info("Executing sales by state")
 
     try:
-        return query_db(sql,mode)
+        return query_db(sql,{"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Sales by state query failed: %s",
@@ -92,7 +95,7 @@ def sales_by_state(mode:str="historical"):
             "Failed to retrieve sales by state."
         ) from exc
 
-def sales_by_category(mode:str="historical"):
+def sales_by_category(user_id:int,mode:str="historical"):
     sql="""SELECT
             p.product_category,
             ROUND(SUM(oi.order_item_value)::numeric, 2) AS revenue,
@@ -100,13 +103,14 @@ def sales_by_category(mode:str="historical"):
         FROM order_items oi
         JOIN products p
         ON oi.product_id=p.product_id
+        WHERE oi.user_id = :user_id
         GROUP BY p.product_category
         ORDER BY revenue DESC;"""
     
     logger.info("Executing sales by category")
 
     try:
-        return query_db(sql,mode)
+        return query_db(sql,{"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Sales by category query failed: %s",
@@ -116,7 +120,7 @@ def sales_by_category(mode:str="historical"):
             "Failed to retrieve sales by category."
         ) from exc
 
-def top_products(limit: int = 10,mode: str = "historical") :
+def top_products(user_id:int,limit: int = 10,mode: str = "historical") :
     """
     Retrieve top-selling products.
     """
@@ -127,6 +131,7 @@ def top_products(limit: int = 10,mode: str = "historical") :
         SUM(quantity) AS units_sold,
         ROUND(SUM(order_item_value)::numeric, 2) AS revenue
     FROM order_items
+    WHERE user_id = :user_id
     GROUP BY product_id
     ORDER BY revenue DESC
     LIMIT {limit};
@@ -135,7 +140,7 @@ def top_products(limit: int = 10,mode: str = "historical") :
     logger.info("Executing top products")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Top products query failed: %s",

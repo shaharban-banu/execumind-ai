@@ -25,6 +25,8 @@ class ExecuMindState(TypedDict, total=False):
 
     history:List[dict]
 
+    user_id:int
+
     planner_decision: PlannerDecision
     
     # Agent outputs

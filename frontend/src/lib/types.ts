@@ -85,18 +85,6 @@ export interface SeriesPoint {
   value: number;
 }
 
-export interface DatasetRecord {
-  id: string;
-  name: string;
-  type: string;
-  rows: number;
-  columns: number;
-  size: string;
-  status: 'ready' | 'processing' | 'failed';
-  uploadedAt: string;
-  quality: number;
-  preview: { column: string; type: string; sample: string }[];
-}
 
 export interface ChatMessage {
   id: string;
@@ -172,4 +160,27 @@ export interface ExecutiveReport {
   strategic_recommendations: ExecutiveRecommendation[];
   evidence: Evidence[];
   generated_at:string;
+}
+
+export interface DatasetVersion {
+  id: number;
+  version: number;
+  is_active: boolean;
+  created_at: string;
+  files: {
+    id: number;
+    name: string;
+    type: string;
+    rows: number;
+    columns: number;
+    quality: number;
+    size: string;
+  }[];
+}
+
+export interface DatasetRecord {
+  id: number;
+  name: string;
+  created_at: string;
+  versions: DatasetVersion[];
 }

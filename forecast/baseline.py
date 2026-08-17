@@ -7,18 +7,13 @@ Forecast(t) = Actual(t-1)
 from pathlib import Path
 import json
 import numpy as np
-import pandas as pd
+
 from sklearn.metrics import (
     mean_absolute_error,
     mean_squared_error,
 )
 
 from forecast.forecasting import load_time_series
-
-
-REPORT_DIR = Path("data/forecast_reports")
-REPORT_DIR.mkdir(parents=True, exist_ok=True)
-
 
 SUPPORTED_METRICS = [
     "revenue",
@@ -27,8 +22,12 @@ SUPPORTED_METRICS = [
     "aov",
 ]
 
+def _get_report_dir(user_id: int) -> Path:
+    report_dir = Path(f"data/users/{user_id}/forecast_reports")
+    report_dir.mkdir(parents=True, exist_ok=True)
+    return report_dir
 
-def evaluate_baseline(metric: str):
+def evaluate_baseline(user_id:int,metric: str):
 
     df = load_time_series(metric).copy()
 
@@ -62,7 +61,7 @@ def evaluate_baseline(metric: str):
     }
 
     with open(
-        REPORT_DIR / f"{metric}_baseline.json",
+        _get_report_dir(user_id) / f"{metric}_baseline.json",
         "w",
     ) as f:
         json.dump(report, f, indent=4)
@@ -70,13 +69,13 @@ def evaluate_baseline(metric: str):
     return report
 
 
-def evaluate_all():
+def evaluate_all(user_id:int):
 
     reports = {}
 
     for metric in SUPPORTED_METRICS:
 
-        reports[metric] = evaluate_baseline(metric)
+        reports[metric] = evaluate_baseline(user_id,metric)
 
     return reports
 

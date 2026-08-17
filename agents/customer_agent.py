@@ -35,7 +35,7 @@ class CustomerIntelligenceAgent(BaseAgent):
 
     def _retrieve_context(
         self,
-        question: str,
+        question: str,user_id:int
     ):
         """
         Retrieve supporting documents using
@@ -47,7 +47,7 @@ class CustomerIntelligenceAgent(BaseAgent):
         )
 
         try:
-            context = self.rag_pipeline.retrieve(query=question)
+            context = self.rag_pipeline.retrieve(query=question,user_id=user_id)
 
             logger.info(
                 "Retrieved %d documents from RAG pipeline.",

@@ -20,7 +20,7 @@ class DataAgent(BaseAgent):
         super().__init__()
         self.tool_selector=ToolSelector()
 
-    def _retrieve_context(self,question:str,mode:str="historical"):
+    def _retrieve_context(self,question:str,user_id:int,mode:str="historical"):
         """execute required mcp tools"""
 
         logger.info("Selecting MCP tools")
@@ -47,7 +47,7 @@ class DataAgent(BaseAgent):
             #     continue
             logger.info("Executing tool %s",tool_name,)
             try:
-                context[tool_name]=tool(mode=mode)
+                context[tool_name]=tool(user_id=user_id,mode=mode)
             except Exception:
                 logger.exception("Tool %s failed",tool_name)
                 context[tool_name]=[]

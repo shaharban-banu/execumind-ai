@@ -84,17 +84,27 @@ class DatabaseLoader(BaseLoader):
         """
         columns=[self.text_column,*self.metadata_columns,]
 
-        query=text(f"""
+        query = text(f"""
             SELECT {", ".join(columns)}
             FROM {self.config.table_name}
-            """)
+            WHERE user_id = :user_id
+        """)
         try:
-            result=(self.config.session.execute(query).mappings().all())
+            result = (
+                self.config.session.execute(
+                    query,
+                    {"user_id": self.config.user_id},
+                )
+                .mappings()
+                .all()
+            )
             return list(result)
-        
+
         except SQLAlchemyError as e:
-            logger.exception("failed loading table %s",self.config.table_name)
-            raise RuntimeError(f"unable to load {self.config.table_name}") from e
+            logger.exception("Failed loading table %s", self.config.table_name)
+            raise RuntimeError(
+                f"Unable to load {self.config.table_name}"
+            ) from e
         
     def _row_to_documents(self,row:dict[str,Any]):
         """

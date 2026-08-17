@@ -78,7 +78,7 @@ def _validate_sql(sql: str) -> None:
             )
  
 
-def query_db(sql:str,mode:str="historical"):
+def query_db(sql:str,params:dict| None=None,mode:str="historical"):
     """
     Execute a SQL query against the database.
 
@@ -99,7 +99,7 @@ def query_db(sql:str,mode:str="historical"):
             effective_sql=sql
             logger.info("Historical mode — SQL: %s",effective_sql)
 
-        df=pd.read_sql(text(effective_sql),engine)
+        df=pd.read_sql(text(effective_sql),engine,params=params or {},)
         results=df.to_dict(orient="records")
        
         logger.info("Returned %s rows [mode=%s]",len(results),mode)

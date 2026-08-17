@@ -53,7 +53,7 @@ class Loader:
 
     """
 
-    def load(self,canonical_dataset: CanonicalDataset,) :
+    def load(self,canonical_dataset: CanonicalDataset,user_id:int) :
         """
         Persist the canonical dataset.
 
@@ -110,6 +110,7 @@ class Loader:
                     session=session,
                     dataframe=table.dataframe,
                     model=model,
+                    user_id=user_id,
                 )
 
             session.commit()
@@ -133,7 +134,7 @@ class Loader:
             session.close()
 
     @staticmethod
-    def _load_table(session: Session,dataframe,model,) -> None:
+    def _load_table(session: Session,dataframe,model,user_id:int) -> None:
 
         """
         Persist a single canonical table.
@@ -170,6 +171,9 @@ class Loader:
                     value = None
 
                 cleaned[key] = value
+
+        if "user_id" in valid_columns:
+            cleaned["user_id"] = user_id    
 
             objects.append(model(**cleaned))
 

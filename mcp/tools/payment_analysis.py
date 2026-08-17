@@ -14,7 +14,7 @@ from mcp.tools.query_db import query_db
 from utils.logger import logger
 
 
-def payment_summary(mode: str = "historical"):
+def payment_summary(user_id:int,mode: str = "historical"):
     """
     Retrieve overall payment statistics.
 
@@ -33,14 +33,15 @@ def payment_summary(mode: str = "historical"):
         COUNT(*) AS total_payments,
         ROUND(SUM(payment_value)::numeric, 2) AS total_revenue,
         ROUND(AVG(payment_value)::numeric, 2) AS average_payment
-    FROM payments;
+    FROM payments
+    WHERE user_id = :user_id;
     """
 
     logger.info("Executing payment summary")
 
     try:
 
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Payment summary query failed: %s",
@@ -51,7 +52,7 @@ def payment_summary(mode: str = "historical"):
         ) from exc
 
 
-def payment_methods(mode: str = "historical"):
+def payment_methods(user_id:int,mode: str = "historical"):
     """
     Retrieve payment method distribution.
 
@@ -71,6 +72,7 @@ def payment_methods(mode: str = "historical"):
         COUNT(*) AS total_transactions,
         ROUND(SUM(payment_value)::numeric, 2) AS revenue
     FROM payments
+    WHERE user_id = :user_id
     GROUP BY payment_method
     ORDER BY revenue DESC;
     """
@@ -78,7 +80,7 @@ def payment_methods(mode: str = "historical"):
     logger.info("Executing payment methods")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql,{"user_id": user_id},  mode)
     except Exception as exc:
         logger.exception(
             "Payment methods query failed: %s",
@@ -89,7 +91,7 @@ def payment_methods(mode: str = "historical"):
         ) from exc
 
 
-def installment_analysis(mode: str = "historical"):
+def installment_analysis(user_id:int,mode: str = "historical"):
     """
     Retrieve installment usage statistics.
 
@@ -110,6 +112,7 @@ def installment_analysis(mode: str = "historical"):
         ROUND(AVG(payment_value)::numeric, 2) AS average_payment,
         ROUND(SUM(payment_value)::numeric, 2) AS total_value
     FROM payments
+    WHERE user_id = :user_id
     GROUP BY payment_installments
     ORDER BY payment_installments;
     """
@@ -117,7 +120,7 @@ def installment_analysis(mode: str = "historical"):
     logger.info("Executing installment analysis")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Installment analysis query failed: %s",
@@ -128,7 +131,7 @@ def installment_analysis(mode: str = "historical"):
         ) from exc
 
 
-def payment_value_distribution(mode: str = "historical") :
+def payment_value_distribution(user_id:int,mode: str = "historical") :
     """
     Retrieve payment value statistics.
 
@@ -147,7 +150,8 @@ def payment_value_distribution(mode: str = "historical") :
         ROUND(MIN(payment_value)::numeric, 2) AS minimum_payment,
         ROUND(MAX(payment_value)::numeric, 2) AS maximum_payment,
         ROUND(AVG(payment_value)::numeric, 2) AS average_payment
-    FROM payments;
+    FROM payments
+    WHERE user_id = :user_id;
     """
 
     logger.info("Executing payment value distribution")
@@ -164,7 +168,7 @@ def payment_value_distribution(mode: str = "historical") :
         ) from exc
 
 
-def top_payment_transactions(limit: int = 10,mode: str = "historical"):
+def top_payment_transactions(user_id:int,limit: int = 10,mode: str = "historical"):
     """
     Retrieve the highest-value payment transactions.
 
@@ -186,6 +190,7 @@ def top_payment_transactions(limit: int = 10,mode: str = "historical"):
         payment_method,
         payment_value
     FROM payments
+    WHERE user_id = :user_id
     ORDER BY payment_value DESC
     LIMIT {limit};
     """
@@ -193,7 +198,7 @@ def top_payment_transactions(limit: int = 10,mode: str = "historical"):
     logger.info("Executing top payment transactions")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id}, mode)
     except Exception as exc:
         logger.exception(
             "Top payment transactions query failed: %s",

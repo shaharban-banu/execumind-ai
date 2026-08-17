@@ -1,36 +1,45 @@
 from pathlib import Path
-from rag.config.rag_config import load_rag_config
+from database.database import SessionLocal
 
-def get_platform_status():
+from database.models import Dataset,DatasetVersion
 
-    dataset_ready = (
-        Path("data/dataset").exists()
-        and any(Path("data/dataset").iterdir())
-    )
+def get_platform_status(user_id:int):
 
+    model_dir = Path(f"data/users/{user_id}/models")
     forecast_ready = all([
-        Path("data/models/revenue.pkl").exists(),
-        Path("data/models/orders.pkl").exists(),
-        Path("data/models/customers.pkl").exists(),
-        Path("data/models/aov.pkl").exists(),
+        (model_dir / "revenue.pkl").exists(),
+        (model_dir / "orders.pkl").exists(),
+        (model_dir / "customers.pkl").exists(),
+        (model_dir / "aov.pkl").exists(),
     ])
 
-    rag_config = load_rag_config()
+    vector_dir = Path(f"data/users/{user_id}/vectorstore")
 
     rag_ready = (
-        rag_config.index_path.exists()
-        and rag_config.metadata_path.exists()
+        (vector_dir / "faiss.index").exists()
+        and (vector_dir / "metadata.pkl").exists()
     )
 
-    platform_ready = (
-        dataset_ready
-        and forecast_ready
-        and rag_ready
+    db = SessionLocal()
+
+    dataset_ready = (
+        db.query(DatasetVersion)
+        .join(Dataset)
+        .filter(
+            Dataset.user_id == user_id,
+            DatasetVersion.is_active == True,
+        )
+        .first()
+        is not None
     )
+
+    db.close()
 
     return {
         "dataset_ready": dataset_ready,
         "forecast_ready": forecast_ready,
         "rag_ready": rag_ready,
-        "platform_ready": platform_ready,
+        "platform_ready": (
+            dataset_ready and forecast_ready and rag_ready
+        ),
     }

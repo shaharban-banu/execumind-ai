@@ -20,7 +20,7 @@ class ExecutiveRecommendationService:
     """
 
 
-    def delete_all(self):
+    def delete_all(self,user_id:int):
         """
         Remove all existing recommendations.
         """
@@ -28,7 +28,9 @@ class ExecutiveRecommendationService:
         
         db = SessionLocal()
         try:
-            db.query(ExecutiveRecommendation).delete()
+            (db.query(ExecutiveRecommendation)
+            .filter(ExecutiveRecommendation.user_id==user_id)
+            .delete())
             db.commit()
 
             logger.info("Executive recommendations deleted.")
@@ -43,7 +45,7 @@ class ExecutiveRecommendationService:
         finally:
             db.close()
         
-    def get_recommendations(self):
+    def get_recommendations(self,user_id:int):
         """
         Return the latest executive report.
         """
@@ -51,6 +53,7 @@ class ExecutiveRecommendationService:
         logger.info("Fetching executive recommendations.")
         try:
             recommendations=(db.query(ExecutiveRecommendation)
+                             .filter(ExecutiveRecommendation.user_id==user_id)
                              .order_by(ExecutiveRecommendation.created_at.desc()).all())
             if not recommendations:
                 logger.info("No executive recommendations found.")
@@ -82,7 +85,7 @@ class ExecutiveRecommendationService:
         finally:
             db.close()
     
-    def save_recommendations(self, analysis: ExecutiveAnalysis):
+    def save_recommendations(self, user_id:int,analysis: ExecutiveAnalysis):
         """
         Save executive recommendations.
 
@@ -100,8 +103,8 @@ class ExecutiveRecommendationService:
         db = SessionLocal()
         logger.info("Saving executive recommendations.")
         logger.info(
-    "Saving %d recommendations",
-    len(analysis.strategic_recommendations)
+            "Saving %d recommendations",
+            len(analysis.strategic_recommendations)
 )
 
         try:
@@ -115,10 +118,11 @@ class ExecutiveRecommendationService:
 
             for recommendation in analysis.strategic_recommendations:
                 logger.info(
-        "Saving recommendation: %s",
-        recommendation.action
-    )
+                    "Saving recommendation: %s",
+                    recommendation.action
+                )
                 record = ExecutiveRecommendation(
+                    user_id=user_id,
                     priority=recommendation.priority,
                     action=recommendation.action,
                     rationale=recommendation.rationale,

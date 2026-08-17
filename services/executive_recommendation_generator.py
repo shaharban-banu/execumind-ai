@@ -37,7 +37,7 @@ class ExecutiveRecommendationGenerator:
         """
         self.recommendation_service = ExecutiveRecommendationService()
 
-    def generate(self):
+    def generate(self,user_id:int):
         """
         Generate executive recommendations
         from the current dataset.
@@ -53,7 +53,7 @@ class ExecutiveRecommendationGenerator:
                 If recommendation generation fails.
         """
         logger.info("Starting executive recommendation generation.")
-        if not get_platform_status():
+        if not get_platform_status(user_id)["platform_ready"]:
             return {
                 "success": False,
                 "message": "Platform has not been processed. Please process the platform before generating executive recommendations."
@@ -62,17 +62,20 @@ class ExecutiveRecommendationGenerator:
         try:
             # Customer Analysis
             customer_response = get_customer_agent().run(
-                CUSTOMER_EXECUTIVE_QUESTION
+                CUSTOMER_EXECUTIVE_QUESTION,
+                user_id=user_id,
             )
 
             # Data Analysis
             data_response = data_agent.run(
                 DATA_EXECUTIVE_QUESTION,mode="executive",
+                user_id=user_id,
             )
 
             # Forecast Analysis
             forecast_response = forecast_agent.run(
-                FORECAST_EXECUTIVE_QUESTION
+                FORECAST_EXECUTIVE_QUESTION,
+                user_id=user_id,
             )
 
             context = {
@@ -94,8 +97,8 @@ class ExecutiveRecommendationGenerator:
                 context=context,
             )
 
-            self.recommendation_service.delete_all()
-            self.recommendation_service.save_recommendations(executive_analysis.result)
+            self.recommendation_service.delete_all(user_id)
+            self.recommendation_service.save_recommendations(user_id,executive_analysis.result)
 
             logger.info("Executive recommendations generated successfully.")
             return executive_analysis

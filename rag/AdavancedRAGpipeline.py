@@ -17,6 +17,7 @@ from rag.retrievers.semantic_retriever import SemanticRetriever
 from rag.retrievers.bm25_retriever import BM25Retriever
 from rag.retrievers.hybrid_retriever import HybridRetriever
 from rag.config.rag_config import RAGConfig
+from rag.services.user_paths import get_user_vectorstore_paths
 
 class AdvancedRAGPipeline:
     """
@@ -62,14 +63,17 @@ class AdvancedRAGPipeline:
         self.reranker = reranker
         self.rag_config = rag_config
 
-    def initialize(self):
+    def initialize(self,user_id:int):
         """
         Initialize the vector store.
 
         Build the index if it doesn't exist,
         otherwise load the existing index.
         """
+        index_path, metadata_path = get_user_vectorstore_paths(user_id)
 
+        self.vector_store.index_path = index_path
+        self.vector_store.metadata_path = metadata_path
         if (
             not self.vector_store.index_path.exists()
             or not self.vector_store.metadata_path.exists()
@@ -79,7 +83,7 @@ class AdvancedRAGPipeline:
 
         self.load_index()
 
-    def build_index(self):
+    def build_index(self,user_id:int):
         """
         Build vector index.
 
@@ -92,6 +96,11 @@ class AdvancedRAGPipeline:
         """
 
         logger.info("Starting index build...")
+
+        index_path, metadata_path = get_user_vectorstore_paths(user_id)
+
+        self.vector_store.index_path = index_path
+        self.vector_store.metadata_path = metadata_path
 
         documents = []
 
@@ -179,6 +188,7 @@ class AdvancedRAGPipeline:
     def retrieve(
         self,
         query: str,
+        user_id:int,
         retrieval_top_k: int| None = None,
         rerank_top_k: int | None = None,
     ):
@@ -197,9 +207,17 @@ class AdvancedRAGPipeline:
         logger.info(
             "Retrieving documents..."
         )
+        
+        index_path, metadata_path = get_user_vectorstore_paths(user_id)
+
+        self.vector_store.index_path = index_path
+        self.vector_store.metadata_path = metadata_path
+
+        self.load_index()
 
         retrieval_top_k = (retrieval_top_k or self.rag_config.retrieval_top_k)
         rerank_top_k = (rerank_top_k or self.rag_config.rerank_top_k)
+
 
         if self.retriever is None:
             raise RuntimeError(

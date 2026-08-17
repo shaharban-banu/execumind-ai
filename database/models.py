@@ -11,14 +11,200 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     PrimaryKeyConstraint,
-    String,Text
+    String,Text,Boolean
 )
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base,relationship
 
 Base = declarative_base()
 
+# ==========================================================
+# Users
+# ==========================================================
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer,primary_key=True,index=True,)
+
+    username = Column(
+        String(100),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+
+    email = Column(
+        String(255),
+        unique=True,
+        nullable=True,
+        index=True,
+    )
+
+    password_hash = Column(
+        String(255),
+        nullable=False,
+    )
+
+    role = Column(
+        String(20),
+        nullable=False,
+        default="executive",
+    )
+
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime,
+        default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")),
+        nullable=False,
+    )
+
+# ==========================================================
+# Datasets
+# ==========================================================
+
+class Dataset(Base):
+    __tablename__ = "datasets"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
+
+    name = Column(
+        String(255),
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime,
+        default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")),
+        nullable=False,
+    )
+
+    versions = relationship(
+        "DatasetVersion",
+        back_populates="dataset",
+        cascade="all, delete-orphan",
+    )
+
+# ==========================================================
+# Dataset Versions
+# ==========================================================
+
+class DatasetVersion(Base):
+    __tablename__ = "dataset_versions"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    dataset_id = Column(
+        Integer,
+        ForeignKey("datasets.id"),
+        nullable=False,
+        index=True,
+    )
+
+    version_number = Column(
+        Integer,
+        nullable=False,
+    )
+
+    status = Column(
+        String(30),
+        default="uploaded",
+        nullable=False,
+    )
+
+    is_active = Column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
+
+    dataset = relationship(
+        "Dataset",
+        back_populates="versions",
+    )
+
+    files = relationship(
+        "DatasetFile",
+        back_populates="version",
+        cascade="all, delete-orphan",
+    )
+
+    created_at = Column(
+        DateTime,
+        default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")),
+        nullable=False,
+    )
+
+# ==========================================================
+# Dataset Files
+# ==========================================================
+
+class DatasetFile(Base):
+    """
+    Represents an individual file belonging to a dataset version.
+
+    A dataset version may contain multiple files, such as
+    customers, orders, products, payments, and reviews.
+    """
+
+    __tablename__ = "dataset_files"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
+
+    version_id = Column(
+        Integer,
+        ForeignKey("dataset_versions.id"),
+        nullable=False,
+        index=True,
+    )
+
+    file_name = Column(
+        String(255),
+        nullable=False,
+    )
+
+    file_path = Column(
+        String(500),
+        nullable=False,
+    )
+
+    created_at = Column(
+        DateTime,
+        default=lambda: datetime.now(
+            ZoneInfo("Asia/Kolkata")
+        ),
+        nullable=False,
+    )
+
+    version = relationship(
+        "DatasetVersion",
+        back_populates="files",
+    )
 # ==========================================================
 # Customers
 # ==========================================================
@@ -44,6 +230,14 @@ class Customer(Base):
     customer_country = Column(String)
 
     customer_created_date = Column(DateTime)
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    user = relationship("User")
 
 
 # ==========================================================
@@ -77,6 +271,14 @@ class Order(Base):
     estimated_delivery_date = Column(DateTime)
 
     delivered_date = Column(DateTime)
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    user = relationship("User")
 
 
 # ==========================================================
@@ -105,6 +307,15 @@ class Product(Base):
 
     weight = Column(Float)
 
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    user = relationship("User")
+
 
 # ==========================================================
 # Sellers
@@ -126,6 +337,14 @@ class Seller(Base):
     seller_city = Column(String)
 
     seller_state = Column(String)
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    user = relationship("User")
 
 
 # ==========================================================
@@ -205,6 +424,15 @@ class Payment(Base):
 
     payment_installments = Column(Integer)
 
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    user = relationship("User")
+
 
 # ==========================================================
 # Reviews
@@ -270,6 +498,15 @@ class Delivery(Base):
 
     freight_cost = Column(Float)
 
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    user = relationship("User")
+
 # ==========================================================
 # Executive recommendation for frontend
 # ==========================================================
@@ -296,3 +533,12 @@ class ExecutiveRecommendation(Base):
         DateTime,
         default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")),
     )
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    user = relationship("User")

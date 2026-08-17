@@ -99,6 +99,9 @@ data/uploads/*
 !data/vectorstore/.gitkeep
 !data/forecast_reports/.gitkeep
 
+data/users/*
+!data/users/.gitkeep
+
 # ==========================================
 # RAG Generated Files
 # ==========================================

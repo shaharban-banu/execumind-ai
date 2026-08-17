@@ -5,10 +5,6 @@ Compare Prophet vs Naive baseline.
 from pathlib import Path
 import json
 
-
-REPORT_DIR = Path("data/forecast_reports")
-
-
 METRICS = [
     "revenue",
     "orders",
@@ -16,32 +12,35 @@ METRICS = [
     "aov",
 ]
 
+def get_report_dir(user_id: int) -> Path:
+    return Path(f"data/users/{user_id}/forecast_reports")
 
-print("=" * 70)
-print("Forecast Model Comparison")
-print("=" * 70)
 
-for metric in METRICS:
+def compare_models(user_id: int):
 
-    with open(REPORT_DIR / f"{metric}_metrics.json") as f:
-        prophet = json.load(f)
+    report_dir = get_report_dir(user_id)
 
-    with open(REPORT_DIR / f"{metric}_baseline.json") as f:
-        baseline = json.load(f)
+    print("=" * 70)
+    print("Forecast Model Comparison")
+    print("=" * 70)
 
-    print(f"\n{metric.upper()}")
+    for metric in METRICS:
 
-    print("-" * 40)
+        with open(report_dir / f"{metric}_metrics.json") as f:
+            prophet = json.load(f)
 
-    print(
-        f"Baseline MAPE : {baseline['MAPE']:.2f}%"
-    )
+        with open(report_dir / f"{metric}_baseline.json") as f:
+            baseline = json.load(f)
 
-    print(
-        f"Prophet  MAPE : {prophet['MAPE']:.2f}%"
-    )
+        print(f"\n{metric.upper()}")
+        print("-" * 40)
+        print(f"Baseline MAPE : {baseline['MAPE']:.2f}%")
+        print(f"Prophet  MAPE : {prophet['MAPE']:.2f}%")
 
-    if prophet["MAPE"] < baseline["MAPE"]:
-        print("✓ Prophet performs better")
-    else:
-        print("✓ Baseline performs better")
+        if prophet["MAPE"] < baseline["MAPE"]:
+            print("✓ Prophet performs better")
+        else:
+            print("✓ Baseline performs better")
+
+if __name__ == "__main__":
+    compare_models(user_id=1)

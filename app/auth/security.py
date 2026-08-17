@@ -14,6 +14,8 @@ from fastapi import HTTPException
 from jose import jwt,JWTError,ExpiredSignatureError
 from passlib.context import CryptContext
 from utils.logger import logger
+from database.database import SessionLocal
+from database.models import User
 
 load_dotenv()
 
@@ -41,7 +43,7 @@ def hash_password(password:str):
         Exception: If hashing fails.
     """
     try:
-        logger.info("Hashing administrator password")
+        logger.info("Hashing user password")
         password=password.encode("utf-8")[:72].decode("utf-8","ignore")
         return pwd_context.hash(password)
     except Exception:
@@ -68,30 +70,41 @@ def verify_password(plain_password:str,hashed_password:str):
 
 def authenticate_user(username:str,password:str):
     """
-    Authenticate administrator credentials.
-
-    Args:
-        username: Login username.
-        password: Login password.
+    Authenticate a user against the PostgreSQL users table.
 
     Returns:
-        True if authentication succeeds,
-        otherwise False.
+        User object if authentication succeeds,
+        otherwise None.
     """
+    db=SessionLocal()
+
     try:
         logger.info("Authentication attempt for user '%s'",username,)
 
-        if username!=ADMIN_USERNAME:
-            logger.warning("Authentication failed.Invalid username")
-            return False
-        if not verify_password(password,ADMIN_PASSWORD_HASH,):
-            logger.warning("Authentication failed.Invalid password")
-            return False
-        logger.info("Administtrator authenticated succeessfully")
-        return True
+        user=(db.query(User).filter(User.username==username).first())
+
+        if not user:
+            logger.warning("Authentication failed.user %s not found",username,)
+            return None
+        
+        if not user.is_active:
+            logger.warning(
+                "Authentication failed. User '%s' is inactive.",
+                username,
+            )
+            return None
+        if not verify_password(password,user.password_hash,):
+            logger.warning("Authentication failed. Invalid password.")
+            return None
+        
+        logger.info("user authenticated succeessfully")
+        return user
+    
     except Exception:
         logger.exception("Unexpectd error during authentication")
         raise
+    finally:
+        db.close()
 
 
 def create_access_token(data:dict):

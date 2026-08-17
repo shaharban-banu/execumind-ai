@@ -27,7 +27,7 @@ class ForecastAgent(BaseAgent):
         self.tool_selector=ToolSelector()
         logger.info("Forecast Intelligence Agent initialized.")
 
-    def _retrieve_context(self,question:str):
+    def _retrieve_context(self,user_id:int,question:str):
         """execute required mcp tools"""
 
         logger.info("Selecting forecast MCP tools")
@@ -51,7 +51,7 @@ class ForecastAgent(BaseAgent):
                 logger.info("Executing tool %s",tool_name,)
 
                 try:
-                    context[tool_name]=tool()
+                    context[tool_name]=tool(user_id)
                     logger.debug("%s returned %d forecasts",tool_name,len(context[tool_name]),)
                     
                 except Exception:

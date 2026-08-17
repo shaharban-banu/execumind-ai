@@ -11,7 +11,7 @@ from typing import Any
 from mcp.tools.query_db import query_db
 from utils.logger import logger
 
-def delivery_summary(mode:str="historical"):
+def delivery_summary(user_id:int,mode:str="historical"):
     """
     Retrieve an overall summary of delivery performance.
 
@@ -46,10 +46,11 @@ def delivery_summary(mode:str="historical"):
                 then 1 else 0
             end) as late_deliveries
         from orders
-        where delivered_date is not null;"""
+        where delivered_date is not null
+        AND user_id = :user_id;"""
     logger.info("Executing delivery summary")
     try:
-        return query_db(sql,mode)
+        return query_db(sql,{"user_id": user_id}, mode)
     except Exception as exc:
         logger.exception(
             "Delivery summary query failed: %s",
@@ -59,7 +60,7 @@ def delivery_summary(mode:str="historical"):
             "Failed to retrieve delivery summary."
         ) from exc
 
-def late_delivery_rate(mode:str="historical"):
+def late_delivery_rate(user_id:int,mode:str="historical"):
     """
     Retrieve the percentage of late deliveries.
 
@@ -87,11 +88,12 @@ def late_delivery_rate(mode:str="historical"):
         2
     ) AS late_delivery_rate
     from orders 
-    where delivered_date is not null;"""
+    where delivered_date is not null
+    AND user_id = :user_id;"""
 
     logger.info("Executing late delivery rate")
     try:
-        return query_db(sql,mode)
+        return query_db(sql, {"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "late delivery rate query failed: %s",
@@ -101,7 +103,7 @@ def late_delivery_rate(mode:str="historical"):
             "Failed to retrieve late delivery rate."
         ) from exc
 
-def delivery_by_state(mode:str="historical"):
+def delivery_by_state(user_id:int,mode:str="historical"):
     """
     Retrieve delivery performance grouped by customer state.
 
@@ -132,12 +134,13 @@ def delivery_by_state(mode:str="historical"):
         from orders o join customers c 
         on o.customer_id=c.customer_id
         where o.delivered_date is not null
+        AND o.user_id = :user_id
         group by customer_state
         order by late_deliveries desc;
         """
     logger.info("Executing delivery by state ")
     try:
-        return query_db(sql,mode)
+        return query_db(sql,{"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Delivery by state query failed: %s",
@@ -147,7 +150,7 @@ def delivery_by_state(mode:str="historical"):
             "Failed to retrieve delivery by state."
         ) from exc
 
-def delayed_orders(limit: int = 20,mode: str = "historical") :
+def delayed_orders(user_id:int,limit: int = 20,mode: str = "historical") :
     """
     Retrieve the most delayed customer orders.
 
@@ -191,7 +194,7 @@ def delayed_orders(limit: int = 20,mode: str = "historical") :
     WHERE
         delivered_date >
         estimated_delivery_date
-
+    AND user_id = :user_id
     ORDER BY delay_days DESC
 
     LIMIT {limit};
@@ -200,7 +203,7 @@ def delayed_orders(limit: int = 20,mode: str = "historical") :
     logger.info("Executing delayed orders")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql,{"user_id": user_id}, mode)
     except Exception as exc:
         logger.exception(
             "Delayed orders query failed: %s",
@@ -211,7 +214,7 @@ def delayed_orders(limit: int = 20,mode: str = "historical") :
         ) from exc
 
 
-def order_status_distribution(mode: str = "historical"):
+def order_status_distribution(user_id:int,mode: str = "historical"):
     """
     Retrieve the distribution of customer order statuses.
 
@@ -231,6 +234,7 @@ def order_status_distribution(mode: str = "historical"):
         order_status,
         COUNT(*) AS total_orders
     FROM orders
+    WHERE user_id = :user_id
     GROUP BY order_status
     ORDER BY total_orders DESC;
     """
@@ -238,7 +242,7 @@ def order_status_distribution(mode: str = "historical"):
     logger.info("Executing order status distribution")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "order status distribution query failed: %s",

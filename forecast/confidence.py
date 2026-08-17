@@ -1,19 +1,20 @@
 from pathlib import Path
 import json
 
-REPORT_DIR = Path("data/forecast_reports")
-
+def _get_report_dir(user_id: int) -> Path:
+    report_dir = Path(f"data/users/{user_id}/forecast_reports")
+    report_dir.mkdir(parents=True, exist_ok=True)
+    return report_dir
 
 class ForecastConfidence:
 
     @staticmethod
-    def get(metric: str):
+    def get(user_id:int,metric: str):
 
         with open(
-            REPORT_DIR / f"{metric}_metrics.json",
+            _get_report_dir(user_id) / f"{metric}_metrics.json",
             "r",
         ) as f:
-
             report = json.load(f)
 
         mape = report["MAPE"]

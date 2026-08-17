@@ -34,17 +34,19 @@ class AuthService:
         """
         try:
             logger.info("Administrator login requested for user '%s'",credentials.username)
-            authenticated=authenticate_user(
+            user=authenticate_user(
                 credentials.username,
                 credentials.password,)
-            if not authenticated:
+            if not user:
                 logger.warning("Login failed for user '%s'",credentials.username)
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Invalid username or password.",
                 )
             access_token=create_access_token({
-                "sub":credentials.username,
+                "sub":str(user.id),
+                "username":user.username,
+                "role":user.role,
             })
             logger.info("Administrator '%s' logged in successfully",
                         credentials.username,)
@@ -52,7 +54,7 @@ class AuthService:
                 access_token=access_token,
                 token_type="bearer",
                 user={
-                    "username": credentials.username,
+                    "username": user.username,
                 },
             )
         except HTTPException:

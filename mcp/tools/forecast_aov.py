@@ -12,7 +12,7 @@ from utils.logger import logger
 
 _predictor=ForecastPredictor()
 
-def forecast_average_order_value(periods:int=6):
+def forecast_average_order_value(user_id:int,periods:int=6):
     """
     Forecast Average Order Value (AOV).
 
@@ -30,7 +30,7 @@ def forecast_average_order_value(periods:int=6):
     """
     logger.info("Forecasting average  order value")
     try:
-        return _predictor.predict(metric='aov',periods=periods)
+        return _predictor.predict(user_id=user_id,metric='aov',periods=periods)
     except Exception as exc:
         logger.exception(
             "Average order value forecast failed: %s",

@@ -9,13 +9,14 @@ import { Skeleton } from '../components/ui/Feedback';
 import {
   getDatasets,
   uploadDataset,
+  activateDatasetVersion,
   processPlatform,
   uploadKnowledge,
   getKnowledgeDocuments,
   getPlatformStatus,
   
 } from "../lib/api";
-import type { DatasetRecord } from '../lib/types';
+
 import { formatRelativeTime, cn } from '../lib/utils';
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -24,6 +25,7 @@ import {
   FileCode2,
 } from "lucide-react";
 import { FolderOpen } from "lucide-react";
+import { DatasetRecord, DatasetVersion } from "../lib/types";
 
 
 const statusMap = {
@@ -52,13 +54,13 @@ export function UploadPage() {
   };
   const [knowledgeFiles, setKnowledgeFiles] = useState<File[]>([]);
   const [knowledgeDocs, setKnowledgeDocs] = useState<any[]>([]);
-  const [showPreview, setShowPreview] = useState<DatasetRecord | null>(null);
+  const [showPreview, setShowPreview] = useState<DatasetVersion | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [processResult, setProcessResult] = useState<any>(null);
   const [knowledgeUploading, setKnowledgeUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
-  const [uploadError, setUploadError] = useState("");
-  
+  const [datasetError, setDatasetError] = useState("");
+  const [knowledgeError, setKnowledgeError] = useState("");
   const [platformProcessed, setPlatformProcessed] = useState(false);
   const [platformStatus, setPlatformStatus] = useState<
   "needs_processing" | "processing" | "ready"
@@ -101,6 +103,7 @@ export function UploadPage() {
   function handleFiles(files: FileList | null) {
   if (!files || files.length === 0) return;
 
+  setDatasetError("");
   setSelectedFiles(Array.from(files));
 }
   function handleKnowledgeFiles(
@@ -112,38 +115,56 @@ export function UploadPage() {
 }
 
 
-  async function handleDatasetUpload() {
-    if (selectedFiles.length === 0) return;
+async function handleDatasetUpload() {
+  if (selectedFiles.length === 0) return;
 
-    setUploading(true);
-    setUploadProgress(0);
+  setUploading(true);
+  setUploadProgress(0);
+  setDatasetError(""); 
 
-    const interval = setInterval(() => {
-        setUploadProgress((p) => Math.min(p + Math.random() * 18, 95));
-    }, 120);
+  const interval = setInterval(() => {
+    setUploadProgress((p) =>
+      Math.min(p + Math.random() * 18, 95)
 
-    try {
-        await uploadDataset(selectedFiles);
+  
+    );
+  }, 120);
 
-        setUploadProgress(100);
-        clearInterval(interval);
+  try {
+    await uploadDataset(selectedFiles);
 
-        setPlatformStatus("needs_processing");
-        setProcessResult(null);
+    setUploadProgress(100);
 
-        await loadDatasets();
+    clearInterval(interval);
 
-        setTimeout(() => {
-            setUploading(false);
-            setSelectedFiles([]);
-            setUploadProgress(0);
-        }, 600);
+    setPlatformStatus("needs_processing");
+    setProcessResult(null);
 
-    } catch (error) {
-        clearInterval(interval);
-        setUploading(false);
-        console.error(error);
-    }
+    await loadDatasets();
+
+    setTimeout(() => {
+      setUploading(false);
+      setSelectedFiles([]);
+      
+      setUploadProgress(0);
+    }, 600);
+
+  } catch (error: any) {
+  clearInterval(interval);
+  setUploading(false);
+  setUploadProgress(0);
+
+  const detail = error?.response?.data?.detail;
+  console.log(detail);
+
+  // if (Array.isArray(detail)) {
+  //   setDatasetError(detail[0]?.msg ?? "Upload failed.");
+  // } else {
+  //   setDatasetError(detail ?? "Upload failed.");
+  // }
+
+  console.error(error);
+}
 }
 async function handleKnowledgeUpload() {
     if (knowledgeFiles.length === 0) return;
@@ -151,7 +172,7 @@ async function handleKnowledgeUpload() {
     try {
         setKnowledgeUploading(true);
         setUploadMessage("");
-        setUploadError("");
+        setKnowledgeError("");
 
         await uploadKnowledge(knowledgeFiles);
 
@@ -166,10 +187,27 @@ async function handleKnowledgeUpload() {
 
     } catch (error) {
         console.error(error);
-        setUploadError("Upload failed. Please try again.");
+        setKnowledgeError("Upload failed. Please try again.");
     } finally {
         setKnowledgeUploading(false);
     }
+}
+
+async function handleActivateVersion(
+  datasetId: number,
+  versionId: number,
+) {
+  try {
+    await activateDatasetVersion(datasetId, versionId);
+
+    await loadDatasets();
+
+    await loadPlatformStatus(); 
+    setProcessResult(null);
+
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function handleProcessPlatform() {
@@ -212,26 +250,39 @@ function getFileIcon(fileName: string) {
     <div className="space-y-6">
       {/* Drop zone */}
       <Card className="overflow-hidden">
-        <div className="p-6">
-          <div
-            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-            onDragLeave={() => setDragging(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragging(false);
-              handleFiles(e.dataTransfer.files);
-            }}
-            onClick={() => inputRef.current?.click()}
-            className={cn(
-              'flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-all duration-200',
-              dragging ? 'border-brand-400 bg-brand-50/60 scale-[1.01]' : 'border-slate-200 bg-slate-50/40 hover:border-brand-300 hover:bg-brand-50/30'
-            )}
-          >
+        <CardHeader
+          title="Upload Dataset Version"
+          subtitle="Every upload creates a new version while preserving previous versions."
+        />
+
+        <div className="px-6 pb-6">
+
+          
+          {datasetError && (
+            <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+              {datasetError}
+            </div>
+          )}
+          {/* <div className="p-6"> */}
+            <div
+              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragging(false);
+                handleFiles(e.dataTransfer.files);
+              }}
+              onClick={() => inputRef.current?.click()}
+              className={cn(
+                'flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-all duration-200',
+                dragging ? 'border-brand-400 bg-brand-50/60 scale-[1.01]' : 'border-slate-200 bg-slate-50/40 hover:border-brand-300 hover:bg-brand-50/30'
+              )}
+            >
             <input
               ref={inputRef}
               type="file"
               multiple
-              accept=".csv"
+              accept=".csv,.xlsx,.xls,.json,.parquet"
               className="hidden"
               onChange={(e) => handleFiles(e.target.files)}
             />
@@ -460,12 +511,10 @@ function getFileIcon(fileName: string) {
         )}
 
         {/* Upload Error */}
-        {uploadError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-                <p className="text-sm text-red-700">
-                    ❌ {uploadError}
-                </p>
-            </div>
+        {datasetError && (
+          <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            {knowledgeError}
+          </div>
         )}
 
         {/* Status */}
@@ -653,129 +702,158 @@ function getFileIcon(fileName: string) {
         </Card>
       )}
 
-      {/* Dataset library */}
+      {/* Dataset Library */}
       <Card>
         <CardHeader
           title="Dataset Library"
-          subtitle={`${datasets.length} datasets connected to ExecuMind AI`}
-          icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5" /><path d="M3 12a9 3 0 0 0 18 0" /></svg>}
+          subtitle="Version history of your e-commerce dataset"
+          icon={
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <ellipse
+                cx="12"
+                cy="5"
+                rx="9"
+                ry="3"
+              />
+              <path d="M3 5v14a9 3 0 0 0 18 0V5" />
+              <path d="M3 12a9 3 0 0 0 18 0" />
+            </svg>
+          }
         />
-        <div className="overflow-x-auto px-2 py-2">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wider text-slate-400">
-                <th className="px-3 py-3 font-semibold">Name</th>
-                <th className="px-3 py-3 font-semibold">Type</th>
-                <th className="hidden px-3 py-3 font-semibold sm:table-cell">Rows</th>
-                <th className="hidden px-3 py-3 font-semibold md:table-cell">Columns</th>
-                <th className="hidden px-3 py-3 font-semibold lg:table-cell">Quality</th>
-                <th className="px-3 py-3 font-semibold">Status</th>
-                <th className="hidden px-3 py-3 font-semibold lg:table-cell">Uploaded</th>
-                <th className="px-3 py-3" />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {loading
-                ? Array.from({ length: 4 }).map((_, i) => (
-                    <tr key={i}>
-                      <td colSpan={8} className="px-3 py-4"><Skeleton className="h-10" /></td>
-                    </tr>
-                  ))
-                : datasets.map((ds) => {
-                    const st = statusMap[ds.status];
-                    return (
-                      <tr key={ds.id} className="group transition hover:bg-slate-50/60">
-                        <td className="px-3 py-3">
-                          <div className="flex items-center gap-2.5">
-                            <span className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold', typeColors[ds.type] ?? 'bg-slate-100 text-slate-500')}>
-                              {ds.type.slice(0, 3).toUpperCase()}
+
+        <div className="space-y-3 p-4">
+
+          {loading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                className="h-20"
+              />
+            ))
+          ) : datasets.length === 0 ? (
+
+            <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">
+              No datasets uploaded yet.
+            </div>
+
+          ) : (
+
+            datasets.map((dataset) => (
+
+              <div
+                key={dataset.id}
+                className="rounded-xl border border-slate-200 bg-white"
+              >
+
+                {/* Dataset header */}
+                <div className="flex items-center justify-between border-b border-slate-100 p-4">
+
+                  <div>
+                    <h3 className="font-semibold text-slate-800">
+                      {dataset.name}
+                    </h3>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      {dataset.versions?.length ?? 0} version
+                      {(dataset.versions?.length ?? 0) !== 1
+                        ? "s"
+                        : ""}
+                    </p>
+                  </div>
+
+                </div>
+
+                {/* Versions */}
+                <div className="divide-y divide-slate-100">
+
+                  {[...dataset.versions]
+                    .sort((a, b) => {
+                      if (a.is_active) return -1;
+                      if (b.is_active) return 1;
+                      return b.version - a.version;
+                    }).map(
+                    (version: any) => (
+
+                      <div
+                        key={version.id}
+                        className="flex items-center justify-between gap-4 p-4"
+                      >
+
+                        <div className="min-w-0">
+
+                          <div className="flex items-center gap-2">
+
+                            <span className="font-medium text-slate-800">
+                              Version {version.version}
                             </span>
-                            <span className="font-medium text-slate-800">{ds.name}</span>
+
+                            {version.is_active && (
+                              <Badge
+                                variant="emerald"
+                                tone="soft"
+                                dot
+                              >
+                                Active
+                              </Badge>
+                            )}
+
                           </div>
-                        </td>
-                        <td className="px-3 py-3 text-slate-500">{ds.type}</td>
-                        <td className="hidden px-3 py-3 text-slate-600 sm:table-cell">{ds.rows.toLocaleString()}</td>
-                        <td className="hidden px-3 py-3 text-slate-600 md:table-cell">{ds.columns}</td>
-                        <td className="hidden px-3 py-3 lg:table-cell">
-                          {ds.quality > 0 ? (
-                            <div className="flex items-center gap-2">
-                              <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-100">
-                                <div className={cn('h-full rounded-full', ds.quality >= 90 ? 'bg-emerald-500' : ds.quality >= 75 ? 'bg-amber-500' : 'bg-rose-500')} style={{ width: `${ds.quality}%` }} />
-                              </div>
-                              <span className="text-xs text-slate-500">{ds.quality}%</span>
-                            </div>
-                          ) : '—'}
-                        </td>
-                        <td className="px-3 py-3">
-                          <Badge variant={st.variant} tone="soft" dot={ds.status === 'processing'}>{st.label}</Badge>
-                        </td>
-                        <td className="hidden px-3 py-3 text-xs text-slate-400 lg:table-cell">{formatRelativeTime(ds.uploadedAt)}</td>
-                        <td className="px-3 py-3 text-right">
+
+                          <p className="mt-1 text-xs text-slate-400">
+                            {version.files?.length ?? 0} files
+                            {" · "}
+                            {formatRelativeTime(
+                              version.created_at
+                            )}
+                          </p>
+
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
                           <button
-                            onClick={() => setShowPreview(ds)}
-                            disabled={ds.status !== 'ready'}
-                            className="rounded-lg px-2.5 py-1 text-xs font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 disabled:opacity-40"
+                            onClick={() => setShowPreview(version)}
+                            className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                           >
                             Preview
                           </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-            </tbody>
-          </table>
+
+                          {version.is_active ? (
+                            <Badge variant="emerald" tone="soft">
+                              Active
+                            </Badge>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="primary"
+                              onClick={() =>
+                                handleActivateVersion(dataset.id, version.id)
+                              }
+                            >
+                              Use Version
+                            </Button>
+                          )}
+                        </div>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+              </div>
+
+            ))
+
+          )}
+
         </div>
       </Card>
-
-      {/* Preview drawer */}
-      {showPreview && (
-        <>
-          <div className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-sm" onClick={() => setShowPreview(null)} />
-          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-lg overflow-y-auto bg-white shadow-2xl animate-slide-in">
-            <div className="sticky top-0 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
-              <div>
-                <h3 className="font-display text-base font-semibold text-slate-900">{showPreview.name}</h3>
-                <p className="text-xs text-slate-400">{showPreview.rows.toLocaleString()} rows · {showPreview.columns} columns · {showPreview.size}</p>
-              </div>
-              <button onClick={() => setShowPreview(null)} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
-              </button>
-            </div>
-            <div className="p-5">
-              <div className="mb-4 grid grid-cols-3 gap-3">
-                <Stat label="Data Quality" value={`${showPreview.quality}%`} />
-                <Stat label="Rows" value={showPreview.rows.toLocaleString()} />
-                <Stat label="Columns" value={String(showPreview.columns)} />
-              </div>
-              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Schema Preview</h4>
-              <div className="overflow-hidden rounded-xl border border-slate-200">
-                <table className="w-full text-sm">
-                  <thead className="bg-slate-50">
-                    <tr className="text-left text-xs uppercase tracking-wider text-slate-400">
-                      <th className="px-3 py-2 font-semibold">Column</th>
-                      <th className="px-3 py-2 font-semibold">Type</th>
-                      <th className="px-3 py-2 font-semibold">Sample</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {showPreview.preview.map((c) => (
-                      <tr key={c.column}>
-                        <td className="px-3 py-2.5 font-medium text-slate-700">{c.column}</td>
-                        <td className="px-3 py-2.5"><Badge variant="slate" tone="soft">{c.type}</Badge></td>
-                        <td className="px-3 py-2.5 font-mono text-xs text-slate-500">{c.sample}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="mt-5 flex gap-2">
-                <Button variant="primary" size="sm" fullWidth>Use for Forecasting</Button>
-                <Button variant="secondary" size="sm" fullWidth>Profile Data</Button>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 }

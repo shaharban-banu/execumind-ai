@@ -14,7 +14,7 @@ from mcp.tools.query_db import query_db
 from utils.logger import logger
 
 
-def product_summary(mode: str = "historical"):
+def product_summary(user_id:int,mode: str = "historical"):
     """
     Retrieve overall product statistics.
     """
@@ -23,13 +23,14 @@ def product_summary(mode: str = "historical"):
         COUNT(DISTINCT product_id) AS total_products,
         COUNT(DISTINCT product_category) AS total_categories,
         ROUND(AVG(weight)::numeric, 2) AS average_weight
-    FROM products;
+    FROM products
+    WHERE user_id = :user_id;
     """
 
     logger.info("Executing product summary")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id},mode)
     except Exception as exc:
         logger.exception(
             "Payment summary query failed: %s",
@@ -40,7 +41,7 @@ def product_summary(mode: str = "historical"):
         ) from exc
 
 
-def category_performance(mode: str = "historical"):
+def category_performance(user_id:int,mode: str = "historical"):
     """
     Retrieve revenue and sales by product category.
     """
@@ -54,7 +55,7 @@ def category_performance(mode: str = "historical"):
 
     JOIN products p
         ON oi.product_id = p.product_id
-
+    WHERE oi.user_id = :user_id
     GROUP BY p.product_category
 
     ORDER BY revenue DESC;
@@ -63,7 +64,7 @@ def category_performance(mode: str = "historical"):
     logger.info("Executing category performance")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id}, mode)
     except Exception as exc:
         logger.exception(
             "Category performance query failed: %s",
@@ -74,7 +75,7 @@ def category_performance(mode: str = "historical"):
         ) from exc
 
 
-def top_products(limit: int = 10,mode: str = "historical") :
+def top_products(user_id:int,limit: int = 10,mode: str = "historical") :
     """
     Retrieve top-selling products by revenue.
     """
@@ -88,6 +89,8 @@ def top_products(limit: int = 10,mode: str = "historical") :
 
     FROM order_items
 
+    WHERE user_id = :user_id
+
     GROUP BY product_id
 
     ORDER BY revenue DESC
@@ -98,7 +101,7 @@ def top_products(limit: int = 10,mode: str = "historical") :
     logger.info("Executing top products")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id}, mode)
     except Exception as exc:
         logger.exception(
             "Top products query failed: %s",
@@ -109,7 +112,7 @@ def top_products(limit: int = 10,mode: str = "historical") :
         ) from exc
 
 
-def product_price_statistics(mode: str = "historical") :
+def product_price_statistics(user_id:int,mode: str = "historical") :
     """
     Retrieve pricing statistics for sold products.
     """
@@ -118,13 +121,14 @@ def product_price_statistics(mode: str = "historical") :
         ROUND(MIN(unit_price)::numeric, 2) AS minimum_price,
         ROUND(MAX(unit_price)::numeric, 2) AS maximum_price,
         ROUND(AVG(unit_price)::numeric, 2) AS average_price
-    FROM order_items;
+    FROM order_items
+    WHERE user_id = :user_id;
     """
 
     logger.info("Executing product price statistics")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id}, mode)
     except Exception as exc:
         logger.exception(
             "product price statistics query failed: %s",
@@ -135,7 +139,7 @@ def product_price_statistics(mode: str = "historical") :
         ) from exc
 
 
-def category_distribution(mode: str = "historical"):
+def category_distribution(user_id:int,mode: str = "historical"):
     """
     Retrieve the number of products in each category.
     """
@@ -146,6 +150,7 @@ def category_distribution(mode: str = "historical"):
 
     FROM products p
 
+    WHERE user_id = :user_id
     GROUP BY product_category
 
     ORDER BY total_products DESC;
@@ -154,7 +159,7 @@ def category_distribution(mode: str = "historical"):
     logger.info("Executing category distribution")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id}, mode)
     except Exception as exc:
         logger.exception(
             "category distribution query failed: %s",

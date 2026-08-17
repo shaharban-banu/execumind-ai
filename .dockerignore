@@ -42,6 +42,8 @@ data/forecast_reports/*
 # Runtime generated models
 data/models/*
 !data/models/.gitkeep
+data/users/*
+!data/users/.gitkeep
 
 # Logs
 logs/

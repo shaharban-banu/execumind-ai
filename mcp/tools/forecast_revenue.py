@@ -9,7 +9,7 @@ from utils.logger import logger
 
 _predictor=ForecastPredictor()
 
-def forecast_revenue(periods:int=6):
+def forecast_revenue(user_id:int,periods:int=6):
     """
     Forecast future revenue.
 
@@ -28,7 +28,7 @@ def forecast_revenue(periods:int=6):
     logger.info("Forecasting revenue")
 
     try:
-        return _predictor.predict(metric='revenue',periods=periods)
+        return _predictor.predict(user_id=user_id,metric='revenue',periods=periods)
     except Exception as exc:
         logger.exception(
             "Revenue forecast failed: %s",

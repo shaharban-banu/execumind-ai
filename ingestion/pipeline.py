@@ -50,6 +50,7 @@ class IngestionPipeline:
     def run(
         self,
         dataset_path: str,
+        user_id:int,
     ):
         """
         Execute the end-to-end ingestion pipeline.
@@ -168,7 +169,8 @@ class IngestionPipeline:
             # ----------------------------------------
 
             self.loader.load(
-                canonical_dataset
+                canonical_dataset=canonical_dataset,
+                user_id=user_id,
             )
 
             logger.info(

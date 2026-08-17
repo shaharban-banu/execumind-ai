@@ -19,8 +19,8 @@ class ForecastPredictor:
     Loads trained Prophet models, generates future forecasts, retrieves
     validation metrics, and produces executive forecasting insights.
     """
-    MODEL_DIR=Path("data/models")
-    REPORT_DIR = Path("data/forecast_reports")
+    # MODEL_DIR=Path("data/models")
+    # REPORT_DIR = Path("data/forecast_reports")
 
     def __init__(self):
         """
@@ -32,7 +32,17 @@ class ForecastPredictor:
         """
         self.models={}
 
-    def _load_model(self,metric):
+    def _get_model_dir(self, user_id: int) -> Path:
+        model_dir = Path(f"data/users/{user_id}/models")
+        model_dir.mkdir(parents=True, exist_ok=True)
+        return model_dir
+
+    def _get_report_dir(self, user_id: int) -> Path:
+        report_dir = Path(f"data/users/{user_id}/forecast_reports")
+        report_dir.mkdir(parents=True, exist_ok=True)
+        return report_dir
+
+    def _load_model(self,user_id:int,metric):
         """
         Load a trained Prophet model.
 
@@ -47,10 +57,12 @@ class ForecastPredictor:
             RuntimeError: If the model cannot be loaded.
         """
         
-        if metric in self.models:
-            return self.models[metric]
+        cache_key = f"{user_id}_{metric}"
+
+        if cache_key in self.models:
+            return self.models[cache_key]
         
-        model_path=self.MODEL_DIR/f"{metric}.pkl"
+        model_path = self._get_model_dir(user_id) / f"{metric}.pkl"
 
         if not model_path.exists():
             raise FileNotFoundError(
@@ -71,11 +83,11 @@ class ForecastPredictor:
                 f"Unable to load forecast model '{metric}'."
             ) from exc 
         
-        self.models[metric]=model
+        self.models[cache_key]=model
         return model
     
 
-    def _load_metrics(self, metric: str):
+    def _load_metrics(self, user_id:int,metric: str):
         """
         Load evaluation metrics for a forecast model.
 
@@ -93,14 +105,17 @@ class ForecastPredictor:
         Raises:
             RuntimeError: If the metrics file cannot be read.
         """
-        metrics_path = self.REPORT_DIR / f"{metric}_metrics.json"
+        metrics_path = (
+            self._get_report_dir(user_id)
+            / f"{metric}_metrics.json"
+        )
 
         if not metrics_path.exists():
             return None
 
         with open(metrics_path, "r") as f:
             return json.load(f)
-    def _load_validation_metrics(self, metric: str):
+    def _load_validation_metrics(self, user_id:int,metric: str):
         """
         Load forecast validation metrics.
 
@@ -120,7 +135,10 @@ class ForecastPredictor:
             RuntimeError: If the validation report cannot be loaded or
             parsed.
         """
-        report_path = self.REPORT_DIR / f"{metric}_metrics.json"
+        report_path = (
+            self._get_report_dir(user_id)
+            / f"{metric}_metrics.json"
+        )
 
         if not report_path.exists():
             return {
@@ -211,7 +229,7 @@ class ForecastPredictor:
             "recommendation": recommendation,
         }
 
-    def predict(self,metric:str,periods:int=6,frequency:str="MS"):
+    def predict(self,user_id:int,metric:str,periods:int=6,frequency:str="MS"):
         """
         Generate future forecasts for a business metric.
 
@@ -238,7 +256,7 @@ class ForecastPredictor:
         logger.info("Generating %d-month forecast for '%s'.",periods,metric,)
 
         try:
-            model=self._load_model(metric)
+            model=self._load_model(user_id,metric)
 
             history = model.history.tail(6)
 
@@ -255,9 +273,9 @@ class ForecastPredictor:
             forecast=forecast.tail(periods)
             result=[]
 
-            confidence = ForecastConfidence.get(metric)
+            confidence = ForecastConfidence.get(user_id,metric)
             #metrics = self._load_metrics(metric)
-            validation = self._load_validation_metrics(metric)
+            validation = self._load_validation_metrics(user_id,metric)
             insights=self.generate_forecast_insights(confidence,validation)
 
             for _,row in forecast.iterrows():

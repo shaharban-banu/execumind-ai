@@ -4,7 +4,7 @@ from forecast.forecasting import load_time_series
 
 for metric in ["revenue", "orders", "customers", "aov"]:
 
-    df = load_time_series(metric)
+    df = load_time_series(1,metric)
 
     plt.figure(figsize=(8,4))
     plt.plot(df["ds"], df["y"], marker="o")

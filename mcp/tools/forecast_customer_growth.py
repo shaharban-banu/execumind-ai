@@ -12,7 +12,7 @@ from utils.logger import logger
 
 _predictor=ForecastPredictor()
 
-def forecast_customer_growth(periods:int=6):
+def forecast_customer_growth(user_id:int,periods:int=6):
     """
     Forecast customer growth.
 
@@ -30,7 +30,7 @@ def forecast_customer_growth(periods:int=6):
     """
     logger.info("Forecasting customer growth")
     try:
-        return _predictor.predict(metric='customers',periods=periods)
+        return _predictor.predict(user_id=user_id,metric='customers',periods=periods)
     except Exception as exc:
         logger.exception(
             "Customer growth forecast failed: %s",

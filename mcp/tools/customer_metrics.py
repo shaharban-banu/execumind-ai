@@ -13,7 +13,7 @@ from mcp.tools.query_db import query_db
 from utils.logger import logger
 
 
-def customer_summary(mode: str = "historical") :
+def customer_summary(user_id:int,mode: str = "historical") :
     """
     Retrieve overall customer statistics.
 
@@ -37,15 +37,16 @@ def customer_summary(mode: str = "historical") :
         ) AS average_orders_per_customer
     FROM customers c
     LEFT JOIN orders o
-        ON c.customer_id = o.customer_id;
+        ON c.customer_id = o.customer_id
+        WHERE c.user_id = :user_id;
     """
 
     logger.info("Executing customer summary")
 
-    return query_db(sql, mode)
+    return query_db(sql,{"user_id": user_id}, mode)
 
 
-def customer_growth(mode: str = "historical") :
+def customer_growth(user_id:int,mode: str = "historical") :
     """
     Retrieve monthly customer acquisition.
     """
@@ -56,16 +57,17 @@ def customer_growth(mode: str = "historical") :
         COUNT(DISTINCT c.customer_master_id) AS new_customers
     FROM orders o JOIN customers c
     ON o.customer_id = c.customer_id
+    WHERE c.user_id = :user_id
     GROUP BY month
     ORDER BY month;
     """
 
     logger.info("Executing customer growth")
 
-    return query_db(sql, mode)
+    return query_db(sql,{"user_id": user_id}, mode)
 
 
-def repeat_customer_rate(mode: str = "historical") :
+def repeat_customer_rate(user_id:int,mode: str = "historical") :
     """
     Retrieve customers with more than one order.
     """
@@ -75,7 +77,7 @@ def repeat_customer_rate(mode: str = "historical") :
         ROUND(
             (
                 100.0 * COUNT(*) /
-                (SELECT COUNT(DISTINCT customer_master_id) FROM customers)
+                (SELECT COUNT(DISTINCT customer_master_id) FROM customers WHERE user_id = :user_id)
             )::numeric,
             2
         ) AS repeat_customer_rate
@@ -84,17 +86,19 @@ def repeat_customer_rate(mode: str = "historical") :
         FROM orders o
         JOIN customers c
             ON o.customer_id = c.customer_id
+        WHERE c.user_id = :user_id
         GROUP BY c.customer_master_id
         HAVING COUNT(*) > 1
+        
     );
     """
 
     logger.info("Executing repeat customer analysis")
 
-    return query_db(sql, mode)
+    return query_db(sql, {"user_id": user_id},mode)
 
 
-def customers_by_state(mode: str = "historical"):
+def customers_by_state(user_id:int,mode: str = "historical"):
     """
     Retrieve customer distribution by state.
     """
@@ -104,16 +108,17 @@ def customers_by_state(mode: str = "historical"):
         customer_state,
         COUNT(*) AS total_customers
     FROM customers
+    WHERE user_id = :user_id
     GROUP BY customer_state
     ORDER BY total_customers DESC;
     """
 
     logger.info("Executing customers by state")
 
-    return query_db(sql, mode)
+    return query_db(sql,{"user_id": user_id}, mode)
 
 
-def customer_order_frequency(mode: str = "historical") :
+def customer_order_frequency(user_id:int,mode: str = "historical") :
     """
     Retrieve order frequency per customer.
     """
@@ -128,6 +133,7 @@ def customer_order_frequency(mode: str = "historical") :
         customer_id,
         COUNT(*) AS total_orders
         FROM orders
+        WHERE user_id = :user_id
         GROUP BY customer_id
         ) order_counts
         GROUP BY total_orders
@@ -136,9 +142,9 @@ def customer_order_frequency(mode: str = "historical") :
 
     logger.info("Executing customer order frequency")
 
-    return query_db(sql, mode)
+    return query_db(sql, {"user_id": user_id},mode)
 
-def customer_retention(mode: str = "historical") :
+def customer_retention(user_id:int,mode: str = "historical") :
     """
     Retrieve customer retention.
     """
@@ -148,7 +154,7 @@ def customer_retention(mode: str = "historical") :
         ROUND(
             (
                 100.0 * COUNT(*) /
-                (SELECT COUNT(DISTINCT customer_master_id) FROM customers)
+                (SELECT COUNT(DISTINCT customer_master_id) FROM customers WHERE user_id = :user_id)
             )::numeric,
             2
         ) AS customer_retention_rate
@@ -159,6 +165,7 @@ def customer_retention(mode: str = "historical") :
         FROM orders o
         JOIN customers c
             ON o.customer_id = c.customer_id
+        WHERE c.user_id = :user_id
         GROUP BY c.customer_master_id
         HAVING COUNT(*) > 1
     ) retained_customers;
@@ -166,4 +173,4 @@ def customer_retention(mode: str = "historical") :
 
     logger.info("Executing customer retention")
 
-    return query_db(sql, mode)
+    return query_db(sql, {"user_id": user_id},mode)

@@ -20,6 +20,7 @@ RAW_QUERIES = {
         JOIN payments p
             ON o.order_id = p.order_id
         WHERE o.order_date IS NOT NULL
+        AND o.user_id = :user_id
     """,
 
     "orders": """
@@ -27,6 +28,7 @@ RAW_QUERIES = {
             order_date
         FROM orders
         WHERE order_date IS NOT NULL
+        AND user_id = :user_id
     """,
 
    "customers": """
@@ -35,6 +37,7 @@ RAW_QUERIES = {
             customer_master_id
         FROM customers
         WHERE customer_created_date IS NOT NULL
+        AND user_id = :user_id
     """,
 
     "aov": """
@@ -45,6 +48,7 @@ RAW_QUERIES = {
         JOIN payments p
             ON o.order_id = p.order_id
         WHERE o.order_date IS NOT NULL
+        AND o.user_id = :user_id
     """,
 }
 
@@ -88,7 +92,7 @@ def remove_incomplete_last_month(df,date_column: str,):
 
     return df
 
-def load_time_series(metric: str) -> pd.DataFrame:
+def load_time_series(user_id:int,metric: str) -> pd.DataFrame:
     """
     Load historical time series for Prophet.
 
@@ -115,7 +119,7 @@ def load_time_series(metric: str) -> pd.DataFrame:
         raise ValueError(f"Unknown metric: {metric}")
     
     try:
-        df = pd.read_sql(RAW_QUERIES[metric], engine)
+        df = pd.read_sql(RAW_QUERIES[metric], engine,params={"user_id":user_id},)
 
         logger.debug("Loaded %d rows for metric '%s'.", len(df), metric)
         
