@@ -10,7 +10,7 @@ from typing import Type
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from google import genai
-from vertexai import _genai_client
+# from vertexai import _genai_client
 from utils.logger import logger
 
 import instructor
