@@ -492,7 +492,7 @@ export function PlatformManagement() {
               </p>
 
               <ul className="mt-3 space-y-2 text-sm text-red-700">
-                <li>⚠ Uploaded datasets</li>
+                
                 <li>⚠ Knowledge documents</li>
                 <li>⚠ PostgreSQL processed data</li>
                 <li>⚠ FAISS vector index</li>
