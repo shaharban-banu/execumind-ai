@@ -9,6 +9,7 @@ class SentenceTransformerEmbedder(BaseEmbedder):
     """
     SentenceTransformer embedding model.
     """
+    _cached_models={}
     def __init__(self,model_name:str,batch_size:int=64,):
         """
         Initialize the SentenceTransformer embedding model.
@@ -18,7 +19,10 @@ class SentenceTransformerEmbedder(BaseEmbedder):
             batch_size: Number of texts to encode per batch.
         """
 
-        self.model = SentenceTransformer(model_name)
+        if model_name not in self._cached_models:
+            self._cached_models[model_name] = SentenceTransformer(model_name)
+
+        self.model = self._cached_models[model_name]
         self.batch_size = batch_size
         logger.info("Loaded embedding model %s",model_name)
 

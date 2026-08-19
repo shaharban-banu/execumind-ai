@@ -31,7 +31,7 @@ executive_agent = ExecutiveAgent()
 
 planner_agent = PlannerAgent()
 
-def get_customer_agent():
+def get_customer_agent(user_id:int):
     """
     Create a Customer Intelligence Agent.
 
@@ -44,7 +44,7 @@ def get_customer_agent():
     Raises:
         RuntimeError: If the RAG pipeline cannot be created.
     """
-    rag_pipeline = create_pipeline()
+    rag_pipeline = create_pipeline(user_id)
     return CustomerIntelligenceAgent(rag_pipeline)
 
 # --------------------------------------------------
@@ -136,14 +136,16 @@ def executive_node(state: ExecuMindState,) -> ExecuMindState:
         context = {}
 
         if "customer" in decision.selected_agents:
+
+            user_id=state["user_id"]
             
-            if not get_customer_agent().rag_pipeline.is_ready():
+            if not get_customer_agent(user_id).rag_pipeline.is_ready():
                 raise RuntimeError(
                     "Knowledge base is not ready. Please process the platform first."
                 )
             logger.info("Executing Customer Agent")
 
-            response = get_customer_agent().run(
+            response = get_customer_agent(user_id).run(
                 question=state["question"],
                 user_id=state["user_id"]
             )

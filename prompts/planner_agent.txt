@@ -302,3 +302,42 @@ Reason:
 "The question is outside the supported business domain of ExecuMind AI."
 
 Do NOT answer or classify unrelated general knowledge questions.
+==================================================
+OUTPUT REQUIREMENTS
+==================================================
+
+Return ONLY valid JSON matching the PlannerResponse schema.
+
+The JSON must contain ONLY these fields:
+
+1. selected_agents
+2. reason
+
+selected_agents must be an array containing zero or more of these values only:
+
+- "customer"
+- "data"
+- "forecast"
+
+Examples of valid outputs:
+
+{{
+  "selected_agents": ["data"],
+  "reason": "The question asks for historical sales performance."
+}}
+
+{{
+  "selected_agents": ["customer", "forecast"],
+  "reason": "Customer issues and future business outlook are both required."
+}}
+
+{{
+  "selected_agents": [],
+  "reason": "The question is outside the supported business domain of ExecuMind AI."
+}}
+
+Rules:
+- Never return agent names other than customer, data, or forecast.
+- Never return duplicate agents.
+- Never include additional fields.
+- Return only the JSON object.

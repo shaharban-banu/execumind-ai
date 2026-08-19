@@ -23,8 +23,9 @@ def seller_summary(user_id:int,mode: str = "historical"):
         COUNT(DISTINCT seller_id) AS total_sellers,
         SUM(quantity) AS total_items_sold,
         ROUND(SUM(order_item_value)::numeric, 2) AS total_revenue
-    FROM order_items
-    WHERE user_id = :user_id;
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    WHERE o.user_id = :user_id;
     """
 
     logger.info("Executing seller summary")
@@ -52,8 +53,9 @@ def top_sellers(user_id:int,limit: int = 10,mode: str = "historical"):
         seller_id,
         SUM(quantity) AS items_sold,
         ROUND(SUM(order_item_value)::numeric, 2) AS revenue
-    FROM order_items
-    WHERE user_id = :user_id
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    WHERE o.user_id = :user_id
     GROUP BY seller_id
     ORDER BY revenue DESC
     LIMIT {limit};
@@ -81,8 +83,9 @@ def seller_revenue(user_id:int,mode: str = "historical"):
     SELECT
         seller_id,
         ROUND(SUM(order_item_value)::numeric, 2) AS revenue
-    FROM order_items
-    WHERE user_id = :user_id
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    WHERE o.user_id = :user_id
     GROUP BY seller_id
     ORDER BY revenue DESC;
     """
@@ -138,7 +141,7 @@ def seller_delivery_performance(user_id:int,mode: str = "historical"):
 
     WHERE o.delivered_date IS NOT NULL
 
-    AND oi.user_id = :user_id
+    AND o.user_id = :user_id
 
     GROUP BY oi.seller_id
 

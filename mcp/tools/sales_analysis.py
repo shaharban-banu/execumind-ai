@@ -101,9 +101,9 @@ def sales_by_category(user_id:int,mode:str="historical"):
             ROUND(SUM(oi.order_item_value)::numeric, 2) AS revenue,
             SUM(oi.quantity) AS items_sold
         FROM order_items oi
-        JOIN products p
-        ON oi.product_id=p.product_id
-        WHERE oi.user_id = :user_id
+        JOIN orders o ON oi.order_id = o.order_id
+        JOIN products p ON oi.product_id = p.product_id
+        WHERE o.user_id = :user_id
         GROUP BY p.product_category
         ORDER BY revenue DESC;"""
     
@@ -130,8 +130,9 @@ def top_products(user_id:int,limit: int = 10,mode: str = "historical") :
         product_id,
         SUM(quantity) AS units_sold,
         ROUND(SUM(order_item_value)::numeric, 2) AS revenue
-    FROM order_items
-    WHERE user_id = :user_id
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    WHERE o.user_id = :user_id
     GROUP BY product_id
     ORDER BY revenue DESC
     LIMIT {limit};

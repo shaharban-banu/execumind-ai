@@ -84,11 +84,20 @@ class DatabaseLoader(BaseLoader):
         """
         columns=[self.text_column,*self.metadata_columns,]
 
-        query = text(f"""
-            SELECT {", ".join(columns)}
-            FROM {self.config.table_name}
-            WHERE user_id = :user_id
-        """)
+        if self.config.table_name == "reviews":
+            query = text(f"""
+                SELECT {", ".join("r." + c for c in columns)}
+                FROM reviews r
+                JOIN orders o
+                    ON r.order_id = o.order_id
+                WHERE o.user_id = :user_id
+            """)
+        else:
+            query = text(f"""
+                SELECT {", ".join(columns)}
+                FROM {self.config.table_name}
+                WHERE user_id = :user_id
+            """)
         try:
             result = (
                 self.config.session.execute(

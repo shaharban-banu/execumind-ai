@@ -109,7 +109,9 @@ class ExecutiveRecommendationService:
 
         try:
 
-            db.query(ExecutiveRecommendation).delete()
+            db.query(ExecutiveRecommendation).filter(
+                ExecutiveRecommendation.user_id == user_id
+            ).delete()
 
             key_findings = json.dumps(analysis.key_findings)
             business_risks = json.dumps(analysis.business_risks)

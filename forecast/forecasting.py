@@ -7,6 +7,7 @@ forecast model training.
 
 import calendar
 import pandas as pd
+from sqlalchemy import text
 
 from database.database import engine
 from utils.logger import logger
@@ -119,7 +120,7 @@ def load_time_series(user_id:int,metric: str) -> pd.DataFrame:
         raise ValueError(f"Unknown metric: {metric}")
     
     try:
-        df = pd.read_sql(RAW_QUERIES[metric], engine,params={"user_id":user_id},)
+        df = pd.read_sql(text(RAW_QUERIES[metric]), engine,params={"user_id":user_id},)
 
         logger.debug("Loaded %d rows for metric '%s'.", len(df), metric)
         

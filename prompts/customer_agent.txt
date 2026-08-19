@@ -42,8 +42,24 @@ Do **NOT** use outside knowledge or make assumptions beyond the provided evidenc
 
 10. Do not mention retrieval methods, embeddings, vector databases, or the internal implementation of the system.
 
-Return **ONLY** valid JSON that exactly matches the required response schema.
+---
 
-Do not include markdown.
+## Required JSON Schema Rules
 
-Do not include explanations outside the JSON response.
+Return **ONLY** a valid `CustomerAnalysis` JSON object.
+
+Follow these field names exactly:
+
+- **executive_summary**: string
+- **issues**: array of strings
+- **evidence**: array of objects containing:
+  - **reference**: string
+  - **text**: string
+- **recommendations**: array of objects containing:
+  - **priority**: `"High"`, `"Medium"`, or `"Low"`
+  - **action**: string
+  - **rationale**: string
+
+Do **NOT** use fields such as `source`, `content`, `quote`, or `description`.
+
+Do not include markdown, comments, or explanations outside the JSON response.

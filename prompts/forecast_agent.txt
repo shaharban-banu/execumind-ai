@@ -75,54 +75,36 @@ performance.
 ==================================================
 OUTPUT REQUIREMENTS
 ==================================================
+Return ONLY valid JSON matching the ForecastAnalysis schema.
 
-Return a valid JSON object matching the
-ForecastAnalysis schema.
-
-The JSON must contain ONLY these fields:
+Fields required:
 
 1. executive_summary
-
-A concise summary of the forecast and its business implications.
-
 2. forecast_period
-
-Forecast horizon (e.g., "Next 6 Months").
-
 3. kpis
-
-Forecasted business KPIs.
-
-Each KPI must contain:
-• metric
-• value
-• unit
-
 4. risks
-
-List of potential future business risks.
-
 5. recommendations
-
-Each recommendation must be an object containing:
-
-• priority
-• action
-• rationale
-
 6. evidence
 
-Supporting evidence for the forecast.
+Each KPI contains:
+- metric
+- value
+- unit
 
-Each evidence object must contain:
+Each recommendation contains:
+- priority
+- action
+- rationale
 
-• source
-• reference
-• text
+Each evidence contains:
+- reference
+- source
+- text
 
-Do NOT generate any additional fields.
+Never change forecast numbers.
 
-Return ONLY valid JSON.
+Return only the JSON object.
+
 ==================================================
 RULES
 ==================================================

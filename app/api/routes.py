@@ -60,6 +60,28 @@ def ask(request: QuestionRequest,user=Depends(get_current_user),):
     """
     Execute the ExecuMind workflow.
     """
+    # -----------------------------
+    # Check platform readiness
+    # -----------------------------
+    status = get_platform_status(user.id)
+
+    if not status["platform_ready"]:
+        return {
+            "status": "out_of_context",
+            "message": (
+                "Your platform is not ready yet. "
+                "Please complete **Process Platform** after uploading your "
+                "dataset to build the analytics database, knowledge index, "
+                "and forecasting models before asking business questions."
+            ),
+            "metadata": {
+                "generated_at": datetime.now().isoformat(),
+            },
+        }
+
+    # -----------------------------
+    # Execute LangGraph
+    # -----------------------------
     start = time.perf_counter()
     state = {"question": request.question,
              "history":request.history or [],
@@ -603,7 +625,7 @@ def activate_dataset_version(
 def process_dataset(user=Depends(get_current_user),):
 
     dataset_path=get_active_dataset_path(user_id=user.id)
-    result = pipeline.run(str(dataset_path))
+    result = pipeline.run(str(dataset_path),user_id=user.id)
 
     return result
 
@@ -756,7 +778,7 @@ def reprocess_platform(user=Depends(get_current_user)):
 
         dataset_path=get_active_dataset_path(user.id)
 
-        ingestion_result = pipeline.run(str(dataset_path))
+        ingestion_result = pipeline.run(str(dataset_path),user_id=user.id)
 
         if not ingestion_result.get("success"):
             return {

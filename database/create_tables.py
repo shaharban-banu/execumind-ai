@@ -21,7 +21,7 @@ def main():
     logger.info("Creating database tables.")
 
     try:
-
+        
         Base.metadata.create_all(bind=engine,checkfirst=True )
 
         logger.info("Database tables created successfully.")

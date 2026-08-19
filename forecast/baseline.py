@@ -29,7 +29,7 @@ def _get_report_dir(user_id: int) -> Path:
 
 def evaluate_baseline(user_id:int,metric: str):
 
-    df = load_time_series(metric).copy()
+    df = load_time_series(user_id,metric).copy()
 
     # previous month's value
     df["prediction"] = df["y"].shift(1)

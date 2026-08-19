@@ -47,23 +47,30 @@ the available data is insufficient.
 OUTPUT REQUIREMENTS
 ==================================================
 
-Return a valid JSON object matching the DataAnalysis schema.
+Return ONLY a valid `DataAnalysis` JSON object.
 
-The JSON must contain ONLY these fields:
+Use the exact schema and field names.
 
-1. executive_summary
+Top-level fields:
+- executive_summary
+- kpis
+- trends
+- anomalies
+- recommendations
+- evidence
 
-2. kpis
+Recommendation objects MUST contain:
+- priority ("High", "Medium", or "Low")
+- action
+- rationale
 
-3. trends
+Evidence objects MUST contain:
+- reference
+- text
 
-4. anomalies
-
-5. recommendations
+Do NOT use alternative field names such as source, content, quote, or description.
 
 Do not generate any additional fields.
-
-Return ONLY valid JSON.
 ==================================================
 RULES
 ==================================================
@@ -86,6 +93,4 @@ Return ONLY valid JSON.
 
 Do not include markdown.
 
-Do not include explanations.
-
-The JSON must match this schema exactly.
+Do not include explanations outside the JSON response.

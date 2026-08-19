@@ -105,6 +105,11 @@ class Loader:
                     "Loading table '%s'...",
                     table_name,
                 )
+                logger.info(
+    "Table %s -> %d rows",
+    table_name,
+    len(table.dataframe)
+)
 
                 self._load_table(
                     session=session,
@@ -172,8 +177,11 @@ class Loader:
 
                 cleaned[key] = value
 
-        if "user_id" in valid_columns:
-            cleaned["user_id"] = user_id    
+            if "user_id" in valid_columns:
+                cleaned["user_id"] = user_id    
+
+            # if model.__tablename__ == "customers":
+            #     print(cleaned)
 
             objects.append(model(**cleaned))
 

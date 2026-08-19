@@ -52,10 +52,10 @@ def category_performance(user_id:int,mode: str = "historical"):
         ROUND(SUM(oi.order_item_value)::numeric, 2) AS revenue
 
     FROM order_items oi
-
+    JOIN orders o ON oi.order_id = o.order_id
     JOIN products p
         ON oi.product_id = p.product_id
-    WHERE oi.user_id = :user_id
+    WHERE o.user_id = :user_id
     GROUP BY p.product_category
 
     ORDER BY revenue DESC;
@@ -87,9 +87,9 @@ def top_products(user_id:int,limit: int = 10,mode: str = "historical") :
         SUM(quantity) AS units_sold,
         ROUND(SUM(order_item_value)::numeric, 2) AS revenue
 
-    FROM order_items
-
-    WHERE user_id = :user_id
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    WHERE o.user_id = :user_id
 
     GROUP BY product_id
 
@@ -121,8 +121,9 @@ def product_price_statistics(user_id:int,mode: str = "historical") :
         ROUND(MIN(unit_price)::numeric, 2) AS minimum_price,
         ROUND(MAX(unit_price)::numeric, 2) AS maximum_price,
         ROUND(AVG(unit_price)::numeric, 2) AS average_price
-    FROM order_items
-    WHERE user_id = :user_id;
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    WHERE o.user_id = :user_id;
     """
 
     logger.info("Executing product price statistics")

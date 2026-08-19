@@ -69,7 +69,7 @@ class DashboardService:
     #to give recent activity log
     @staticmethod
     def dataset_uploaded(user_id:int) -> bool:
-        dataset_dir = Path(f"data/users/{user_id}/dataset")
+        dataset_dir = Path(f"data/users/{user_id}/datasets")
 
         return (
             dataset_dir.exists()

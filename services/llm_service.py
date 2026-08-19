@@ -10,6 +10,7 @@ from typing import Type
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from google import genai
+from vertexai import _genai_client
 from utils.logger import logger
 
 import instructor
@@ -42,16 +43,22 @@ class LLMService:
         elif self.provider == "groq":
 
             api_key = os.getenv("GROQ_API_KEY")
+
             print("Groq Key:", api_key[:12] + "...")
 
             if not api_key:
                 raise ValueError("GROQ_API_KEY not found")
             self.groq_client = Groq(api_key=api_key)
 
-            self.client = instructor.from_groq(self.groq_client)
-
-            self.model = "llama-3.3-70b-versatile"
+            self.client = instructor.from_groq(self.groq_client,mode=instructor.Mode.JSON,)
+            
+            #self.model = "llama-3.3-70b-versatile"
             #self.model ="llama-3.1-8b-instant"
+            # Alternative
+            self.model = "openai/gpt-oss-120b"
+
+            
+            # self.model  = "qwen/qwen3.6-27b"
 
             logger.info("Groq LLM initialised")
 

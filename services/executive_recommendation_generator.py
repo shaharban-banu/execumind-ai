@@ -61,7 +61,7 @@ class ExecutiveRecommendationGenerator:
 
         try:
             # Customer Analysis
-            customer_response = get_customer_agent().run(
+            customer_response = get_customer_agent(user_id).run(
                 CUSTOMER_EXECUTIVE_QUESTION,
                 user_id=user_id,
             )

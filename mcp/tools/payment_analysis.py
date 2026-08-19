@@ -157,7 +157,7 @@ def payment_value_distribution(user_id:int,mode: str = "historical") :
     logger.info("Executing payment value distribution")
 
     try:
-        return query_db(sql, mode)
+        return query_db(sql, {"user_id": user_id}, mode)
     except Exception as exc:
         logger.exception(
             "payment value distribution query failed: %s",

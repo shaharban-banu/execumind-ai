@@ -27,7 +27,7 @@ class ForecastAgent(BaseAgent):
         self.tool_selector=ToolSelector()
         logger.info("Forecast Intelligence Agent initialized.")
 
-    def _retrieve_context(self,user_id:int,question:str):
+    def _retrieve_context(self,question:str,user_id:int,**kwargs,):
         """execute required mcp tools"""
 
         logger.info("Selecting forecast MCP tools")
