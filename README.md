@@ -383,9 +383,6 @@ npm run dev
 
 # Future Enhancements
 
-- Docker deployment
-- Cloud deployment (AWS/GCP/Azure)
-- Role-Based Access Control (RBAC)
 - Scheduled report generation
 - Automated model retraining
 - Real-time analytics

@@ -1,31 +1,31 @@
-# Use official Python image
 FROM python:3.11-slim
 
-# Prevent Python from writing .pyc files
-ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
-# Ensure Python output is sent straight to terminal
-ENV PYTHONUNBUFFERED=1
-
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install system dependencies once
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
     g++ \
     libpq-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (Docker layer caching)
+# Copy requirements for better Docker layer caching
 COPY requirements.txt .
 
-# Upgrade pip
-RUN pip install --upgrade pip
+# Install CPU-only PyTorch first
+RUN pip install --upgrade pip && \
+    pip install torch --index-url https://download.pytorch.org/whl/cpu
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install all remaining dependencies except standalone torch
+RUN sed '/^[[:space:]]*torch[[:space:]]*$/Id' requirements.txt \
+    > /tmp/requirements.txt && \
+    pip install -r /tmp/requirements.txt
 
 # Copy application source
 COPY . .
@@ -39,16 +39,6 @@ RUN mkdir -p \
     data/forecast_reports \
     logs
 
-RUN apt-get update && apt-get install -y \
-    curl \
-    build-essential \
-    gcc \
-    g++ \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Expose FastAPI port
 EXPOSE 8000
 
-# Start FastAPI
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
